@@ -10,8 +10,8 @@ import {
   Fish,
   Users,
 } from "lucide-react";
-import imgDefault from "figma:asset/12a6240b92d7870c4f830d8bc9467746df6e3ea5.png";
-import imgHover from "figma:asset/3ca292a49c316830954f42b94cb1dda91527721b.png";
+import imgDefault from "../../assets/Portrait_Prof.png";
+import imgHover from "../../assets/Portrait_Chill.png";
 
 export function Home() {
   const [showAlt, setShowAlt] = useState(false);

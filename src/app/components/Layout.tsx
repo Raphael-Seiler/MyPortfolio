@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Moon, Sun } from 'lucide-react';
-import logoImg from 'figma:asset/6ea7d22ce79fc449e7dedb75ba8e4f58eeb24f2f.png';
+import logoImg from '../../assets/RS_Logo.png';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { CustomCursor } from './CustomCursor';
 
