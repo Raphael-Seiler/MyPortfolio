@@ -9,7 +9,7 @@ export default defineConfig({
     // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),],
-  base: '/Raphael-Seiler.github.io/',
+  base: '/Interactiveportfoliowebsite/',
   resolve: {
     alias: {
       // Alias @ to the src directory
