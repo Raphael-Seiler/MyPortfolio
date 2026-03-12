@@ -8,8 +8,8 @@ export default defineConfig({
     // The React and Tailwind plugins are both required for Make, even if
     // Tailwind is not being actively used – do not remove them
     react(),
-    tailwindcss(),
-  ],
+    tailwindcss(),],
+  base: '/Raphael-Seiler.github.io/',
   resolve: {
     alias: {
       // Alias @ to the src directory
