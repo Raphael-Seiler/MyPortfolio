@@ -48,7 +48,7 @@ export const experiences = [
     company: "Liechtensteinisches Gymnasium in Vaduz",
     period: "2015 - 2021",
     description: "Schwerpunkt Wirtschaft.",
-    details: "Abschluss mit Fokus auf Betriebs- und Volkswirtschaft. Erste Berührungspunkte mit IT-Projektmanagement und Web-Technologien in Freifächern."
+    details: "Abschluss mit Fokus auf Betriebs- und Volkswirtschaft."
   },
   {
     id: "2",
