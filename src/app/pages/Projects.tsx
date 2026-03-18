@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { projects } from '../data';
+import LightRays from '../components/LightRays';
 
 type Category = 'alle' | 'real' | 'studium';
 
@@ -18,11 +19,26 @@ export function Projects() {
     : projects.filter(p => p.category === activeCategory);
 
   return (
-    <div className="w-full pb-32">
-      <div className="max-w-6xl mx-auto px-6 md:px-12 relative">
-        
+    <div className="w-full pb-32 relative">
+      <LightRays
+        raysOrigin='top-center'
+        raysColor='#ffaa00'
+        raysSpeed={1}
+        lightSpread={1.6}
+        rayLength={3}
+        followMouse={true}
+        mouseInfluence={0.2}
+        noiseAmount={0}
+        distortion={0}
+        pulsating={false}
+        fadeDistance={0.5}
+        saturation={0.8}
+        className="absolute inset-0 z-0"
+      />
+      <div className="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
+
         <div className="pt-20 pb-16">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
@@ -30,7 +46,7 @@ export function Projects() {
           >
             Projekte.
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.8 }}
@@ -72,7 +88,7 @@ export function Projects() {
             className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24"
           >
             {filteredProjects.map((project, i) => (
-              <motion.div 
+              <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -80,17 +96,17 @@ export function Projects() {
                 transition={{ duration: 0.8, delay: i * 0.1, ease: "easeOut" }}
                 className="group flex flex-col gap-5 relative"
               >
-                
+
                 <div className="overflow-hidden rounded-2xl bg-transparent border border-black/10 dark:border-white/10 aspect-[4/3] relative z-10">
-                  <motion.img 
+                  <motion.img
                     whileHover={{ scale: 1.03 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
-                    src={project.image} 
-                    alt={project.title} 
+                    src={project.image}
+                    alt={project.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                
+
                 <div className="flex flex-col gap-3 relative z-10 dark:bg-[#111111]/40 dark:backdrop-blur-md dark:p-4 dark:-m-4 dark:rounded-xl">
                   <div className="flex items-center gap-3">
                     <h3 className="text-xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">{project.title}</h3>
