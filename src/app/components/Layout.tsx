@@ -3,7 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import logoImg from '../../assets/RS_Logo.png';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './ImageWithFallback';
 import { CustomCursor } from './CustomCursor';
 import LineWaves from './LineWaves';
 import { translations } from '../translations';

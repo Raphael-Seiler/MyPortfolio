@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { ImageWithFallback } from "../components/ImageWithFallback";
 import MagicBento from "../components/MagicBento";
 import CircularGallery from "../components/CircularGallery";
 import { translations } from "../translations";
