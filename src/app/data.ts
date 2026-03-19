@@ -3,8 +3,8 @@ export const projects = [
     id: "1",
     title: "Fintech Mobile App Redesign",
     description: "Komplettes Redesign einer Banking-App mit Fokus auf vereinfachte Transaktionen und klare Finanzübersichten.",
-    image: "https://images.unsplash.com/photo-1758598303969-9cd99a0a585e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjBhcHAlMjBkZXNpZ24lMjBwcm9jZXNzfGVufDF8fHx8MTc3MjcwMzIwMnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    tags: ["UX Research", "Wireframing", "Figma", "Usability Testing"],
+    image: "https://images.unsplash.com/photo-1758598303969-9cd99a0a585e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjBhcHAlMjBkZXNpZ24lMjBwcm9jZXNzfGVufDF8fHx8MTc3MjcwMzIwMnww&ixlib=rb-4.1.0&q=80&w=1080",
+    tags: ["UX Research", "Wireframing", "Prototyping", "Usability Testing"],
     category: "real",
     link: "#"
   },
@@ -12,7 +12,7 @@ export const projects = [
     id: "2",
     title: "E-Commerce Checkout Flow",
     description: "Optimierung des Checkout-Prozesses zur Reduzierung von Warenkorbabbrüchen durch ein nutzerzentriertes Interface.",
-    image: "https://images.unsplash.com/photo-1622117515670-fcb02499491f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMHV4JTIwZGVzaWduJTIwd2lyZWZyYW1lc3xlbnwxfHx8fDE3NzI3MDMyMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.unsplash.com/photo-1622117515670-fcb02499491f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMHV4JTIwZGVzaWduJTIwd2lyZWZyYW1lc3xlbnwxfHx8fDE3NzI3MDMyMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
     tags: ["User Flow", "Prototyping", "A/B Testing", "UI Design"],
     category: "real",
     link: "#"
@@ -21,8 +21,8 @@ export const projects = [
     id: "3",
     title: "Health Tracking Dashboard",
     description: "Eine übersichtliche Web-App für Ärzte und Patienten zur gemeinsamen Analyse von Gesundheitsdaten.",
-    image: "https://images.unsplash.com/photo-1759505017950-25e0733b9e68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbiUyMGRpZ2l0YWwlMjBpbnRlcmZhY2UlMjBkZXNpZ258ZW58MXx8fHwxNzcyNzAzMjAyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    tags: ["Information Architecture", "Design System", "Figma"],
+    image: "https://images.unsplash.com/photo-1759505017950-25e0733b9e68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbiUyMGRpZ2l0YWwlMjBpbnRlcmZhY2UlMjBkZXNpZ258ZW58MXx8fHwxNzcyNzAzMjAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    tags: ["Information Architecture", "Design System", "UI Design"],
     category: "studium",
     link: "#"
   },
@@ -30,7 +30,7 @@ export const projects = [
     id: "4",
     title: "Community Plattform Konzept",
     description: "Grundlagenforschung und Konzeptentwicklung für ein soziales Netzwerk für kreative Freelancer.",
-    image: "https://images.unsplash.com/photo-1653038417404-1ae1f38c373e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1c2VyJTIwcmVzZWFyY2glMjBwb3N0aXRzfGVufDF8fHx8MTc3MjcwMzIwMnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.unsplash.com/photo-1653038417404-1ae1f38c373e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1c2VyJTIwcmVzZWFyY2glMjBwb3N0aXRzfGVufDF8fHx8MTc3MjcwMzIwMnww&ixlib=rb-4.1.0&q=80&w=1080",
     tags: ["Interviews", "Persona", "Journey Mapping"],
     category: "studium",
     link: "#"
@@ -38,7 +38,7 @@ export const projects = [
 ];
 
 export const skills = [
-  "Figma", "Sketch", "Prototyping", "Wireframing", "User Research", "Usability Testing", "Information Architecture", "Design Thinking", "Interaction Design"
+  "Sketch", "Prototyping", "Wireframing", "User Research", "Usability Testing", "Information Architecture", "Design Thinking", "Interaction Design"
 ];
 
 export const experiences = [
