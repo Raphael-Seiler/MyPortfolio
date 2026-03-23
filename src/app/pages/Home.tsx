@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "motion/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ImageWithFallback } from "../components/ImageWithFallback";
 import MagicBento from "../components/MagicBento";
 import CircularGallery from "../components/CircularGallery";
@@ -44,6 +44,7 @@ import imgHover from "../../assets/Raphi_Mii_4K_pose.png";
 export function Home() {
   const [isHovering, setIsHovering] = useState(false);
   const { lang } = useLanguage();
+  const navigate = useNavigate();
 
   const t = translations[lang];
 
@@ -60,10 +61,13 @@ export function Home() {
   return (
     <div className="w-full max-w-6xl mx-auto px-6 md:px-12 pb-32">
       {/* Circular Gallery - Featured Projects - Full Width */}
-      <div className="relative w-full h-[600px] md:h-[700px] overflow-hidden mb-20 md:mb-0 pt-48">
+      <div
+        className="relative w-full h-[600px] md:h-[700px] overflow-hidden mb-20 md:mb-0 pt-48 cursor-pointer"
+      >
         <CircularGallery
           items={galleryItems}
           textColor="#1d1d1f"
+          onItemClick={() => navigate('/projects')}
         />
         <div className="absolute bottom-4 left-0 right-0 z-20 pointer-events-none flex justify-center w-full">
           <div className="text-center">
@@ -209,98 +213,6 @@ export function Home() {
         />
       </section>
 
-      {/* Project Collage Section */}
-      <section className="pt-32 pb-10 relative z-10">
-        <div className="flex justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-3">
-              {t.home.projektKollage}
-            </h2>
-            <p className="text-[#55555a] dark:text-[#e5e5ea] font-light">
-              {t.home.visuellerVorgeschmack}
-            </p>
-          </div>
-          <Link
-            to="/projects"
-            className="hidden md:inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7] cursor-none"
-          >
-            <span>{t.home.alleProjekte}</span>
-            <span>&rarr;</span>
-          </Link>
-        </div>
-
-        {/* Collage Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[250px]">
-          {/* Main Large Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="md:col-span-8 md:row-span-2 rounded-[2rem] overflow-hidden relative group bg-transparent border border-black/10 dark:border-white/10"
-          >
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1750056393326-8feed2a1c34f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwbW9iaWxlJTIwYXBwJTIwdWklMjBtb2NrdXB8ZW58MXx8fHwxNzcyNzE5NDkxfDA&ixlib=rb-4.1.0&q=80&w=1080"
-              alt="Mobile App Mockup"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-8">
-              <span className="text-white font-medium text-lg">
-                Fintech Mobile App
-              </span>
-            </div>
-          </motion.div>
-
-          {/* Top Right Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="md:col-span-4 rounded-[2rem] overflow-hidden relative group bg-transparent border border-black/10 dark:border-white/10"
-          >
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1649442279006-8bccb4cc63e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbiUyMHdlYnNpdGUlMjBkYXNoYm9hcmQlMjB1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080"
-              alt="Dashboard UI"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-              <span className="text-white font-medium text-sm">
-                Analytics Dashboard
-              </span>
-            </div>
-          </motion.div>
-
-          {/* Bottom Right Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="md:col-span-4 rounded-[2rem] overflow-hidden relative group bg-transparent border border-black/10 dark:border-white/10"
-          >
-            <ImageWithFallback
-              src="https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080"
-              alt="UX Wireframes"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-              <span className="text-white font-medium text-sm">
-                Wireframes & Sketches
-              </span>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="mt-8 text-center md:hidden">
-          <Link
-            to="/projects"
-            className="inline-flex items-center space-x-2 text-sm font-medium border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors text-[#1d1d1f] dark:text-[#f5f5f7] cursor-none"
-          >
-            <span>{t.home.alleProjekteEntdecken}</span>
-            <span>&rarr;</span>
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

@@ -1149,7 +1149,7 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
 
       {activeItem && (
         <>
-          {/* Title above the project image with slight curve */}
+          {/* Title above the project image - follows the circle edge */}
           <div
             className={`
               select-none
@@ -1162,20 +1162,37 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
               ease-[cubic-bezier(0.25,0.1,0.25,1.0)]
               ${isMoving ? 'opacity-0' : 'opacity-100'}
             `}
-            style={{ top: '20%', textAlign: 'center' }}
+            style={{
+              // Position: circle center (50%) minus sphere radius on screen minus fixed offset
+              top: `calc(50% - ${Math.round(165 * scale)}px - ${Math.round(35 * scale)}px)`,
+              textAlign: 'center'
+            }}
           >
-            <svg width="300" height="60" style={{ overflow: 'visible' }}>
+            <svg
+              width={280}
+              height={80}
+              style={{
+                overflow: 'visible',
+                transform: `scale(${scale})`,
+                transformOrigin: 'center'
+              }}
+              viewBox="0 0 280 80"
+            >
               <defs>
-                <path id="titleCurve" d="M 20,50 Q 150,5 280,50" />
+                {/* Curvature matches circle edge - tighter curve for larger scale */}
+                <path
+                  id="titleCurve"
+                  d={`M 20,60 Q 140,${Math.max(10, 25 - scale * 8)} 260,60`}
+                />
               </defs>
               <text
                 textAnchor="middle"
                 fill={isDark ? '#ffffff' : '#000000'}
                 style={{
-                  fontSize: '24px',
+                  fontSize: '14px',
                   fontWeight: '700',
                   textTransform: 'uppercase',
-                  letterSpacing: '2px',
+                  letterSpacing: '2.5px',
                   textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
                 }}
               >

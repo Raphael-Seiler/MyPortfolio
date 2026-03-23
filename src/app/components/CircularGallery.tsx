@@ -385,6 +385,7 @@ interface AppConfig {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  onItemClick?: () => void;
 }
 
 class App {
@@ -414,6 +415,7 @@ class App {
   boundOnTouchDown!: (e: MouseEvent | TouchEvent) => void;
   boundOnTouchMove!: (e: MouseEvent | TouchEvent) => void;
   boundOnTouchUp!: () => void;
+  boundOnClick!: (e: MouseEvent | TouchEvent) => void;
 
   isDown: boolean = false;
   start: number = 0;
@@ -422,6 +424,7 @@ class App {
   autoScroll: boolean = true;
   autoScrollSpeed: number = 0.02;
   userInteractionTimeout: number = 0;
+  onItemClick?: () => void;
 
   constructor(
     container: HTMLElement,
@@ -432,12 +435,14 @@ class App {
       borderRadius = 0,
       font = 'bold 30px Figtree',
       scrollSpeed = 2,
-      scrollEase = 0.05
+      scrollEase = 0.05,
+      onItemClick
     }: AppConfig
   ) {
     document.documentElement.classList.remove('no-js');
     this.container = container;
     this.scrollSpeed = scrollSpeed;
+    this.onItemClick = onItemClick;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
     this.createRenderer();
@@ -577,6 +582,36 @@ class App {
     this.resetAutoScrollTimeout();
   }
 
+  onClick(e: MouseEvent | TouchEvent) {
+    if (!this.medias || !this.medias[0] || !this.onItemClick) return;
+
+    // Only trigger if this was a click, not a drag/scroll
+    if (this.isDown) return;
+
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+    // Get canvas bounding rect
+    const canvas = this.renderer.gl.canvas as HTMLCanvasElement;
+    const rect = canvas.getBoundingClientRect();
+
+    // Calculate click position relative to canvas
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    // Normalize to NDC coordinates (-1 to 1)
+    const ndcX = (x / rect.width) * 2 - 1;
+    const ndcY = -(y / rect.height) * 2 + 1;
+
+    // Check if click is in the center area where items are visible and clickable
+    // Center 30% horizontally, 50% vertically
+    const isInCenterArea = Math.abs(ndcX) < 0.3 && Math.abs(ndcY) < 0.5;
+
+    if (isInCenterArea) {
+      this.onItemClick();
+    }
+  }
+
   onWheel(e: Event) {
     const wheelEvent = e as WheelEvent;
     // Only horizontal scroll - ignore vertical delta
@@ -644,12 +679,14 @@ class App {
     this.boundOnTouchDown = this.onTouchDown.bind(this);
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
+    this.boundOnClick = this.onClick.bind(this);
     window.addEventListener('resize', this.boundOnResize);
     window.addEventListener('mousewheel', this.boundOnWheel);
     window.addEventListener('wheel', this.boundOnWheel);
     window.addEventListener('mousedown', this.boundOnTouchDown);
     window.addEventListener('mousemove', this.boundOnTouchMove);
     window.addEventListener('mouseup', this.boundOnTouchUp);
+    window.addEventListener('click', this.boundOnClick);
     window.addEventListener('touchstart', this.boundOnTouchDown, { passive: true });
     window.addEventListener('touchmove', this.boundOnTouchMove, { passive: false });
     window.addEventListener('touchend', this.boundOnTouchUp, { passive: true });
@@ -663,6 +700,7 @@ class App {
     window.removeEventListener('mousedown', this.boundOnTouchDown);
     window.removeEventListener('mousemove', this.boundOnTouchMove);
     window.removeEventListener('mouseup', this.boundOnTouchUp);
+    window.removeEventListener('click', this.boundOnClick);
     window.removeEventListener('touchstart', this.boundOnTouchDown);
     window.removeEventListener('touchmove', this.boundOnTouchMove);
     window.removeEventListener('touchend', this.boundOnTouchUp);
@@ -681,6 +719,7 @@ interface CircularGalleryProps {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  onItemClick?: () => void;
 }
 
 export default function CircularGallery({
@@ -691,7 +730,8 @@ export default function CircularGallery({
   borderRadius = 0.05,
   font = 'bold 28px -apple-system, BlinkMacSystemFont, SF Pro Display',
   scrollSpeed = 2,
-  scrollEase = 0.05
+  scrollEase = 0.05,
+  onItemClick
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -705,7 +745,8 @@ export default function CircularGallery({
       borderRadius,
       font,
       scrollSpeed,
-      scrollEase
+      scrollEase,
+      onItemClick
     });
 
     // Observe theme changes

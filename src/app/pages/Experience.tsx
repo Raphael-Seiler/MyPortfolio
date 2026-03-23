@@ -19,6 +19,11 @@ export function Experience() {
 
   const t = translations[lang];
 
+  // Drag scrolling state
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useRef<number>(0);
+  const scrollStart = useRef<number>(0);
+
   // Track horizontal scroll of the container
   const { scrollXProgress } = useScroll({
     container: containerRef,
@@ -86,6 +91,36 @@ export function Experience() {
     },
     [N]
   );
+
+  // Drag scrolling handlers
+  const handleDragStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    setIsDragging(true);
+    dragStartX.current = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    scrollStart.current = container.scrollLeft;
+    container.style.cursor = "grabbing";
+  }, []);
+
+  const handleDragMove = useCallback((e: MouseEvent | TouchEvent) => {
+    if (!isDragging) return;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const currentX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const deltaX = currentX - dragStartX.current;
+    container.scrollLeft = scrollStart.current - deltaX;
+  }, [isDragging]);
+
+  const handleDragEnd = useCallback(() => {
+    setIsDragging(false);
+    const container = containerRef.current;
+    if (container) {
+      container.style.cursor = "grab";
+    }
+  }, []);
 
   // Auto-drive car to nearest station after scrolling stops - consistent smooth animation
   useEffect(() => {
@@ -173,13 +208,23 @@ export function Experience() {
 
     window.addEventListener("keydown", handleKeyDown);
 
+    // Drag event listeners
+    window.addEventListener("mousemove", handleDragMove);
+    window.addEventListener("touchmove", handleDragMove);
+    window.addEventListener("mouseup", handleDragEnd);
+    window.addEventListener("touchend", handleDragEnd);
+
     return () => {
       container.removeEventListener("scroll", handleScrollEnd);
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("mousemove", handleDragMove);
+      window.removeEventListener("touchmove", handleDragMove);
+      window.removeEventListener("mouseup", handleDragEnd);
+      window.removeEventListener("touchend", handleDragEnd);
       clearTimeout(scrollEndTimeout);
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [N, getStationScroll, activeIndex, itemSpacing]);
+  }, [N, getStationScroll, activeIndex, itemSpacing, handleDragMove, handleDragEnd]);
 
   return (
     <div className="w-full pb-32 pt-48">
@@ -208,11 +253,14 @@ export function Experience() {
         {/* Scrollable Container */}
         <div
           ref={containerRef}
-          className="w-full h-full overflow-x-auto overflow-y-hidden relative z-10 [&::-webkit-scrollbar]:hidden"
+          className="w-full h-full overflow-x-auto overflow-y-hidden relative z-10 [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            userSelect: isDragging ? "none" : "auto",
           }}
+          onMouseDown={handleDragStart}
+          onTouchStart={handleDragStart}
         >
           {/* Inner scrolling track */}
           <div
