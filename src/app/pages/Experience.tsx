@@ -269,7 +269,7 @@ export function Experience() {
       </div>
 
       {/* The Timeline Area */}
-      <div className="relative w-full h-[850px] md:h-[1000px] z-10">
+      <div className="relative w-full h-[500px] md:h-[1000px] z-10">
         {/* Scrollable Container */}
         <div
           ref={containerRef}
@@ -497,10 +497,10 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
         y: isActive ? 0 : 4,
       }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] max-h-[420px] md:max-h-[340px] overflow-hidden relative z-10 backdrop-blur-md ${
+      className={`p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] relative z-10 backdrop-blur-md overflow-hidden ${
         isActive
-          ? "border-black/20 dark:border-white/20 shadow-lg bg-white/80 dark:bg-black/80"
-          : "border-black/10 dark:border-white/10 bg-white/40 dark:bg-black/40"
+          ? "border-black/20 dark:border-white/20 shadow-lg bg-white/80 dark:bg-black/80 max-h-[400px]"
+          : "border-black/10 dark:border-white/10 bg-white/40 dark:bg-black/40 max-h-[340px]"
       }`}
     >
       <span
