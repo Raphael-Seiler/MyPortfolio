@@ -1,4 +1,5 @@
 import { FC, useRef, useState, useEffect, MutableRefObject } from 'react';
+import { useNavigate } from 'react-router';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { translations } from '../translations';
 import { useLanguage } from '../context/LanguageContext';
@@ -1078,6 +1079,7 @@ interface InfiniteMenuProps {
 const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemClick }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null) as MutableRefObject<HTMLCanvasElement | null>;
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isMoving, setIsMoving] = useState<boolean>(false);
   const [isDark, setIsDark] = useState(false);
   const [isNarrow, setIsNarrow] = useState(false);
@@ -1113,6 +1115,7 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
       if (!items.length) return;
       const itemIndex = index % items.length;
       setActiveItem(items[itemIndex]);
+      setActiveIndex(itemIndex);
     };
 
     if (canvas) {
@@ -1147,10 +1150,9 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
     if (activeItem.link.startsWith('http')) {
       window.open(activeItem.link, '_blank');
     } else if (onItemClick) {
-      const index = items.findIndex(item => item.link === activeItem.link);
-      if (index !== -1) {
-        onItemClick(index);
-      }
+      onItemClick(activeIndex);
+    } else {
+      navigate(activeItem.link);
     }
   };
 
@@ -1167,7 +1169,6 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
           <div
             className={`
               select-none
-              pointer-events-none
               absolute
               transition-all
               duration-300

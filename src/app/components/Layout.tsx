@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Moon, Sun } from 'lucide-react';
-import logoImg from '../../assets/RS_Logo.png';
+import logoImg from '../../assets/shared/RS_Logo.png';
 import { ImageWithFallback } from './ImageWithFallback';
 import { CustomCursor } from './CustomCursor';
 import LineWaves from './LineWaves';
@@ -41,13 +41,18 @@ export function Layout() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [location.pathname]);
 
   const navLinks = [
     { name: translations[lang].nav.ich, path: '/' },
@@ -228,7 +233,7 @@ export function Layout() {
         </AnimatePresence>
       </header>
 
-      <main className="flex-grow min-h-[calc(100vh)] pt-0 md:pt-0 relative z-10">
+      <main className="flex-grow pt-0 md:pt-0 relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

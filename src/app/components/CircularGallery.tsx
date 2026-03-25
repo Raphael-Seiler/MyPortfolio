@@ -425,6 +425,7 @@ class App {
   autoScrollSpeed: number = 0.02;
   userInteractionTimeout: number = 0;
   onItemClick?: () => void;
+  dragDistance: number = 0;
 
   constructor(
     container: HTMLElement,
@@ -551,6 +552,7 @@ class App {
     this.start = 'touches' in e ? e.touches[0].clientX : e.clientX;
     this.startY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     this.isHorizontalScroll = false;
+    this.dragDistance = 0;
     this.resetAutoScrollTimeout();
   }
 
@@ -561,8 +563,11 @@ class App {
     const deltaX = this.start - x;
     const deltaY = this.startY - y;
 
+    // Track total drag distance
+    this.dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
     // Determine scroll direction on first significant movement
-    if (!this.isHorizontalScroll && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+    if (!this.isHorizontalScroll && this.dragDistance > 10) {
       this.isHorizontalScroll = Math.abs(deltaX) > Math.abs(deltaY);
     }
 
@@ -586,7 +591,11 @@ class App {
     if (!this.medias || !this.medias[0] || !this.onItemClick) return;
 
     // Only trigger if this was a click, not a drag/scroll
-    if (this.isDown) return;
+    // If user dragged more than 10px, don't trigger click
+    if (this.dragDistance > 10) {
+      this.dragDistance = 0;
+      return;
+    }
 
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
@@ -604,8 +613,8 @@ class App {
     const ndcY = -(y / rect.height) * 2 + 1;
 
     // Check if click is in the center area where items are visible and clickable
-    // Center 30% horizontally, 50% vertically
-    const isInCenterArea = Math.abs(ndcX) < 0.3 && Math.abs(ndcY) < 0.5;
+    // Center 40% horizontally, 60% vertically for more generous hit area
+    const isInCenterArea = Math.abs(ndcX) < 0.4 && Math.abs(ndcY) < 0.6;
 
     if (isInCenterArea) {
       this.onItemClick();

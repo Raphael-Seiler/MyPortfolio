@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import logoImg from "../../assets/RS_Logo.png";
+import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
 import { ImageWithFallback } from "../components/ImageWithFallback";
 import ClickSpark from "../components/ClickSpark";
 import { useState, useEffect } from "react";
@@ -10,9 +11,9 @@ import { useState, useEffect } from "react";
 const projects = [
   {
     id: "1",
-    image: "https://images.unsplash.com/photo-1750056393326-8feed2a1c34f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwbW9iaWxlJTIwYXBwJTIwdWklMjBtb2NrdXB8ZW58MXx8fHwxNzcyNzE5NDkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-    title: "Fintech Mobile App",
-    description: "Eine minimalistische Banking-App mit Fokus auf Benutzerfreundlichkeit."
+    image: fruitDudeImg,
+    title: "SPRYTE",
+    description: "Ein interaktives Ökosystem für standortübergreifende Pixel-Kunst."
   },
   {
     id: "2",
@@ -68,6 +69,15 @@ export function Projects() {
       disableOnMobile
     >
       <div className="relative w-full h-screen overflow-hidden">
+        {/* Title */}
+        <div className="absolute top-0 left-0 right-0 z-30 pt-48 pb-8 px-6 md:px-12 text-center">
+          <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1d1d1f] to-[#55555a] dark:from-[#f5f5f7] dark:to-[#d1d1d6]">
+              {t.projects.title}
+            </span>
+          </h1>
+        </div>
+
         {/* Infinite Menu - Full viewport background */}
         <InfiniteMenu
           items={menuItems}

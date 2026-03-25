@@ -74,6 +74,16 @@ export const translations = {
     footer: {
       copyright: 'Raphaël Seiler. UX Designer.',
     },
+    projectDetail: {
+      backToProjects: 'Zurück zu Projekten',
+      projectNotFound: 'Projekt nicht gefunden.',
+      projectCharter: 'Project Charter',
+      ourGoal: 'Unser Ziel',
+      prozess: 'Prozess',
+      process: 'Process',
+      result: 'Resultat',
+      reflection: 'Reflexion',
+    },
   },
   en: {
     nav: {
@@ -149,6 +159,16 @@ export const translations = {
     },
     footer: {
       copyright: 'Raphaël Seiler. UX Designer.',
+    },
+    projectDetail: {
+      backToProjects: 'Back to Projects',
+      projectNotFound: 'Project not found.',
+      projectCharter: 'Project Charter',
+      ourGoal: 'Our Goal',
+      prozess: 'Prozess',
+      process: 'Process',
+      result: 'Result',
+      reflection: 'Reflection',
     },
   },
 };
