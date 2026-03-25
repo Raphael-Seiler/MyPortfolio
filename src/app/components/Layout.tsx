@@ -242,8 +242,10 @@ export function Layout() {
         </AnimatePresence>
       </main>
 
-      <footer className="relative z-[20] py-12 text-center mt-20 flex flex-col items-center justify-center space-y-6 bg-white/20 dark:bg-black/20 backdrop-blur-md pointer-events-none">
-        <ImageWithFallback src={logoImg} alt="Raphi Logo" className="h-10 w-auto dark:invert opacity-60 hover:opacity-100 transition-opacity pointer-events-auto" />
+      <footer className="relative z-[20] text-center py-8 flex flex-col items-center justify-center space-y-4 bg-white/20 dark:bg-black/20 backdrop-blur-md border-0 pointer-events-none">
+        <NavLink to="/" className="pointer-events-auto">
+          <ImageWithFallback src={logoImg} alt="Raphi Logo" className="h-10 w-auto dark:invert opacity-60 hover:opacity-100 transition-opacity mb-2" />
+        </NavLink>
         <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] font-medium">
           © {new Date().getFullYear()} {translations[lang].footer.copyright}
         </p>

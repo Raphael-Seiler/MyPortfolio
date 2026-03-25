@@ -1,6 +1,8 @@
 import { useParams, Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowLeft } from "lucide-react";
+import ClickSpark from "../components/ClickSpark";
+import { useState, useEffect } from "react";
 
 const placeholderProjects: Record<string, { title: string; description: string; image: string }> = {
   "1": {
@@ -23,6 +25,17 @@ const placeholderProjects: Record<string, { title: string; description: string; 
 export function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
   const project = id ? placeholderProjects[id] : null;
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   if (!project) {
     return (
@@ -33,7 +46,15 @@ export function ProjectDetail() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-6 md:px-12 py-20">
+    <ClickSpark
+      sparkColor={isDark ? '#ffffff' : '#000000'}
+      sparkSize={19}
+      sparkRadius={40}
+      sparkCount={13}
+      duration={400}
+      disableOnMobile
+    >
+      <div className="w-full h-screen max-w-4xl mx-auto px-6 md:px-12 py-20">
       {/* Back Button */}
       <Link
         to="/projects"
@@ -61,10 +82,11 @@ export function ProjectDetail() {
           {project.title}
         </h1>
 
-        <p className="text-xl text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed max-w-2xl">
+        <p className="text-lg text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed max-w-2xl">
           {project.description}
         </p>
       </motion.div>
     </div>
+    </ClickSpark>
   );
 }

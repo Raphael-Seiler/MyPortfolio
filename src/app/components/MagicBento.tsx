@@ -240,7 +240,6 @@ const MagicBento: React.FC<BentoProps> = ({
                   <div className="bento-title">{card.title}</div>
                   <div className="bento-desc">{card.description}</div>
                 </div>
-                {card.icon && <div className="bento-icon">{card.icon}</div>}
               </div>
             </ParticleCard>
           ))}

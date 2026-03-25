@@ -6,6 +6,8 @@ import MagicBento from "../components/MagicBento";
 import CircularGallery from "../components/CircularGallery";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
+import ClickSpark from "../components/ClickSpark";
+import { useEffect } from "react";
 // SF Symbols style icons
 const LightbulbIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -45,6 +47,17 @@ export function Home() {
   const [isHovering, setIsHovering] = useState(false);
   const { lang } = useLanguage();
   const navigate = useNavigate();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   const t = translations[lang];
 
@@ -59,7 +72,15 @@ export function Home() {
   ], []);
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-6 md:px-12 pb-32">
+    <ClickSpark
+      sparkColor={isDark ? '#ffffff' : '#000000'}
+      sparkSize={19}
+      sparkRadius={40}
+      sparkCount={13}
+      duration={400}
+      disableOnMobile
+    >
+      <div className="w-full max-w-6xl mx-auto px-6 md:px-12 pb-32">
       {/* Circular Gallery - Featured Projects - Full Width */}
       <div
         className="relative w-full h-[600px] md:h-[700px] overflow-hidden mb-20 md:mb-0 pt-48 cursor-pointer"
@@ -156,14 +177,14 @@ export function Home() {
           cards={[
             {
               label: t.home.philosophie,
-              title: t.home.meinePhilosophie,
+              title: t.home.philosophieTitle,
               description: t.home.philosophieText,
               className: "card-span-2-md",
               icon: <LightbulbIcon />
             },
             {
               label: t.home.staerken,
-              title: t.home.staerken,
+              title: t.home.staerkenTitle,
               description: (
                 <ul className="list-disc list-inside space-y-1 text-left">
                   {t.home.staerkenList.map((item, i) => (
@@ -175,7 +196,7 @@ export function Home() {
             },
             {
               label: t.home.entwicklung,
-              title: t.home.entwicklung,
+              title: t.home.entwicklungTitle,
               description: (
                 <ul className="list-disc list-inside space-y-1 text-left">
                   {t.home.entwicklungList.map((item, i) => (
@@ -214,5 +235,6 @@ export function Home() {
       </section>
 
     </div>
+    </ClickSpark>
   );
 }

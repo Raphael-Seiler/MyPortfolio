@@ -3,11 +3,24 @@ import { motion } from 'motion/react';
 import { Linkedin, Instagram } from 'lucide-react';
 import { translations } from '../translations';
 import { useLanguage } from '../context/LanguageContext';
+import ClickSpark from '../components/ClickSpark';
+import { useEffect } from 'react';
 
 export function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const [hasFocus, setHasFocus] = useState(false);
   const { lang } = useLanguage();
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   const t = translations[lang];
 
@@ -38,7 +51,15 @@ export function Contact() {
   };
 
   return (
-    <div className="w-full min-h-[80vh] flex items-center">
+    <ClickSpark
+      sparkColor={isDark ? '#ffffff' : '#000000'}
+      sparkSize={19}
+      sparkRadius={40}
+      sparkCount={13}
+      duration={400}
+      disableOnMobile
+    >
+      <div className="w-full min-h-[80vh] flex items-center">
       <div className="max-w-3xl mx-auto px-6 md:px-12 w-full relative">
 
         <div className="mb-20 text-center relative z-10 pt-48">
@@ -160,7 +181,8 @@ export function Contact() {
             <Instagram size={32} strokeWidth={1.5} />
           </a>
         </div>
+        </div>
       </div>
-    </div>
+      </ClickSpark>
   );
 }

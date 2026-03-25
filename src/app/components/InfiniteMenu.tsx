@@ -1080,6 +1080,8 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
   const [isMoving, setIsMoving] = useState<boolean>(false);
   const [isDark, setIsDark] = useState(false);
+  const [isNarrow, setIsNarrow] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(0);
   const { lang } = useLanguage();
   const t = translations[lang];
 
@@ -1091,6 +1093,16 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
     const observer = new MutationObserver(checkDarkMode);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsNarrow(window.innerWidth < 768);
+      setContainerWidth(window.innerWidth);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -1128,6 +1140,8 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
     };
   }, [items, scale]);
 
+  const mobileScale = isNarrow ? scale * 0.7 : scale;
+
   const handleButtonClick = () => {
     if (!activeItem?.link) return;
     if (activeItem.link.startsWith('http')) {
@@ -1149,91 +1163,87 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
 
       {activeItem && (
         <>
-          {/* Title above the project image - follows the circle edge */}
+          {/* Title and button container on the left side of the project image */}
           <div
             className={`
               select-none
               pointer-events-none
               absolute
-              left-1/2
-              -translate-x-1/2
               transition-all
               duration-300
               ease-[cubic-bezier(0.25,0.1,0.25,1.0)]
               ${isMoving ? 'opacity-0' : 'opacity-100'}
             `}
             style={{
-              // Position: circle center (50%) minus sphere radius on screen minus fixed offset
-              top: `calc(50% - ${Math.round(165 * scale)}px - ${Math.round(35 * scale)}px)`,
-              textAlign: 'center'
+              ...(isNarrow
+                ? {
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    top: `calc(50% + ${Math.round(165 * mobileScale)}px + ${Math.round(20 * mobileScale)}px - 100px)`,
+                    bottom: 'auto'
+                  }
+                : {
+                    top: '60%',
+                    transform: 'translateY(-50%)',
+                    left: `calc(50% - ${Math.round(165 * mobileScale)}px - ${Math.round(50 * mobileScale)}px)`
+                  }),
+              padding: `${12 * mobileScale}px ${16 * mobileScale}px`,
+              borderRadius: `${16 * mobileScale}px`,
+              background: isDark ? 'rgba(30, 30, 30, 0.65)' : 'rgba(255, 255, 255, 0.65)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: `${12 * mobileScale}px`
             }}
           >
-            <svg
-              width={280}
-              height={80}
+            {/* Title */}
+            <h2
+              className="font-bold tracking-[2.5px]"
               style={{
-                overflow: 'visible',
-                transform: `scale(${scale})`,
-                transformOrigin: 'center'
+                fontSize: `${14 * mobileScale}px`,
+                color: isDark ? '#ffffff' : '#000000',
+                textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
+                whiteSpace: 'nowrap',
+                margin: 0,
+                lineHeight: 1,
+                textTransform: 'none'
               }}
-              viewBox="0 0 280 80"
             >
-              <defs>
-                {/* Curvature matches circle edge - tighter curve for larger scale */}
-                <path
-                  id="titleCurve"
-                  d={`M 20,60 Q 140,${Math.max(10, 25 - scale * 8)} 260,60`}
-                />
-              </defs>
-              <text
-                textAnchor="middle"
-                fill={isDark ? '#ffffff' : '#000000'}
-                style={{
-                  fontSize: '14px',
-                  fontWeight: '700',
-                  textTransform: 'uppercase',
-                  letterSpacing: '2.5px',
-                  textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : 'none',
-                }}
-              >
-                <textPath href="#titleCurve" startOffset="50%">
-                  {activeItem.title}
-                </textPath>
-              </text>
-            </svg>
-          </div>
+              {activeItem.title}
+            </h2>
 
-          {/* Button below the project image */}
-          <button
-            onClick={handleButtonClick}
-            className={`
-              absolute
-              left-1/2
-              -translate-x-1/2
-              px-6
-              py-2.5
-              rounded-full
-              bg-[#60A5FA]
-              text-black
-              text-sm
-              font-medium
-              cursor-pointer
-              transition-all
-              duration-300
-              ease-[cubic-bezier(0.25,0.1,0.25,1.0)]
-              hover:scale-105
-              hover:bg-[#3B82F6]
-              whitespace-nowrap
-              ${
-                isMoving
-                  ? 'opacity-0 pointer-events-none scale-90'
-                  : 'opacity-100 scale-100'
-              }
-            `}
-            style={{ top: '60%' }}
-          >
-            {t.projects.viewDetails}
-          </button>
+            {/* Button */}
+            <button
+              onClick={handleButtonClick}
+              className={`
+                rounded-full
+                font-medium
+                cursor-pointer
+                transition-all
+                duration-300
+                ease-[cubic-bezier(0.25,0.1,0.25,1.0)]
+                hover:scale-105
+                whitespace-nowrap
+                border-none
+                outline-none
+                ${
+                  isMoving
+                    ? 'opacity-0 pointer-events-none scale-90'
+                    : 'opacity-100 scale-100'
+                }
+              `}
+              style={{
+                fontSize: `${12 * mobileScale}px`,
+                padding: `${4 * mobileScale}px ${10 * mobileScale}px`,
+                backgroundColor: isDark ? '#3B82F6' : '#60A5FA',
+                color: isDark ? '#ffffff' : '#000000'
+              }}
+            >
+              {t.projects.viewDetails}
+            </button>
+          </div>
         </>
       )}
     </div>

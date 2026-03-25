@@ -4,6 +4,8 @@ import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import logoImg from "../../assets/RS_Logo.png";
 import { ImageWithFallback } from "../components/ImageWithFallback";
+import ClickSpark from "../components/ClickSpark";
+import { useState, useEffect } from "react";
 
 const projects = [
   {
@@ -30,6 +32,17 @@ export function Projects() {
   const navigate = useNavigate();
   const { lang } = useLanguage();
   const t = translations[lang];
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   const handleNavigate = (index: number) => {
     const project = projects[index % projects.length];
@@ -46,25 +59,22 @@ export function Projects() {
   }));
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
-      {/* Infinite Menu - Full viewport background */}
-      <InfiniteMenu
-        items={menuItems}
-        scale={1.5}
-        onItemClick={handleNavigate}
-      />
-
-      {/* Footer - Inside viewport at bottom */}
-      <footer className="absolute bottom-0 left-0 right-0 z-20 py-6 flex flex-col items-center justify-center bg-white/20 dark:bg-black/20 backdrop-blur-md">
-        <ImageWithFallback
-          src={logoImg}
-          alt="Raphi Logo"
-          className="h-8 w-auto dark:invert opacity-60 hover:opacity-100 transition-opacity"
+    <ClickSpark
+      sparkColor={isDark ? '#ffffff' : '#000000'}
+      sparkSize={19}
+      sparkRadius={40}
+      sparkCount={13}
+      duration={400}
+      disableOnMobile
+    >
+      <div className="relative w-full h-screen overflow-hidden">
+        {/* Infinite Menu - Full viewport background */}
+        <InfiniteMenu
+          items={menuItems}
+          scale={1.5}
+          onItemClick={handleNavigate}
         />
-        <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] font-medium mt-1">
-          © {new Date().getFullYear()} {t.footer.copyright}
-        </p>
-      </footer>
-    </div>
+      </div>
+    </ClickSpark>
   );
 }
