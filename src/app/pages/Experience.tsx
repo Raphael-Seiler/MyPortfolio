@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import {
   motion,
   useScroll,
@@ -37,7 +37,7 @@ export function Experience() {
   const scrollStart = useRef<number>(0);
 
   // Track horizontal scroll of the container
-  const { scrollXProgress } = useScroll({
+  useScroll({
     container: containerRef,
   });
 
@@ -71,13 +71,13 @@ export function Experience() {
   }, []);
 
   const N = experiences.length;
-  const itemSpacing = isMobile ? 340 : 450;
-  // Car and first station start at the same viewport position
-  const carVW = isMobile ? 50 : 20;
+  const itemSpacing = useMemo(() => isMobile ? 340 : 450, [isMobile]);
+  // Car centered in viewport
+  const carVW = 50;
 
   // Total scrollable distance: stations span from carVW to carVW + N*itemSpacing (including "Fortsetzung folgt")
   // Max scroll = distance from first station to "Fortsetzung folgt"
-  const maxScroll = Math.max(1, N * itemSpacing);
+  const maxScroll = useMemo(() => Math.max(1, N * itemSpacing), [N, itemSpacing]);
 
   // Car position - fixed at carVW in the viewport
   const carX = `${carVW}vw`;
@@ -89,6 +89,8 @@ export function Experience() {
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [expandUpdateCounter, setExpandUpdateCounter] = useState(0);
+  const expandProgressRef = useRef<number[]>([]);
 
   // Update active index based on actual scroll position and proximity to stations
   useEffect(() => {
@@ -104,6 +106,9 @@ export function Experience() {
       let closestIndex = 0;
       let closestDistance = Infinity;
 
+      // Calculate expansion progress for each station
+      const expandThreshold = isMobile ? itemSpacing * 0.8 : itemSpacing * 0.6;
+
       for (let i = 0; i < N; i++) {
         // Station's position in the scrollable content
         const stationContentX = carVW * vw + i * itemSpacing;
@@ -111,11 +116,19 @@ export function Experience() {
         const stationScreenX = stationContentX - currentScroll;
         // Distance from car's position
         const distance = Math.abs(stationScreenX - carViewportX);
+        
+        // Progress is 1 when at station (distance=0), 0 when at threshold
+        const progress = Math.max(0, 1 - distance / expandThreshold);
+        expandProgressRef.current[i] = progress;
+
         if (distance < closestDistance) {
           closestDistance = distance;
           closestIndex = i;
         }
       }
+
+      // Trigger re-render by incrementing counter
+      setExpandUpdateCounter(c => c + 1);
 
       // Check if we're past all stations (at "Fortsetzung folgt")
       const lastStationContentX = carVW * vw + (N - 1) * itemSpacing;
@@ -130,13 +143,22 @@ export function Experience() {
     };
 
     // Update on scroll
-    container.addEventListener("scroll", updateActiveIndex, { passive: true });
+    const handleScroll = () => {
+      updateActiveIndex();
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
     updateActiveIndex(); // Initial call
 
     return () => {
-      container.removeEventListener("scroll", updateActiveIndex);
+      container.removeEventListener("scroll", handleScroll);
     };
   }, [N, carVW, itemSpacing, vw, maxScroll]);
+
+  // Get expand progress for a station - reads from ref
+  const getExpandProgress = (i: number) => {
+    return expandProgressRef.current[i] || 0;
+  };
 
 
   const totalWidth = `${maxScroll + 100 * vw}px`;
@@ -164,8 +186,7 @@ export function Experience() {
     if (!container) return;
 
     setIsDragging(true);
-    const clientX = 'touches' in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
-    dragStartX.current = clientX;
+    dragStartX.current = 'touches' in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
     scrollStart.current = container.scrollLeft;
     container.style.cursor = "grabbing";
   }, [isMobile]);
@@ -343,11 +364,11 @@ export function Experience() {
       </div>
 
       {/* The Timeline Area */}
-      <div className="relative w-full h-[700px] md:h-[1000px] z-10">
+      <div className="relative w-full h-[900px] md:h-[1000px] z-10">
         {/* Scrollable Container */}
         <div
           ref={containerRef}
-          className="w-full h-full overflow-x-auto overflow-y-hidden relative z-10 [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
+          className="w-full h-full overflow-x-auto overflow-y-visible md:overflow-y-hidden relative z-10 [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -362,7 +383,7 @@ export function Experience() {
             style={{ width: totalWidth }}
           >
             {/* The Road Line */}
-            <div className="absolute top-[75%] md:top-[55%] left-0 right-0 h-[1px] bg-black/10 dark:bg-white/10 -translate-y-1/2 z-0 transition-all duration-500" />
+            <div className="absolute top-[60%] md:top-[55%] left-0 right-0 h-[1px] bg-black/10 dark:bg-white/10 -translate-y-1/2 z-0 transition-all duration-500" />
 
             {/* Subtle tick marks along the road */}
             {experiences.map((_, i) => {
@@ -370,7 +391,7 @@ export function Experience() {
               return (
                 <div
                   key={`tick-${i}`}
-                  className="absolute top-[75%] md:top-[55%] w-[1px] h-2 bg-black/5 dark:bg-white/5 -translate-y-1/2 -translate-x-1/2 z-0"
+                  className="absolute top-[60%] md:top-[55%] w-[1px] h-2 bg-black/5 dark:bg-white/5 -translate-y-1/2 -translate-x-1/2 z-0"
                   style={{ left: leftPos }}
                 />
               );
@@ -396,8 +417,8 @@ export function Experience() {
                   }}
                 >
                   {isTopHalf ? (
-                    <div className="absolute bottom-[25%] md:bottom-[45%] flex flex-col items-center pb-4 transition-all duration-500">
-                      <ItemCard exp={exp} isActive={isActive} />
+                    <div className="absolute bottom-[40%] md:bottom-[45%] flex flex-col items-center pb-4 transition-all duration-500">
+                      <ItemCard exp={exp} isActive={isActive} expandProgress={isMobile ? getExpandProgress(i) : (isActive ? 1 : 0)} isMobile={isMobile} />
                       <div
                         className={`w-[1px] h-12 md:h-16 transition-all duration-500 ${
                           isActive
@@ -414,7 +435,7 @@ export function Experience() {
                       />
                     </div>
                   ) : (
-                    <div className="absolute top-[75%] md:top-[55%] flex flex-col items-center pt-4 transition-all duration-500">
+                    <div className="absolute top-[60%] md:top-[55%] flex flex-col items-center pt-4 transition-all duration-500">
                       <div
                         className={`w-3 h-3 rounded-full border-[2px] bg-[#fafafa] dark:bg-[#111111] shadow-sm absolute -top-1.5 transition-all duration-500 ${
                           isActive
@@ -429,7 +450,7 @@ export function Experience() {
                             : "bg-black/10 dark:bg-white/10"
                         }`}
                       />
-                      <ItemCard exp={exp} isActive={isActive} />
+                      <ItemCard exp={exp} isActive={isActive} expandProgress={isMobile ? getExpandProgress(i) : (isActive ? 1 : 0)} isMobile={isMobile} />
                     </div>
                   )}
                 </motion.div>
@@ -438,7 +459,7 @@ export function Experience() {
 
             {/* Fortsetzung folgt */}
             <div
-              className="absolute top-[75%] md:top-[55%] -translate-y-1/2 flex items-center justify-center transition-all duration-500 -translate-x-1/2"
+              className="absolute top-[60%] md:top-[55%] -translate-y-1/2 flex items-center justify-center transition-all duration-500 -translate-x-1/2"
               style={{
                 left: `calc(${carVW}vw + ${N * itemSpacing}px)`,
               }}
@@ -461,7 +482,7 @@ export function Experience() {
         {/* The Car - Fixed in Viewport */}
         <div className="absolute inset-0 pointer-events-none z-20">
           <motion.div
-            className="absolute top-[75%] md:top-[55%] -translate-x-1/2 -translate-y-[calc(100%-2px)]"
+            className="absolute top-[60%] md:top-[55%] -translate-x-1/2 -translate-y-[calc(100%-2px)]"
             style={{ left: carX }}
           >
             <motion.div
@@ -488,8 +509,7 @@ export function Experience() {
         </div>
 
         {/* Navigation arrows with progress bar */}
-        {!isMobile && (
-        <div className="absolute bottom-[-40px] left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+        <div className={`absolute bottom-[-40px] left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 ${isMobile ? 'hidden' : ''}`}>
           <button
             onClick={() => {
               const container = containerRef.current;
@@ -504,34 +524,25 @@ export function Experience() {
             <ChevronLeft size={20} className="text-[#1d1d1f] dark:text-[#f5f5f7]" />
           </button>
           <div className="flex items-center gap-1.5">
-            {experiences.map((_, i) => (
-              <motion.div
-                key={`dot-${i}`}
-                className={`rounded-full ${
-                  activeIndex === i
-                    ? "bg-black/40 dark:bg-white/40"
-                    : "bg-black/10 dark:bg-white/10"
-                }`}
-                animate={{
-                  width: activeIndex === i ? 20 : 5,
-                  height: 5,
-                }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-              />
-            ))}
+            {experiences.map((_, i) => {
+              const progress = getExpandProgress(i);
+              const isNearest = activeIndex === i;
+              const width = isNearest ? 20 : (5 + progress * 8);
+              return (
+                <motion.div
+                  key={`dot-${i}`}
+                  className="rounded-full bg-black/40 dark:bg-white/40"
+                  animate={{ width, height: 5 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                />
+              );
+            })}
             <motion.div
               key="dot-final"
-              className={`rounded-full ${
-                activeIndex === N
-                  ? "bg-black/40 dark:bg-white/40"
-                  : "bg-black/10 dark:bg-white/10"
-            }`}
-            animate={{
-              width: activeIndex === N ? 20 : 5,
-              height: 5,
-            }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          />
+              className="rounded-full bg-black/40 dark:bg-white/40"
+              animate={{ width: activeIndex === N ? 20 : 5, height: 5 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            />
           </div>
           <button
             onClick={() => {
@@ -547,7 +558,6 @@ export function Experience() {
             <ChevronRight size={20} className="text-[#1d1d1f] dark:text-[#f5f5f7]" />
           </button>
         </div>
-        )}
       </div>
     </div>
     </ClickSpark>
@@ -555,7 +565,7 @@ export function Experience() {
 }
 
 // Subcomponent for the experience card
-function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
+function ItemCard({ exp, isActive, expandProgress = 1, isMobile = false }: { exp: any; isActive: boolean; expandProgress?: number; isMobile?: boolean }) {
   const { lang } = useLanguage();
 
   const role = lang === 'en' && exp.roleEn ? exp.roleEn : exp.role;
@@ -564,27 +574,34 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
   const description = lang === 'en' && exp.descriptionEn ? exp.descriptionEn : exp.description;
   const details = lang === 'en' && exp.detailsEn ? exp.detailsEn : exp.details;
 
+  const opacity = 0.5 + (expandProgress * 0.5);
+  const scale = isMobile ? (0.92 + (expandProgress * 0.08)) : (0.97 + (expandProgress * 0.03));
+  const y = isMobile ? (8 - (expandProgress * 8)) : (4 - (expandProgress * 4));
+  const shouldExpand = expandProgress > (isMobile ? 0.4 : 0.15);
+  const isLocallyActive = expandProgress > 0.5;
+
   return (
     <motion.div
       animate={{
-        opacity: isActive ? 1 : 0.5,
-        scale: isActive ? 1 : 0.97,
-        y: isActive ? 0 : 4,
+        opacity,
+        scale,
+        y,
       }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] relative z-10 backdrop-blur-md ${
-        isActive
-          ? "border-black/20 dark:border-white/20 shadow-lg bg-white/80 dark:bg-black/80"
-          : "border-black/10 dark:border-white/10 bg-white/40 dark:bg-black/40"
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className={`p-6 md:p-8 rounded-3xl border transition-all duration-500 w-[300px] md:w-[380px] relative backdrop-blur-md ${
+        isLocallyActive
+          ? "border-black/20 dark:border-white/20 shadow-lg bg-white/80 dark:bg-black/80 z-20"
+          : "border-black/10 dark:border-white/10 bg-white/40 dark:bg-black/40 z-10"
       }`}
       style={{
-        overflow: isActive ? 'visible' : 'hidden',
-        maxHeight: isActive ? 'none' : '340px'
+        overflow: shouldExpand ? 'visible' : 'hidden',
+        maxHeight: shouldExpand ? (isMobile ? '500px' : 'none') : (isMobile ? '180px' : '340px'),
+        width: isMobile ? `${300 + (expandProgress * 50)}px` : undefined,
       }}
     >
       <span
         className={`inline-block px-3 py-1 bg-transparent border text-[10px] font-bold tracking-wider uppercase rounded-full mb-3 transition-colors duration-500 ${
-          isActive
+          isLocallyActive
             ? "border-black/20 dark:border-white/20 text-[#1d1d1f] dark:text-[#f5f5f7]"
             : "border-black/10 dark:border-white/10 text-[#55555a] dark:text-[#e5e5ea]"
         }`}
@@ -593,7 +610,7 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
       </span>
       <h3
         className={`text-xl font-semibold mb-2 leading-tight transition-colors duration-500 ${
-          isActive
+          isLocallyActive
             ? "text-[#1d1d1f] dark:text-[#f5f5f7]"
             : "text-[#55555a] dark:text-[#e5e5ea]"
         }`}
@@ -606,7 +623,7 @@ function ItemCard({ exp, isActive }: { exp: any; isActive: boolean }) {
 
       {/* Dynamic Details Expansion */}
       <AnimatePresence>
-        {isActive && (description || details) && (
+        {shouldExpand && (description || details) && (
           <motion.div
             initial={{ opacity: 0, height: 0, marginTop: 0 }}
             animate={{

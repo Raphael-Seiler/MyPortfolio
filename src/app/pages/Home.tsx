@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { motion } from "motion/react";
-import { useNavigate } from "react-router";
 import MagicBento from "../components/MagicBento";
 import CircularGallery from "../components/CircularGallery";
 import { translations } from "../translations";

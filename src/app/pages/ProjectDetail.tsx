@@ -271,6 +271,33 @@ export function ProjectDetail() {
 
         {/* Milky Background Container */}
         <div className="rounded-[2.5rem] bg-white/80 dark:bg-black/60 backdrop-blur-xl px-8 md:px-12 py-12 mt-8">
+          {/* Project Labels */}
+          <div className="flex justify-between items-center flex-wrap gap-2 mb-8">
+            <span className="inline-block px-4 py-1.5 bg-black/5 dark:bg-white/10 text-[#55555a] dark:text-[#e5e5ea] text-xs font-semibold tracking-wider uppercase rounded-full">
+              {lang === 'de' ? 'Schulprojekt' : 'School Project'}
+            </span>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-block px-4 py-1.5 bg-black/5 dark:bg-white/10 text-[#55555a] dark:text-[#e5e5ea] text-xs font-semibold tracking-wider uppercase rounded-full">
+                {lang === 'de' ? 'Prototyping' : 'Prototyping'}
+              </span>
+              {id === 'spryte' && (
+                <>
+                  <span className="inline-block px-4 py-1.5 bg-black/5 dark:bg-white/10 text-[#55555a] dark:text-[#e5e5ea] text-xs font-semibold tracking-wider uppercase rounded-full">
+                    {lang === 'de' ? 'UX-Prozess' : 'UX Process'}
+                  </span>
+                  <span className="inline-block px-4 py-1.5 bg-black/5 dark:bg-white/10 text-[#55555a] dark:text-[#e5e5ea] text-xs font-semibold tracking-wider uppercase rounded-full">
+                    {lang === 'de' ? 'User-Testing' : 'User Testing'}
+                  </span>
+                </>
+              )}
+              {id === 'fishing' && (
+                <span className="inline-block px-4 py-1.5 bg-black/5 dark:bg-white/10 text-[#55555a] dark:text-[#e5e5ea] text-xs font-semibold tracking-wider uppercase rounded-full">
+                  {lang === 'de' ? 'Recherche' : 'Desk Research'}
+                </span>
+              )}
+            </div>
+          </div>
+
           <div className="flex justify-center mb-8">
             {id === 'fishing' ? (
               <img src={fishingLogoImg} alt="Fishing Logo" className="h-32 md:h-48 w-auto object-contain" />

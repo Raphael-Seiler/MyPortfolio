@@ -12,7 +12,6 @@ import { useLanguage } from '../context/LanguageContext';
 export function Layout() {
   const { lang, setLang } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'dark' ||
@@ -36,18 +35,6 @@ export function Layout() {
   const toggleLang = () => setLang(lang === 'de' ? 'en' : 'de');
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   // Scroll to top on route change
   useEffect(() => {

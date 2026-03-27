@@ -30,7 +30,7 @@ export function Contact() {
     const formData = new FormData(form);
     
     // Send email via Formspree
-    fetch('https://formspree.io/f/mqayvoaq', {
+    fetch('https://formspree.io/f/xkopgkeq', {
       method: 'POST',
       body: formData,
       headers: {
@@ -98,7 +98,7 @@ export function Contact() {
             </motion.div>
           ) : (
             <div className="relative">
-              <form onSubmit={handleSubmit} className="space-y-10 space-y-10 parent-form" action="https://formspree.io/f/mqayvoaq" method="POST">
+              <form onSubmit={handleSubmit} className="space-y-10 space-y-10 parent-form" action="https://formspree.io/f/xkopgkeq" method="POST">
                 <div className="space-y-8">
                   <div className="relative group">
                     <input
