@@ -12,6 +12,12 @@ import screen3Img from "../../assets/projects/spryte/Screen_3.png";
 import screen4Img from "../../assets/projects/spryte/Screen_4.png";
 import userFlowImg from "../../assets/projects/spryte/UserFlow.png";
 import groupPicImg from "../../assets/projects/spryte/Grouppic.png";
+import spryteLogoImg from "../../assets/projects/spryte/Spryte_Logo.png";
+import figmaLogoImg from "../../assets/shared/Figma-logo.svg";
+import fishingLandingImg from "../../assets/projects/fishing/LandingPage.png";
+import fishingLogoImg from "../../assets/projects/fishing/FishingLogo.png";
+import kachelAndereImg from "../../assets/projects/fishing/Kachel_andere.png";
+import kachelMeineImg from "../../assets/projects/fishing/Kachel_meine.png";
 
 const placeholderProjects: Record<string, {
   title: { de: string; en: string };
@@ -19,11 +25,13 @@ const placeholderProjects: Record<string, {
   image: string;
   charter: { de: string; en: string };
   goal: { de: string; en: string };
-  process: { de: string; en: string };
-  result: { de: string; en: string };
+  process: { de: string; en: string } | { title: string; desc: string }[];
+  result: { de: string; en: string } | { title: string; desc: string }[];
   reflection: { de: string; en: string };
+  highlight: { de: string; en: string };
+  testing: { de: string; en: string } | { title: string; desc: string }[];
 }> = {
-  "1": {
+  "spryte": {
     title: { de: "SPRYTE", en: "SPRYTE" },
     description: {
       de: "Ein interaktives Ökosystem für standortübergreifende Pixel-Kunst.",
@@ -77,40 +85,60 @@ const placeholderProjects: Record<string, {
       ]
     },
     highlight: {
-      de: "Der krönende Abschluss war die Präsentation vor UX-Repräsentanten führender Firmen wie der Migros und der SBB. Dass Profis von solch namhaften Unternehmen unsere fundierte Herleitung und das durchdachte Konzept der «strukturierten Kollaboration» lobten, war die grösste Bestätigung für unsere Arbeit.",
-      en: "The crowning conclusion was the presentation to UX representatives from leading companies like Migros and SBB. Having professionals from such renowned companies praise our solid rationale and well-thought-out concept of 'structured collaboration' was the greatest confirmation of our work."
+      de: "Der absolute Höhepunkt des Projekts war für mich die finale Präsentation. Endlich durften wir unser Konzept der ‹standortübergreifenden Kollaboration› vorstellen. Es war eine besondere Ehre, vor unseren Dozenten und erfahrenen UX-Grössen zu stehen. Vertreter von Firmen wie der Migros, der SBB und weiteren Branchenführern waren dabei. Ehrlich gesagt war der Moment auch ein wenig nervenaufreibend. Diese Profis jonglieren täglich enorm komplexe Systemen. Dass sie unsere Herleitung sofort verstanden, war ein tolles Gefühl. Sie lobten explizit die kreative Idee und praktische Tiefe unseres Ansatzes. Das war für mich die schönste Bestätigung für all die späten Arbeitsstunden.",
+      en: "The absolute highlight of the project for me was the final presentation. Finally, we were able to present our concept of 'cross-location collaboration'. It was a special honor to stand before our lecturers and experienced UX experts. Representatives from companies like Migros, SBB and other industry leaders were there. Honestly, the moment was also a bit nerve-wracking. These professionals juggle enormously complex systems daily. That they immediately understood our rationale was a great feeling. They explicitly praised the creative idea and practical depth of our approach. That was the nicest confirmation for me of all those late working hours."
     },
     reflection: {
       de: "Das Projekt hat mir gezeigt, dass gutes Design die Brücke zwischen Technik und Mensch schlägt. Die Arbeit im 6er-Team war intensiv und lehrreich – besonders die Herausforderung, komplexe Interaktionen so zu reduzieren, dass sie im Vorbeilaufen funktionieren. SPRYTE zeigt, dass auch in einer digitalen Welt der physische Raum und das gemeinsame Erlebnis unersetzbar sind.",
       en: "The project showed me that good design bridges the gap between technology and humans. Working in the 6-person team was intense and educational – especially the challenge of reducing complex interactions so they work in passing. SPRYTE shows that even in a digital world, physical space and shared experience are irreplaceable."
     }
   },
-  "2": {
-    title: { de: "Analytics Dashboard", en: "Analytics Dashboard" },
+  "fishing": {
+    title: { de: "Fishing E-Commerce", en: "Fishing E-Commerce" },
     description: {
-      de: "Ein cleanes Dashboard-Konzept für Datenvisualisierung mit reduziertem Interface.",
-      en: "A clean dashboard concept for data visualization with a reduced interface."
+      de: "Ein moderner E-Commerce-Shop für die Helvetic Fishing Co.",
+      en: "A modern e-commerce shop for Helvetic Fishing Co."
     },
-    image: "https://images.unsplash.com/photo-1649442279006-8bccb4cc63e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbiUyMHdlYnNpdGUlMjBkYXNoYm9hcmQlMjB1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: fishingLandingImg,
     charter: {
-      de: "Ein Freelance-Projekt für ein SaaS-Startup. Das Ziel war ein Dashboard, das komplexe Analysedaten für Marketing-Teams zugänglich macht.",
-      en: "A freelance project for a SaaS startup. The goal was a dashboard that makes complex analytics data accessible to marketing teams."
+      de:"",
+      en:""
     },
     goal: {
-      de: "Marketing-Experten sollten ohne technische Vorkenntnisse wichtige KPIs verstehen und datengesteuerte Entscheidungen treffen können.",
-      en: "Marketing experts should be able to understand key KPIs and make data-driven decisions without technical prerequisites."
+      de: "Mein Ziel war die Entwicklung eines modernen E-Commerce-Shops für die Helvetic Fishing Co. Ich wollte ein relevantes Problem für eine spezifische Zielgruppe lösen: Schweizer Hobby- und Sportfischer. Dabei war mir wichtig, dass das Interface für alle Nutzer intuitiv funktioniert – unabhängig von ihrem Technik-Know-how. Das gesamte Einkaufserlebnis sollte sowohl auf dem Smartphone als auch am Desktop absolut reibungslos ablaufen.",
+      en: "My goal was to develop a modern e-commerce shop for Helvetic Fishing Co. I wanted to solve a relevant problem for a specific target group: Swiss hobby and sport fishermen. It was important to me that the interface works intuitively for all users – regardless of their technical know-how. The entire shopping experience should run absolutely smoothly on both smartphone and desktop."
     },
     process: {
-      de: "Workshops mit Stakeholdern, Persona-Entwicklung, Information Architecture, Wireframes, Visual Design und Prototyping. Besonderer Fokus lag auf der Hierarchie der Datenvisualisierung.",
-      en: "Workshops with stakeholders, persona development, information architecture, wireframes, visual design, and prototyping. Special focus was on the hierarchy of data visualization."
+      de: [
+        { title: "", desc: "Ich habe den gesamten Weg von den ersten Low-Fidelity-Skizzen bis zum High-Fidelity-Prototypen allein durchlaufen. Ein entscheidender Teil meiner Vorbereitung war eine gründliche Marktanalyse. Dabei fiel mir auf, dass viele Shops breite Standard-Bilder für ihre Kacheln nutzen. Bei langen, dünnen Angelruten verschenkt das viel Platz und sieht unvorteilhaft aus." },
+        { title: "", desc: "Meine Design-Entscheidungen im Prozess:" },
+        { title: "Formatwechsel", desc: "Ich entschied mich bewusst für hochkantige Produktkacheln, um die Ruten perfekt in Szene zu setzen." },
+        { title: "Systematik", desc: "In Figma baute ich ein modulares Designsystem auf, das auf Varianten und Auto-Layout basiert." },
+        { title: "Effizienz", desc: "Jede Komponente wurde so entworfen, dass sie konsistent über das gesamte Projekt hinweg funktioniert und leicht erweiterbar bleibt." }
+      ],
+      en: [
+        { title: "", desc: "I went through the entire process from the first low-fidelity sketches to the high-fidelity prototype on my own. A crucial part of my preparation was a thorough market analysis. I noticed that many shops use wide standard images for their tiles. For long, thin fishing rods, this wastes a lot of space and looks unflattering." },
+        { title: "", desc: "My design decisions in the process:" },
+        { title: "Format Change", desc: "I deliberately chose portrait-oriented product tiles to showcase the rods perfectly." },
+        { title: "Systematics", desc: "In Figma, I built a modular design system based on variants and auto-layout." },
+        { title: "Efficiency", desc: "Each component was designed to function consistently throughout the entire project and remain easily expandable." }
+      ]
+    },
+    highlight: {
+      de: "Das absolute Herzstück meiner Arbeit ist die technische Umsetzung des Prototypen. Ich bin sehr stolz darauf, dass der Prototyp nicht nur statisch gut aussieht, sondern extrem lebendig wirkt. Echtes Website-Feeling: Durch den massiven Einsatz von Variablen und komplexen Prototyping-Verknüpfungen reagiert das Interface sofort auf jede Eingabe. Full Responsive Design: Das Layout ist komplett dynamisch. Es passt sich flüssig an verschiedene Geräte und Bildschirmgrössen an – vom Smartphone bis zum grossen Desktop-Monitor. Adaptive Logik: Elemente wie die Filterleiste oder das Produktgrid verändern ihr Verhalten je nach verfügbarem Platz, genau wie eine echte Web-Applikation.",
+      en: "The absolute centerpiece of my work is the technical implementation of the prototype. I am very proud that the prototype not only looks good statically, but appears extremely lively. Real website feeling: Through the massive use of variables and complex prototyping links, the interface responds immediately to every input. Full responsive design: The layout is completely dynamic. It adapts fluidly to different devices and screen sizes – from smartphone to large desktop monitor. Adaptive logic: Elements like the filter bar or product grid change their behavior depending on available space, just like a real web application."
     },
     result: {
-      de: "Ein übersichtliches Dashboard mit anpassbaren Widgets, klaren Visualisierungen und Drill-down-Funktionen für detaillierte Einblicke.",
-      en: "A clear dashboard with customizable widgets, clean visualizations, and drill-down functions for detailed insights."
+      de: "Das Ergebnis ist ein funktionaler High-Fidelity-Prototyp, der weit über die Standard-Anforderungen hinausgeht. Die Navigation ist durch einen globalen Header und eine klare Struktur sehr einfach gestaltet. Ich habe zudem wichtige Features wie eine detaillierte Filterleiste, eine Merkliste («Pin») und eine Vergleichsfunktion integriert, um den Nutzwert für die Fischer zu maximieren. Die hochkantigen Bilder sorgen dabei für eine moderne Ästhetik und eine optimale Produktdarstellung.",
+      en: "The result is a functional high-fidelity prototype that goes far beyond standard requirements. Navigation is simplified through a global header and clear structure. I also integrated important features like a detailed filter bar, a wishlist ('Pin'), and a comparison function to maximize utility for fishermen. The portrait-oriented images ensure a modern aesthetic and optimal product presentation."
+    },
+    testing: {
+      de: "Ein Design ist erst gut, wenn es in der Praxis besteht. Deshalb habe ich meinen Prototyp intensiv mit Kommiliton:innen getestet. Durch diese Test-Sessions konnte ich Schwachstellen finden und das Design gezielt verfeinern. Ich optimierte die Schatten der Kacheln für eine bessere räumliche Trennung und schärfte die Sortierfunktion. Bei der Barrierefreiheit achtete ich auf hohe Kontraste und wählte die Schrift «San Francisco» von Apple für beste Lesbarkeit.",
+      en: "A design is only good when it succeeds in practice. That's why I intensively tested my prototype with fellow students. Through these test sessions, I was able to find weaknesses and refine the design in a targeted manner. I optimized the shadows of the tiles for better spatial separation and sharpened the sorting function. For accessibility, I paid attention to high contrasts and chose Apple's 'San Francisco' font for best readability."
     },
     reflection: {
-      de: "Die Balance zwischen Detailtiefe und Übersichtlichkeit war entscheidend. Künftige Projekte würden mit noch stärkerer Datenreduktion beginnen.",
-      en: "The balance between depth and clarity was crucial. Future projects would start with even stronger data reduction."
+      de: "Dieses Einzelprojekt war für mich ein riesiger Meilenstein. Ich konnte meine Figma-Skills auf ein völlig neues Level heben, besonders durch die Logik hinter den Zustandswechseln. Es war eine wertvolle Erfahrung zu sehen, wie ein systematischer Aufbau die Wartbarkeit eines Designs verbessert. Mein Fazit: Gute Gestaltung ist weit mehr als nur Optik. Ich habe bewiesen, dass mein Konzept Hand und Fuss hat und das Potenzial besitzt, komplexe Design-Herausforderungen in der realen Praxis erfolgreich zu lösen.",
+      en: "This individual project was a huge milestone for me. I was able to take my Figma skills to a whole new level, especially through the logic behind state changes. It was a valuable experience to see how a systematic structure improves the maintainability of a design. My conclusion: Good design is far more than just aesthetics. I have proven that my concept is solid and has the potential to successfully solve complex design challenges in real-world practice."
     }
   },
   "3": {
@@ -194,49 +222,64 @@ export function ProjectDetail() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* 4 Screens Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+        {/* Project Hero Image */}
+        {id === 'fishing' ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="overflow-hidden bg-transparent"
+            transition={{ duration: 0.5 }}
+            className="overflow-hidden bg-transparent mt-8"
           >
-            <img src={screen1Img} alt="SPRYTE Hauptinterface mit Pixel-Editor und Farbauswahl" className="w-full h-auto object-cover" />
+            <img src={fishingLandingImg} alt="Fishing E-Commerce Landing Page" className="w-full h-auto object-cover rounded-2xl" />
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="overflow-hidden bg-transparent"
-          >
-            <img src={screen2Img} alt="SPRYTE Canvas-Ansicht mit gemeinsamem Pixel-Arbeitsbereich" className="w-full h-auto object-cover" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="overflow-hidden bg-transparent"
-          >
-            <img src={screen3Img} alt="SPRYTE Leaderboard und Statistiken-Übersicht" className="w-full h-auto object-cover" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="overflow-hidden bg-transparent"
-          >
-            <img src={screen4Img} alt="SPRYTE Profilansicht mit persönlichen Pixel-Statistiken" className="w-full h-auto object-cover" />
-          </motion.div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="overflow-hidden bg-transparent"
+            >
+              <img src={screen1Img} alt="SPRYTE Hauptinterface mit Pixel-Editor und Farbauswahl" className="w-full h-auto object-cover" />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="overflow-hidden bg-transparent"
+            >
+              <img src={screen2Img} alt="SPRYTE Canvas-Ansicht mit gemeinsamem Pixel-Arbeitsbereich" className="w-full h-auto object-cover" />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="overflow-hidden bg-transparent"
+            >
+              <img src={screen3Img} alt="SPRYTE Leaderboard und Statistiken-Übersicht" className="w-full h-auto object-cover" />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="overflow-hidden bg-transparent"
+            >
+              <img src={screen4Img} alt="SPRYTE Profilansicht mit persönlichen Pixel-Statistiken" className="w-full h-auto object-cover" />
+            </motion.div>
+          </div>
+        )}
 
         {/* Milky Background Container */}
         <div className="rounded-[2.5rem] bg-white/80 dark:bg-black/60 backdrop-blur-xl px-8 md:px-12 py-12 mt-8">
-          <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-8">
-            {project.title[lang]}
-          </h1>
+          <div className="flex justify-center mb-8">
+            {id === 'fishing' ? (
+              <img src={fishingLogoImg} alt="Fishing Logo" className="h-32 md:h-48 w-auto object-contain" />
+            ) : (
+              <img src={spryteLogoImg} alt="SPRYTE Logo" className="h-32 md:h-48 w-auto object-contain" />
+            )}
+          </div>
 
-          <p className="text-lg text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed mb-12">
+          <p className="text-lg text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed mb-12 text-center">
             {project.description[lang]}
           </p>
 
@@ -276,30 +319,38 @@ export function ProjectDetail() {
           <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
             {lang === 'de' ? t.projectDetail.prozess : t.projectDetail.process}
           </h2>
+          {id === 'spryte' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mb-8 flex flex-col items-center"
+            >
+              <div className="bg-white dark:bg-gray-200 rounded-2xl p-6 shadow-lg">
+                <img src={userFlowImg} alt="User Flow Diagramm zeigt den SPRYTE-Nutzungsprozess vom ID-Scan bis zum gesetzten Pixel" className="w-[600px] max-w-full h-auto" />
+              </div>
+              <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
+                {lang === 'de' ? 'User Flow: Vom ID-Scan zum gesetzten Pixel' : 'User Flow: From ID scan to placed pixel'}
+              </p>
+            </motion.div>
+          )}
           <div className="space-y-4">
             {Array.isArray(project.process[lang]) ? (
               project.process[lang].map((phase, i) => (
                 <div key={i}>
-                  <div className="flex gap-3">
-                    <span className="min-w-[120px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
-                      {phase.title}
-                    </span>
-                    <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
+                  {phase.title ? (
+                    <div className="flex gap-3">
+                      <span className="min-w-[120px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                        {phase.title}
+                      </span>
+                      <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
+                        {phase.desc}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
                       {phase.desc}
                     </p>
-                  </div>
-                  {i === 1 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      className="mt-4 mb-6 flex flex-col items-center"
-                    >
-                      <img src={userFlowImg} alt="User Flow Diagramm zeigt den SPRYTE-Nutzungsprozess vom ID-Scan bis zum gesetzten Pixel" className="w-[600px] max-w-full h-auto" />
-                      <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                        {lang === 'de' ? 'User Flow: Vom ID-Scan zum gesetzten Pixel' : 'User Flow: From ID scan to placed pixel'}
-                      </p>
-                    </motion.div>
                   )}
                 </div>
               ))
@@ -311,34 +362,153 @@ export function ProjectDetail() {
           </div>
         </motion.section>
 
-        {/* Result */}
+        {/* Kachel Images for Fishing Project - Right after process section */}
+        {id === 'fishing' && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="mt-8"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="bg-white dark:bg-black p-4 rounded-2xl"
+              >
+                <img src={kachelAndereImg} alt="Produktkacheln anderer Shops mit breiten Standard-Bildern" className="w-full h-[400px] object-contain mix-blend-multiply dark:mix-blend-screen" />
+                <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
+                  {lang === 'de' ? 'Kacheln anderer Shops' : 'Tiles from other shops'}
+                </p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="bg-white dark:bg-black p-4 rounded-2xl"
+              >
+                <img src={kachelMeineImg} alt="Meine hochkantigen Produktkacheln für optimale Angleruten-Darstellung" className="w-full h-[400px] object-contain mix-blend-multiply dark:mix-blend-screen" />
+                <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
+                  {lang === 'de' ? 'Meine Kacheln' : 'My tiles'}
+                </p>
+              </motion.div>
+            </div>
+          </motion.section>
+        )}
+
+        {/* Result - Split layout for fishing, normal for others */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-            {t.projectDetail.result}
-          </h2>
-          <div className="space-y-4">
-            {Array.isArray(project.result[lang]) ? (
-              project.result[lang].map((item, i) => (
-                <div key={i} className="flex gap-3">
-                  <span className="w-[120px] flex-shrink-0 font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
-                    {item.title}
-                  </span>
-                  <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
-                    {item.desc}
-                  </p>
+          {id === 'fishing' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Left: Result text */}
+              <div>
+                <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
+                  {t.projectDetail.result}
+                </h2>
+                <div className="space-y-4">
+                  {Array.isArray(project.result[lang]) ? (
+                    project.result[lang].map((item, i) => (
+                      <div key={i} className="flex gap-3">
+                        <span className="w-[120px] flex-shrink-0 font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                          {item.title}
+                        </span>
+                        <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
+                          {item.desc}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
+                      {project.result[lang]}
+                    </p>
+                  )}
                 </div>
-              ))
-            ) : (
-              <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-                {project.result[lang]}
-              </p>
-            )}
-          </div>
+              </div>
+
+              {/* Right: Figma Prototype Link */}
+              <div className="flex flex-col items-center justify-center">
+                <a
+                  href="https://www.figma.com/proto/f0YTThD34TWx4MJda6GzNg/E-Commerce?node-id=536-10832&p=f&viewport=462%2C-231%2C0.08&t=bp1qxJ7lReOusWMT-8&scaling=contain&content-scaling=responsive&starting-point-node-id=536%3A10832&page-id=1%3A2&hide-ui=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex flex-col items-center gap-2 cursor-pointer"
+                >
+                  <span className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-medium">
+                    {lang === 'de' ? 'Teste meinen Prototyp' : 'Try out my prototype'}
+                  </span>
+                  <svg className="w-4 h-4 text-[#55555a] dark:text-[#e5e5ea] transition-transform duration-300 group-hover:translate-y-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <polyline points="19 12 12 19 5 12"></polyline>
+                  </svg>
+                  <img
+                    src={figmaLogoImg}
+                    alt="Figma Prototype"
+                    className="w-24 h-24 object-contain transition-transform duration-300 group-hover:scale-105"
+                  />
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
+                {t.projectDetail.result}
+              </h2>
+              <div className="space-y-4">
+                {Array.isArray(project.result[lang]) ? (
+                  project.result[lang].map((item, i) => (
+                    <div key={i} className="flex gap-3">
+                      <span className="w-[120px] flex-shrink-0 font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                        {item.title}
+                      </span>
+                      <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
+                        {item.desc}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
+                    {project.result[lang]}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </motion.section>
+
+        {/* Figma Prototype Link for Spryte - centered below result */}
+        {id !== 'fishing' && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="flex justify-center"
+          >
+            <a
+              href="https://www.figma.com/proto/qQ9rpUbWYi582pMQEB1UnU/Spryte?node-id=436-822&viewport=921%2C-656%2C0.08&t=508QId7KkcGBQnm5-8&scaling=scale-down&content-scaling=fixed&starting-point-node-id=436%3A822&page-id=0%3A1&hide-ui=1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-3 cursor-pointer"
+            >
+              <span className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-medium">
+                {lang === 'de' ? 'Teste unseren Prototyp' : 'Try out our prototype'}
+              </span>
+              <svg className="w-4 h-4 text-[#55555a] dark:text-[#e5e5ea] transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+              <img
+                src={figmaLogoImg}
+                alt="Figma Prototype"
+                className="w-24 h-24 object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            </a>
+          </motion.section>
+        )}
 
         {/* Highlight */}
         <motion.section
@@ -347,24 +517,35 @@ export function ProjectDetail() {
           transition={{ duration: 0.6, delay: 0.45 }}
         >
           <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-            {lang === 'de' ? 'Das Highlight: Pitch vor der Branche' : 'The Highlight: Pitch to the Industry'}
+            {id === 'fishing'
+              ? (lang === 'de' ? 'MEIN HIGHLIGHT: RESPONSIVITÄT & INTERAKTION' : 'MY HIGHLIGHT: RESPONSIVENESS & INTERACTION')
+              : (lang === 'de' ? 'Das Highlight: Pitch vor der Branche' : 'The Highlight: Pitch to the Industry')
+            }
           </h2>
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1 md:max-w-[50%]">
+          {id === 'fishing' ? (
+            <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed w-full">
               {project.highlight[lang]}
             </p>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-              className="flex-shrink-0"
-            >
-              <img src={groupPicImg} alt="Teamfoto der Projektgruppe Zitrone bei der SPRYTE-Präsentation vor UX-Experten" className="w-[450px] max-w-full h-auto rounded-2xl" />
-              <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                {lang === 'de' ? 'Präsentation vor UX-Experten der Migros und SBB' : 'Presentation to UX experts from Migros and SBB'}
+          ) : (
+            <div className="flex flex-col md:flex-row gap-8 items-start">
+              <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1 md:max-w-[50%]">
+                {project.highlight[lang]}
               </p>
-            </motion.div>
-          </div>
+              {id === 'spryte' && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="flex-shrink-0"
+                >
+                  <img src={groupPicImg} alt="Teamfoto der Projektgruppe Zitrone bei der SPRYTE-Präsentation vor UX-Experten" className="w-[450px] max-w-full h-auto rounded-2xl" />
+                  <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
+                    {lang === 'de' ? 'Präsentation vor UX-Experten der Migros, SBB und weiteren' : 'Presentation to UX experts from Migros, SBB and more'}
+                  </p>
+                </motion.div>
+              )}
+            </div>
+          )}
         </motion.section>
 
         {/* Testing & Accessibility */}

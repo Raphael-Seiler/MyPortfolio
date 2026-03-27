@@ -2,24 +2,23 @@ import InfiniteMenu from "../components/InfiniteMenu";
 import { useNavigate } from "react-router";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
-import logoImg from "../../assets/RS_Logo.png";
 import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
-import { ImageWithFallback } from "../components/ImageWithFallback";
+import fishingLogoImg from "../../assets/projects/fishing/FishingLogo.png";
 import ClickSpark from "../components/ClickSpark";
 import { useState, useEffect } from "react";
 
 const projects = [
   {
-    id: "1",
+    id: "spryte",
     image: fruitDudeImg,
     title: "SPRYTE",
     description: "Ein interaktives Ökosystem für standortübergreifende Pixel-Kunst."
   },
   {
-    id: "2",
-    image: "https://images.unsplash.com/photo-1649442279006-8bccb4cc63e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbiUyMHdlYnNpdGUlMjBkYXNoYm9hcmQlMjB1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    title: "Analytics Dashboard",
-    description: "Ein cleanes Dashboard-Konzept für Datenvisualisierung."
+    id: "fishing",
+    image: fishingLogoImg,
+    title: "Fishing E-Commerce",
+    description: "Ein moderner E-Commerce-Shop für die Helvetic Fishing Co."
   },
   {
     id: "3",

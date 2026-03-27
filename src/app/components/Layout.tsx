@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Moon, Sun } from 'lucide-react';

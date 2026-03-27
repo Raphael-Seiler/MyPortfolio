@@ -260,9 +260,10 @@ class Media {
         }
 
         void main() {
+          // Contain scaling - fit entire image within the plane without cropping
           vec2 ratio = vec2(
-            min((uPlaneSizes.x / uPlaneSizes.y) / (uImageSizes.x / uImageSizes.y), 1.0),
-            min((uPlaneSizes.y / uPlaneSizes.x) / (uImageSizes.y / uImageSizes.x), 1.0)
+            max((uPlaneSizes.x / uPlaneSizes.y) / (uImageSizes.x / uImageSizes.y), 1.0),
+            max((uPlaneSizes.y / uPlaneSizes.x) / (uImageSizes.y / uImageSizes.x), 1.0)
           );
           vec2 uv = vec2(
             vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
@@ -273,7 +274,10 @@ class Media {
           float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
 
           float edgeSmooth = 0.002;
-          float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
+          float shapeAlpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
+
+          // Use texture alpha for transparent images (like logos)
+          float alpha = color.a * shapeAlpha;
 
           gl_FragColor = vec4(color.rgb, alpha);
         }
@@ -720,7 +724,7 @@ class App {
 }
 
 interface CircularGalleryProps {
-  items?: { image: string; text: string }[];
+  items?: { image: string; text?: string }[];
   bend?: number;
   textColor?: string;
   textColorDark?: string;
