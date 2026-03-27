@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 import MagicBento from "../components/MagicBento";
@@ -42,11 +42,11 @@ const CoffeeIcon = () => (
 import imgDefault from "../../assets/home/Raphi_Mii_4K.png";
 import imgHover from "../../assets/home/Raphi_Mii_4K_pose.png";
 import screen2Img from "../../assets/projects/spryte/Screen_2.png";
+import fishingLogoImg from "../../assets/projects/fishing/FishingLogo.png";
 
 export function Home() {
   const [isHovering, setIsHovering] = useState(false);
   const { lang } = useLanguage();
-  const navigate = useNavigate();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function Home() {
   // Memoize gallery items to prevent recreation on language change
   const galleryItems = useMemo(() => [
     { image: screen2Img },
-    { image: 'https://images.unsplash.com/photo-1649442279006-8bccb4cc63e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbiUyMHdlYnNpdGUlMjBkYXNoYm9hcmQlMjB1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+    { image: fishingLogoImg },
     { image: 'https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
     { image: 'https://images.unsplash.com/photo-1551651061-a9f70670893a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjB1aXxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
     { image: 'https://images.unsplash.com/photo-1586717791821-0c862716d8b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },

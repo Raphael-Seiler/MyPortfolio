@@ -31,7 +31,7 @@ export function Experience() {
 
   const t = translations[lang];
 
-  // Drag scrolling state
+  // Drag scrolling state (desktop only)
   const [isDragging, setIsDragging] = useState(false);
   const dragStartX = useRef<number>(0);
   const scrollStart = useRef<number>(0);
@@ -41,12 +41,23 @@ export function Experience() {
     container: containerRef,
   });
 
-  // Buttery smooth spring for car movement
-  const smoothProgress = useSpring(scrollXProgress, {
-    damping: 50,
-    stiffness: 120,
-    mass: 0.8,
-  });
+  // Track scroll velocity for car tilt animation
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let lastScrollLeft = container.scrollLeft;
+    let velocity = 0;
+
+    const handleScroll = () => {
+      velocity = container.scrollLeft - lastScrollLeft;
+      lastScrollLeft = container.scrollLeft;
+      scrollVelocity.set(velocity);
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [scrollVelocity]);
 
   const [vw, setVw] = useState(
     typeof window !== "undefined" ? window.innerWidth / 100 : 12
@@ -61,17 +72,15 @@ export function Experience() {
 
   const N = experiences.length;
   const itemSpacing = isMobile ? 340 : 450;
-  const startOffsetVW = isMobile ? 50 : 20;
-  const endCarVW = 50;
+  // Car and first station start at the same viewport position
+  const carVW = isMobile ? 50 : 20;
 
-  const maxScroll = Math.max(1, N * itemSpacing + (startOffsetVW - endCarVW) * vw);
+  // Total scrollable distance: stations span from carVW to carVW + N*itemSpacing (including "Fortsetzung folgt")
+  // Max scroll = distance from first station to "Fortsetzung folgt"
+  const maxScroll = Math.max(1, N * itemSpacing);
 
-  // Car position
-  const carX = useTransform(
-    smoothProgress,
-    [0, 1],
-    [`${startOffsetVW}vw`, `${endCarVW}vw`]
-  );
+  // Car position - fixed at carVW in the viewport
+  const carX = `${carVW}vw`;
 
   // Car tilt based on scroll velocity for dynamic feel
   const carRotation = useSpring(
@@ -81,57 +90,106 @@ export function Experience() {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Update active index based on scroll progress with proximity detection
+  // Update active index based on actual scroll position and proximity to stations
   useEffect(() => {
-    return smoothProgress.on("change", (latest) => {
-      const active = Math.min(N, Math.max(0, Math.round(latest * N)));
-      setActiveIndex(active);
-    });
-  }, [smoothProgress, N]);
+    const container = containerRef.current;
+    if (!container) return;
+
+    const updateActiveIndex = () => {
+      const currentScroll = container.scrollLeft;
+
+      // Car is fixed at carVW in the viewport
+      const carViewportX = carVW * vw;
+
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      for (let i = 0; i < N; i++) {
+        // Station's position in the scrollable content
+        const stationContentX = carVW * vw + i * itemSpacing;
+        // Station's current position on screen (relative to viewport)
+        const stationScreenX = stationContentX - currentScroll;
+        // Distance from car's position
+        const distance = Math.abs(stationScreenX - carViewportX);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = i;
+        }
+      }
+
+      // Check if we're past all stations (at "Fortsetzung folgt")
+      const lastStationContentX = carVW * vw + (N - 1) * itemSpacing;
+      const fortsetzungContentX = lastStationContentX + itemSpacing;
+      const fortsetzungScreenX = fortsetzungContentX - currentScroll;
+
+      if (fortsetzungScreenX <= carViewportX + itemSpacing / 2 && currentScroll > maxScroll * 0.9) {
+        setActiveIndex(N);
+      } else {
+        setActiveIndex(closestIndex);
+      }
+    };
+
+    // Update on scroll
+    container.addEventListener("scroll", updateActiveIndex, { passive: true });
+    updateActiveIndex(); // Initial call
+
+    return () => {
+      container.removeEventListener("scroll", updateActiveIndex);
+    };
+  }, [N, carVW, itemSpacing, vw, maxScroll]);
+
 
   const totalWidth = `${maxScroll + 100 * vw}px`;
 
   // Get scroll position for a specific station index
+  // This scrolls so that the station aligns with the car's visual position (carVW)
   const getStationScroll = useCallback(
     (index: number) => {
-      const container = containerRef.current;
-      if (!container) return 0;
-      const totalScrollable =
-        container.scrollWidth - container.clientWidth;
-      return Math.max(0, Math.min(totalScrollable, (index / N) * totalScrollable));
+      // Station's position in the content
+      const stationContentX = carVW * vw + index * itemSpacing;
+      // To align station with car at carVW, scroll so station is at carVW * vw
+      const targetScroll = stationContentX - carVW * vw;
+
+      return Math.max(0, Math.min(maxScroll, targetScroll));
     },
-    [N]
+    [maxScroll, carVW, itemSpacing, vw]
   );
 
-  // Drag scrolling handlers
+  // Drag scrolling handlers (desktop only)
   const handleDragStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    // Only use custom drag on desktop
+    if (isMobile) return;
+
     const container = containerRef.current;
     if (!container) return;
 
     setIsDragging(true);
-    dragStartX.current = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+    const clientX = 'touches' in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
+    dragStartX.current = clientX;
     scrollStart.current = container.scrollLeft;
     container.style.cursor = "grabbing";
-  }, []);
+  }, [isMobile]);
 
   const handleDragMove = useCallback((e: MouseEvent | TouchEvent) => {
-    if (!isDragging) return;
+    if (!isDragging || isMobile) return;
 
     const container = containerRef.current;
     if (!container) return;
 
-    const currentX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-    const deltaX = currentX - dragStartX.current;
+    const clientX = 'touches' in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
+    const deltaX = clientX - dragStartX.current;
     container.scrollLeft = scrollStart.current - deltaX;
-  }, [isDragging]);
+  }, [isDragging, isMobile]);
 
   const handleDragEnd = useCallback(() => {
+    if (isMobile) return;
+
     setIsDragging(false);
     const container = containerRef.current;
     if (container) {
       container.style.cursor = "grab";
     }
-  }, []);
+  }, [isMobile]);
 
   // Auto-drive car to nearest station after scrolling stops - consistent smooth animation
   useEffect(() => {
@@ -164,8 +222,25 @@ export function Experience() {
         const totalScrollable = container.scrollWidth - container.clientWidth;
         if (totalScrollable <= 0) return;
 
-        const progress = container.scrollLeft / totalScrollable;
-        const nearestIndex = Math.round(progress * N);
+        const currentScroll = container.scrollLeft;
+
+        // Car is fixed at carVW in the viewport
+        const carViewportX = carVW * vw;
+
+        // Find which station is closest to the car's current position
+        let nearestIndex = 0;
+        let closestDistance = Infinity;
+
+        for (let i = 0; i < N; i++) {
+          const stationContentX = carVW * vw + i * itemSpacing;
+          const stationScreenX = stationContentX - currentScroll;
+          const distance = Math.abs(stationScreenX - carViewportX);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            nearestIndex = i;
+          }
+        }
+
         const snapTarget = getStationScroll(nearestIndex);
 
         // Use proportional threshold based on station spacing
@@ -235,7 +310,7 @@ export function Experience() {
       clearTimeout(scrollEndTimeout);
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [N, getStationScroll, activeIndex, itemSpacing, handleDragMove, handleDragEnd]);
+  }, [N, getStationScroll, activeIndex, itemSpacing, handleDragMove, handleDragEnd, carVW, vw, maxScroll]);
 
   return (
     <ClickSpark
@@ -268,7 +343,7 @@ export function Experience() {
       </div>
 
       {/* The Timeline Area */}
-      <div className="relative w-full h-[500px] md:h-[1000px] z-10">
+      <div className="relative w-full h-[700px] md:h-[1000px] z-10">
         {/* Scrollable Container */}
         <div
           ref={containerRef}
@@ -291,7 +366,7 @@ export function Experience() {
 
             {/* Subtle tick marks along the road */}
             {experiences.map((_, i) => {
-              const leftPos = `calc(${startOffsetVW}vw + ${i * itemSpacing}px)`;
+              const leftPos = `calc(${carVW}vw + ${i * itemSpacing}px)`;
               return (
                 <div
                   key={`tick-${i}`}
@@ -304,7 +379,7 @@ export function Experience() {
             {/* Timeline Items */}
             {experiences.map((exp, i) => {
               const isTopHalf = isMobile ? true : i % 2 !== 0;
-              const leftPos = `calc(${startOffsetVW}vw + ${i * itemSpacing}px)`;
+              const leftPos = `calc(${carVW}vw + ${i * itemSpacing}px)`;
               const isActive = activeIndex === i;
 
               return (
@@ -321,7 +396,7 @@ export function Experience() {
                   }}
                 >
                   {isTopHalf ? (
-                    <div className="absolute bottom-[calc(25%+1px)] md:bottom-[calc(45%+1px)] flex flex-col items-center pb-4 transition-all duration-500">
+                    <div className="absolute bottom-[25%] md:bottom-[45%] flex flex-col items-center pb-4 transition-all duration-500">
                       <ItemCard exp={exp} isActive={isActive} />
                       <div
                         className={`w-[1px] h-12 md:h-16 transition-all duration-500 ${
@@ -339,7 +414,7 @@ export function Experience() {
                       />
                     </div>
                   ) : (
-                    <div className="absolute top-[calc(55%+1px)] flex flex-col items-center pt-4 transition-all duration-500">
+                    <div className="absolute top-[75%] md:top-[55%] flex flex-col items-center pt-4 transition-all duration-500">
                       <div
                         className={`w-3 h-3 rounded-full border-[2px] bg-[#fafafa] dark:bg-[#111111] shadow-sm absolute -top-1.5 transition-all duration-500 ${
                           isActive
@@ -365,7 +440,7 @@ export function Experience() {
             <div
               className="absolute top-[75%] md:top-[55%] -translate-y-1/2 flex items-center justify-center transition-all duration-500 -translate-x-1/2"
               style={{
-                left: `calc(${startOffsetVW}vw + ${N * itemSpacing}px)`,
+                left: `calc(${carVW}vw + ${N * itemSpacing}px)`,
               }}
             >
               <h2
@@ -445,6 +520,7 @@ export function Experience() {
               />
             ))}
             <motion.div
+              key="dot-final"
               className={`rounded-full ${
                 activeIndex === N
                   ? "bg-black/40 dark:bg-white/40"

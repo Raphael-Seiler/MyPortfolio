@@ -1,5 +1,4 @@
 import { FC, useRef, useState, useEffect, MutableRefObject } from 'react';
-import { useNavigate } from 'react-router';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { translations } from '../translations';
 import { useLanguage } from '../context/LanguageContext';

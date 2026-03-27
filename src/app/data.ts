@@ -108,7 +108,7 @@ export const experiences = [
     detailsEn: "As a Junior ICT System Administrator, I am responsible for around 3,500 mobile devices. I ensure that MDM systems run smoothly and that digital learning works at schools."
   },
   {
-    id: "5",
+    id: "6",
     role: "BSc Digital Design",
     roleEn: "BSc Digital Design",
     company: "Ostschweizer Fachhochschule",

@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 
 export interface BentoCardProps {
   title?: string;
-  description?: string;
+  description?: string | React.ReactNode;
   label?: string;
   icon?: React.ReactNode;
   className?: string;
