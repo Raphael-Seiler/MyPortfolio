@@ -5,6 +5,7 @@ import { Projects } from "./pages/Projects";
 import { Experience } from "./pages/Experience";
 import { Contact } from "./pages/Contact";
 import { ProjectDetail } from "./pages/ProjectDetail";
+import { Accessibility } from "./pages/Accessibility";
 
 export const router = createHashRouter([
   {
@@ -16,6 +17,7 @@ export const router = createHashRouter([
       { path: "projects/:id", Component: ProjectDetail },
       { path: "experience", Component: Experience },
       { path: "contact", Component: Contact },
+      { path: "accessibility", Component: Accessibility },
     ],
   },
 ]);

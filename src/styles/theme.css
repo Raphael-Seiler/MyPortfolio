@@ -1,66 +1,126 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Apple-inspired design tokens */
+  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* Colors - Light Mode - WCAG 2.2 AA Compliant */
+  --background-primary: #ffffff;
+  --background-secondary: #f5f5f7;
+  --background-tertiary: #fafafa;
+  --text-primary: #1d1d1f;
+  --text-secondary: #5e5e63; /* Darkened from #86868b for WCAG AA (4.5:1 contrast) */
+  --text-tertiary: #6e6e73; /* Darkened from #a1a1a6 for WCAG AA */
+  --accent-blue: #0066cc; /* Darkened from #0071e3 for better contrast */
+  --accent-blue-hover: #0055aa;
+  --border-light: rgba(0, 0, 0, 0.12);
+  --border-medium: rgba(0, 0, 0, 0.2);
+
+  /* Dark Mode Colors - WCAG 2.2 AA Compliant */
+  --background-primary-dark: #000000;
+  --background-secondary-dark: #1d1d1f;
+  --background-tertiary-dark: #2d2d2f;
+  --text-primary-dark: #ffffff; /* Brighter for better contrast */
+  --text-secondary-dark: #b8b8b8; /* Lightened from #a1a1a6 for WCAG AA */
+  --text-tertiary-dark: #989898; /* Lightened from #86868b for WCAG AA */
+  --accent-blue-dark: #4da6ff; /* Brightened from #2997ff for better contrast */
+  --accent-blue-hover-dark: #66b3ff;
+  --border-light-dark: rgba(255, 255, 255, 0.15);
+  --border-medium-dark: rgba(255, 255, 255, 0.2);
+
+  /* Typography */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Spacing */
+  --section-padding: 80px;
+  --section-padding-mobile: 40px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Focus Ring - WCAG 2.2 Visible Focus */
+  --focus-ring-color: #0066cc;
+  --focus-ring-offset: 2px;
+  --focus-ring-width: 3px;
+
+  /* Legacy variables for compatibility */
   --font-size: 16px;
-  --background: #ffffff;
-  --foreground: #000000;
-  --card: #ffffff;
-  --card-foreground: #000000;
-  --popover: #ffffff;
-  --popover-foreground: #000000;
-  --primary: #000000;
+  --background: var(--background-primary);
+  --foreground: var(--text-primary);
+  --card: var(--background-primary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--background-primary);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--text-primary);
   --primary-foreground: #ffffff;
-  --secondary: #f0f0f0;
-  --secondary-foreground: #000000;
-  --muted: #f5f5f5;
-  --muted-foreground: #4a4a4a;
-  --accent: #e0e0e0;
-  --accent-foreground: #000000;
+  --secondary: var(--background-secondary);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--background-secondary);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--accent-blue);
+  --accent-foreground: #ffffff;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
-  --border: #e0e0e0;
-  --input: #ffffff;
-  --input-background: #f8f8f8;
-  --switch-background: #cccccc;
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --ring: #000000;
+  --border: var(--border-light);
+  --input: var(--background-primary);
+  --input-background: var(--background-tertiary);
+  --switch-background: var(--text-tertiary);
+  --font-weight-normal: var(--font-weight-regular);
+  --ring: var(--focus-ring-color);
   --chart-1: #888888;
   --chart-2: #666666;
   --chart-3: #444444;
   --chart-4: #222222;
   --chart-5: #111111;
-  --radius: 0.625rem;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #000000;
-  --sidebar-primary: #000000;
+  --radius: 12px;
+  --sidebar: var(--background-primary);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--accent-blue);
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f0f0;
-  --sidebar-accent-foreground: #000000;
-  --sidebar-border: #e0e0e0;
-  --sidebar-ring: #000000;
+  --sidebar-accent: var(--background-secondary);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border-light);
+  --sidebar-ring: var(--focus-ring-color);
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #000000;
-  --card-foreground: #ffffff;
-  --popover: #000000;
-  --popover-foreground: #ffffff;
-  --primary: #ffffff;
+  --background: var(--background-primary-dark);
+  --foreground: var(--text-primary-dark);
+  --card: var(--background-primary-dark);
+  --card-foreground: var(--text-primary-dark);
+  --popover: var(--background-primary-dark);
+  --popover-foreground: var(--text-primary-dark);
+  --primary: var(--text-primary-dark);
   --primary-foreground: #000000;
-  --secondary: #202020;
-  --secondary-foreground: #ffffff;
-  --muted: #202020;
-  --muted-foreground: #c0c0c0;
-  --accent: #202020;
-  --accent-foreground: #ffffff;
-  --destructive: #d4183d;
+  --secondary: var(--background-secondary-dark);
+  --secondary-foreground: var(--text-primary-dark);
+  --muted: var(--background-secondary-dark);
+  --muted-foreground: var(--text-secondary-dark);
+  --accent: var(--accent-blue-dark);
+  --accent-foreground: #000000;
+  --destructive: #ff6b6b; /* Brighter red for dark mode */
   --destructive-foreground: #ffffff;
-  --border: #202020;
-  --input: #202020;
-  --ring: #888888;
+  --border: var(--border-light-dark);
+  --input: var(--background-primary-dark);
+  --ring: var(--focus-ring-color);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
   --chart-1: #444444;
@@ -68,14 +128,14 @@
   --chart-3: #888888;
   --chart-4: #aaaaaa;
   --chart-5: #cccccc;
-  --sidebar: #151515;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #444444;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #202020;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #202020;
-  --sidebar-ring: #888888;
+  --sidebar: var(--background-primary-dark);
+  --sidebar-foreground: var(--text-primary-dark);
+  --sidebar-primary: var(--accent-blue-dark);
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: var(--background-secondary-dark);
+  --sidebar-accent-foreground: var(--text-primary-dark);
+  --sidebar-border: var(--border-light-dark);
+  --sidebar-ring: var(--focus-ring-color);
 }
 
 @theme inline {
@@ -112,13 +172,9 @@
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(
-    --sidebar-primary-foreground
-  );
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(
-    --sidebar-accent-foreground
-  );
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
@@ -130,44 +186,119 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-family);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Hide default cursor globally */
-  *, *::before, *::after {
-    cursor: none !important;
+  /* Skip Link for keyboard users - WCAG 2.2 */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-primary);
+    color: var(--background);
+    padding: 12px 24px;
+    z-index: 10000;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: top 0.2s ease;
   }
 
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
+  .skip-link:focus {
+    top: 16px;
+    outline: 3px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
 
   html {
     font-size: var(--font-size);
+    scroll-behavior: smooth;
+  }
+
+  /* Reduced Motion Support - WCAG 2.2 Level A */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Focus Visible Styles - WCAG 2.2 Level AA */
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Remove outline when not using keyboard */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Ensure focus is always visible for interactive elements */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* High Contrast Mode Support */
+  @media (prefers-contrast: more) {
+    :root {
+      --text-secondary: #000000;
+      --text-tertiary: #000000;
+      --border-light: #000000;
+    }
+
+    .dark {
+      --text-secondary: #ffffff;
+      --text-tertiary: #ffffff;
+      --border-light: #ffffff;
+    }
   }
 
   h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: clamp(40px, 8vw, 80px);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
   }
 
   h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
   }
 
   h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
 
   h4 {
-    font-size: var(--text-base);
+    font-size: var(--text-lg);
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.6;
+    color: var(--text-secondary);
   }
 
   label {
@@ -184,7 +315,53 @@
 
   input {
     font-size: var(--text-base);
-    font-weight: var(--font-weight-normal);
+    font-weight: var(--font-weight-regular);
     line-height: 1.5;
+  }
+
+  /* Apple-style links with underline on hover for clarity */
+  a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  a:hover {
+    color: var(--accent-blue-hover);
+    text-decoration: underline;
+  }
+
+  a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    text-decoration: underline;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: rgba(0, 113, 227, 0.15);
+    color: var(--text-primary);
+  }
+
+  .dark ::selection {
+    background-color: rgba(77, 166, 255, 0.25);
+    color: var(--text-primary-dark);
+  }
+
+  /* Ensure minimum touch target size - WCAG 2.2 Level AAA (44x44px minimum) */
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Small buttons in dense UI can be smaller but need spacing */
+  .touch-target-small {
+    min-height: 32px;
+    min-width: 32px;
   }
 }

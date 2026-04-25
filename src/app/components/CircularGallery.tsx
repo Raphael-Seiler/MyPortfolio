@@ -795,7 +795,7 @@ export default function CircularGallery({
 
   return (
     <div
-      className="relative w-full h-full overflow-hidden cursor-none touch-pan-y"
+      className="relative w-full h-full overflow-hidden touch-pan-y"
       ref={containerRef}
     />
   );

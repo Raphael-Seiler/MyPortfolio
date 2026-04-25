@@ -50,7 +50,7 @@ const placeholderProjects: Record<string, {
       de: [
         { title: "Discover", desc: "Wir analysierten soziale Experimente wie «r/place» auf Reddit. Dabei untersuchten wir, wie tausende Menschen ohne direkte Absprache gemeinsam Kunstwerke erschaffen und welche Dynamiken dabei entstehen." },
         { title: "Define", desc: "Wir entwickelten Personas wie «Sabine» (die erfahrene Mitarbeiterin) und «Noah» (den jungen Lernenden), um sicherzustellen, dass das System für alle Altersgruppen funktioniert. Der User Flow wurde so optimiert, dass die Teilnahme – vom ID-Scan bis zum gesetzten Pixel – nur wenige Sekunden dauert." },
-        { title: "Develop", desc: "In dieser Phase entstanden das Designsystem und unser Maskottchen, der «Fruit Dude». Wir bauten einen hochfunktionalen Prototypen in Figma, der die zentrale Interaktion simuliert." },
+        { title: "Develop", desc: "In dieser Phase entstand das Designsystem und unser Maskottchen, der «Fruit Dude». Wir bauten einen hochfunktionalen Prototypen in Figma, der die zentrale Interaktion simuliert." },
         { title: "Deliver", desc: "Die fertige Lösung kombiniert Hardware und Software. Ein spezieller Distanzsensor erkennt, wenn sich jemand der Stele nähert, und wechselt automatisch vom Standby-Modus in den Interaktions-Modus." }
       ],
       en: [
@@ -94,7 +94,7 @@ const placeholderProjects: Record<string, {
     }
   },
   "fishing": {
-    title: { de: "Fishing E-Commerce", en: "Fishing E-Commerce" },
+    title: { de: "Helvetic Fishing Co.", en: "Helvetic Fishing Co." },
     description: {
       de: "Ein moderner E-Commerce-Shop für die Helvetic Fishing Co.",
       en: "A modern e-commerce shop for Helvetic Fishing Co."
@@ -192,7 +192,7 @@ export function ProjectDetail() {
   if (!project) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <p className="text-[#55555a] dark:text-[#e5e5ea]">{t.projectDetail.projectNotFound}</p>
+        <p className="text-[#5e5e63] dark:text-[#b8b8b8]">{t.projectDetail.projectNotFound}</p>
       </div>
     );
   }
@@ -206,394 +206,307 @@ export function ProjectDetail() {
       duration={400}
       disableOnMobile
     >
-      <div className="w-full min-h-screen max-w-6xl mx-auto px-6 md:px-12 py-20 pt-48">
-      {/* Back Button */}
-      <Link
-        to="/projects"
-        className="inline-flex items-center space-x-2 text-sm font-medium text-[#55555a] dark:text-[#e5e5ea] hover:text-black dark:hover:text-white transition-colors mb-12"
-      >
-        <ArrowLeft size={18} strokeWidth={1.5} />
-        <span>{t.projectDetail.backToProjects}</span>
-      </Link>
-
-      {/* Project Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {/* Project Hero Image */}
-        {id === 'fishing' ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="overflow-hidden bg-transparent mt-8"
+      <div className="w-full min-h-screen">
+        {/* Hero Section */}
+        <div className="max-w-5xl mx-auto px-6 md:px-12 py-20 pt-32">
+          {/* Back Button */}
+          <Link
+            to="/projects"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#5e5e63] hover:text-[#1d1d1f] dark:text-[#b8b8b8] dark:hover:text-[#f5f5f7] transition-colors mb-12 focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-lg px-2 py-1"
           >
-            <img src={fishingLandingImg} alt="Fishing E-Commerce Landing Page" className="w-full h-auto object-cover rounded-2xl" />
+            <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
+            <span>{t.projectDetail.backToProjects}</span>
+          </Link>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Project Title */}
+            <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
+              {project.title[lang]}
+            </h1>
+            <p className="text-xl text-[#5e5e63] dark:text-[#b8b8b8] font-light max-w-2xl">
+              {project.description[lang]}
+            </p>
           </motion.div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="overflow-hidden bg-transparent"
-            >
-              <img src={screen1Img} alt="SPRYTE Hauptinterface mit Pixel-Editor und Farbauswahl" className="w-full h-auto object-cover" />
-            </motion.div>
+
+          {/* Hero Images Grid */}
+          {id === 'fishing' ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="overflow-hidden bg-transparent"
+              className="mt-12"
             >
-              <img src={screen2Img} alt="SPRYTE Canvas-Ansicht mit gemeinsamem Pixel-Arbeitsbereich" className="w-full h-auto object-cover" />
+              <img src={fishingLandingImg} alt="Fishing E-Commerce Landing Page" className="w-full h-auto object-contain rounded-2xl" />
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="overflow-hidden bg-transparent"
-            >
-              <img src={screen3Img} alt="SPRYTE Leaderboard und Statistiken-Übersicht" className="w-full h-auto object-cover" />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="overflow-hidden bg-transparent"
-            >
-              <img src={screen4Img} alt="SPRYTE Profilansicht mit persönlichen Pixel-Statistiken" className="w-full h-auto object-cover" />
-            </motion.div>
-          </div>
-        )}
-
-        {/* Milky Background Container */}
-        <div className="rounded-[2.5rem] bg-white/80 dark:bg-black/60 backdrop-blur-xl px-8 md:px-12 py-12 mt-8">
-          <div className="flex justify-center mb-8">
-            {id === 'fishing' ? (
-              <img src={fishingLogoImg} alt="Fishing Logo" className="h-32 md:h-48 w-auto object-contain" />
-            ) : (
-              <img src={spryteLogoImg} alt="SPRYTE Logo" className="h-32 md:h-48 w-auto object-contain" />
-            )}
-          </div>
-
-          <p className="text-lg text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed mb-12 text-center">
-            {project.description[lang]}
-          </p>
-
-          {/* Project Sections */}
-          <div className="space-y-16">
-        {/* Project Charter */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-            {project.charter[lang]}
-          </p>
-        </motion.section>
-
-        {/* Our Goal */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-            {t.projectDetail.ourGoal}
-          </h2>
-          <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-            {project.goal[lang]}
-          </p>
-        </motion.section>
-
-        {/* Prozess/Process */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-            {lang === 'de' ? t.projectDetail.prozess : t.projectDetail.process}
-          </h2>
-          {id === 'spryte' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-8 flex flex-col items-center"
-            >
-              <div className="bg-white dark:bg-gray-200 rounded-2xl p-6 shadow-lg">
-                <img src={userFlowImg} alt="User Flow Diagramm zeigt den SPRYTE-Nutzungsprozess vom ID-Scan bis zum gesetzten Pixel" className="w-[600px] max-w-full h-auto" />
-              </div>
-              <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                {lang === 'de' ? 'User Flow: Vom ID-Scan zum gesetzten Pixel' : 'User Flow: From ID scan to placed pixel'}
-              </p>
-            </motion.div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+              {[screen1Img, screen2Img, screen3Img, screen4Img].map((src, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
+                  className="overflow-hidden rounded-2xl bg-[#f5f5f7] dark:bg-[#1d1d1f]"
+                >
+                  <img src={src} alt={`SPRYTE Screen ${i + 1}`} className="w-full h-auto object-cover rounded-2xl" />
+                </motion.div>
+              ))}
+            </div>
           )}
-          <div className="space-y-4">
-            {Array.isArray(project.process[lang]) ? (
-              project.process[lang].map((phase, i) => (
-                <div key={i}>
-                  {phase.title ? (
-                    <div className="flex gap-3">
-                      <span className="min-w-[120px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
-                        {phase.title}
-                      </span>
-                      <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
-                        {phase.desc}
-                      </p>
+        </div>
+
+        {/* Content Section - Apple-style card */}
+        <div className="max-w-5xl mx-auto px-6 md:px-12 pb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="bg-[#f5f5f7] dark:bg-[#1d1d1f] rounded-3xl p-8 md:p-12"
+          >
+            {/* Logo */}
+            <div className="flex justify-center mb-10">
+              {id === 'fishing' ? (
+                <img src={fishingLogoImg} alt="Fishing Logo" className="h-24 md:h-36 w-auto object-contain" />
+              ) : (
+                <img src={spryteLogoImg} alt="SPRYTE Logo" className="h-24 md:h-36 w-auto object-contain" />
+              )}
+            </div>
+
+            {/* Sections */}
+            <div className="space-y-12">
+              {/* Project Charter */}
+              {project.charter[lang] && (
+                <motion.section
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h2 className="text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8] mb-4">
+                    {t.projectDetail.projectCharter}
+                  </h2>
+                  <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light">
+                    {project.charter[lang]}
+                  </p>
+                </motion.section>
+              )}
+
+              {/* Goal */}
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                <h2 className="text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8] mb-4">
+                  {t.projectDetail.ourGoal}
+                </h2>
+                <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light">
+                  {project.goal[lang]}
+                </p>
+              </motion.section>
+
+              {/* Process */}
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <h2 className="text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8] mb-6">
+                  {lang === 'de' ? t.projectDetail.prozess : t.projectDetail.process}
+                </h2>
+                {id === 'spryte' && (
+                  <div className="mb-8 flex justify-center">
+                    <div className="bg-white dark:bg-[#000000] rounded-2xl p-6">
+                      <img src={userFlowImg} alt="User Flow Diagram" className="w-full max-w-[500px] h-auto" />
                     </div>
+                  </div>
+                )}
+                <div className="space-y-4">
+                  {Array.isArray(project.process[lang]) ? (
+                    project.process[lang].map((phase, i) => (
+                      <div key={i} className={phase.title ? "flex gap-4" : ""}>
+                        {phase.title && (
+                          <span className="min-w-[100px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                            {phase.title}
+                          </span>
+                        )}
+                        <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light flex-1">
+                          {phase.desc}
+                        </p>
+                      </div>
+                    ))
                   ) : (
-                    <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-                      {phase.desc}
+                    <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light">
+                      {project.process[lang]}
                     </p>
                   )}
                 </div>
-              ))
-            ) : (
-              <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-                {project.process[lang]}
-              </p>
-            )}
-          </div>
-        </motion.section>
+              </motion.section>
 
-        {/* Kachel Images for Fishing Project - Right after process section */}
-        {id === 'fishing' && (
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-8"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="bg-white dark:bg-black p-4 rounded-2xl"
-              >
-                <img src={kachelAndereImg} alt="Produktkacheln anderer Shops mit breiten Standard-Bildern" className="w-full h-[400px] object-contain mix-blend-multiply dark:mix-blend-screen" />
-                <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                  {lang === 'de' ? 'Kacheln anderer Shops' : 'Tiles from other shops'}
-                </p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                className="bg-white dark:bg-black p-4 rounded-2xl"
-              >
-                <img src={kachelMeineImg} alt="Meine hochkantigen Produktkacheln für optimale Angleruten-Darstellung" className="w-full h-[400px] object-contain mix-blend-multiply dark:mix-blend-screen" />
-                <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                  {lang === 'de' ? 'Meine Kacheln' : 'My tiles'}
-                </p>
-              </motion.div>
-            </div>
-          </motion.section>
-        )}
+              {/* Kachel Images for Fishing */}
+              {id === 'fishing' && (
+                <motion.section
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.25 }}
+                  className="mt-8"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white dark:bg-[#000000] p-4 rounded-2xl">
+                      <img src={kachelAndereImg} alt="Tiles from other shops" className="w-full h-[350px] object-contain mix-blend-multiply dark:mix-blend-screen" />
+                      <p className="text-xs text-[#5e5e63] dark:text-[#b8b8b8] mt-3 text-center">
+                        {lang === 'de' ? 'Kacheln anderer Shops' : 'Tiles from other shops'}
+                      </p>
+                    </div>
+                    <div className="bg-white dark:bg-[#000000] p-4 rounded-2xl">
+                      <img src={kachelMeineImg} alt="My tiles" className="w-full h-[350px] object-contain mix-blend-multiply dark:mix-blend-screen" />
+                      <p className="text-xs text-[#5e5e63] dark:text-[#b8b8b8] mt-3 text-center">
+                        {lang === 'de' ? 'Meine Kacheln' : 'My tiles'}
+                      </p>
+                    </div>
+                  </div>
+                </motion.section>
+              )}
 
-        {/* Result - Split layout for fishing, normal for others */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          {id === 'fishing' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Left: Result text */}
-              <div>
-                <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
+              {/* Result */}
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <h2 className="text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8] mb-6">
                   {t.projectDetail.result}
                 </h2>
                 <div className="space-y-4">
                   {Array.isArray(project.result[lang]) ? (
                     project.result[lang].map((item, i) => (
-                      <div key={i} className="flex gap-3">
-                        <span className="w-[120px] flex-shrink-0 font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                      <div key={i} className="flex gap-4">
+                        <span className="w-[100px] flex-shrink-0 font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
                           {item.title}
                         </span>
-                        <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
+                        <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light flex-1">
                           {item.desc}
                         </p>
                       </div>
                     ))
                   ) : (
-                    <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
+                    <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light">
                       {project.result[lang]}
                     </p>
                   )}
                 </div>
-              </div>
 
-              {/* Right: Figma Prototype Link */}
-              <div className="flex flex-col items-center justify-center">
-                <a
-                  href="https://www.figma.com/proto/f0YTThD34TWx4MJda6GzNg/E-Commerce?node-id=536-10832&p=f&viewport=462%2C-231%2C0.08&t=bp1qxJ7lReOusWMT-8&scaling=contain&content-scaling=responsive&starting-point-node-id=536%3A10832&page-id=1%3A2&hide-ui=1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex flex-col items-center gap-2 cursor-pointer"
-                >
-                  <span className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-medium">
-                    {lang === 'de' ? 'Teste meinen Prototyp' : 'Try out my prototype'}
-                  </span>
-                  <svg className="w-4 h-4 text-[#55555a] dark:text-[#e5e5ea] transition-transform duration-300 group-hover:translate-y-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <polyline points="19 12 12 19 5 12"></polyline>
-                  </svg>
-                  <img
-                    src={figmaLogoImg}
-                    alt="Figma Prototype"
-                    className="w-24 h-24 object-contain transition-transform duration-300 group-hover:scale-105"
-                  />
-                </a>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-                {t.projectDetail.result}
-              </h2>
-              <div className="space-y-4">
-                {Array.isArray(project.result[lang]) ? (
-                  project.result[lang].map((item, i) => (
-                    <div key={i} className="flex gap-3">
-                      <span className="w-[120px] flex-shrink-0 font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
-                        {item.title}
-                      </span>
-                      <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
-                        {item.desc}
+                {/* Figma Prototype Link */}
+                <div className="flex flex-col items-center gap-3 mt-8">
+                  <a
+                    href={id === 'fishing'
+                      ? "https://www.figma.com/proto/f0YTThD34TWx4MJda6GzNg/E-Commerce?node-id=536-10832&p=f&viewport=462%2C-231%2C0.08&t=bp1qxJ7lReOusWMT-8&scaling=contain&content-scaling=responsive&starting-point-node-id=536%3A10832&page-id=1%3A2&hide-ui=1"
+                      : "https://www.figma.com/proto/qQ9rpUbWYi582pMQEB1UnU/Spryte?node-id=436-822&viewport=921%2C-656%2C0.08&t=508QId7KkcGBQnm5-8&scaling=scale-down&content-scaling=fixed&starting-point-node-id=436%3A822&page-id=0%3A1&hide-ui=1"
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex flex-col items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-xl p-4"
+                  >
+                    <span className="text-sm font-medium text-[#0066cc] dark:text-[#4da6ff] group-hover:text-[#0055aa] dark:group-hover:text-[#66b3ff] transition-colors">
+                      {t.projectDetail.tryPrototype}
+                    </span>
+                    <svg className="text-[#0066cc] dark:text-[#4da6ff] w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M12 5v14"/>
+                      <path d="M19 12l-7 7-7-7"/>
+                    </svg>
+                    <img src={figmaLogoImg} alt="Figma" className="w-12 h-12 object-contain transition-transform group-hover:scale-110" />
+                  </a>
+                </div>
+              </motion.section>
+
+              {/* Highlight */}
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <h2 className="text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8] mb-4">
+                  {id === 'fishing'
+                    ? (lang === 'de' ? 'Highlight' : 'Highlight')
+                    : (lang === 'de' ? 'Das Highlight' : 'The Highlight')
+                  }
+                </h2>
+                {id === 'spryte' ? (
+                  <div className="flex flex-col md:flex-row gap-8 items-start">
+                    <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light flex-1">
+                      {project.highlight[lang]}
+                    </p>
+                    <div className="flex-shrink-0">
+                      <img src={groupPicImg} alt="Team presentation" className="w-[400px] max-w-full h-auto rounded-2xl" />
+                      <p className="text-xs text-[#5e5e63] dark:text-[#b8b8b8] mt-3 text-center">
+                        {lang === 'de' ? 'Präsentation vor UX-Experten' : 'Presentation to UX experts'}
                       </p>
                     </div>
-                  ))
+                  </div>
                 ) : (
-                  <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-                    {project.result[lang]}
+                  <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light">
+                    {project.highlight[lang]}
                   </p>
                 )}
-              </div>
-            </div>
-          )}
-        </motion.section>
+              </motion.section>
 
-        {/* Figma Prototype Link for Spryte - centered below result */}
-        {id !== 'fishing' && (
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.45 }}
-            className="flex justify-center"
-          >
-            <a
-              href="https://www.figma.com/proto/qQ9rpUbWYi582pMQEB1UnU/Spryte?node-id=436-822&viewport=921%2C-656%2C0.08&t=508QId7KkcGBQnm5-8&scaling=scale-down&content-scaling=fixed&starting-point-node-id=436%3A822&page-id=0%3A1&hide-ui=1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-3 cursor-pointer"
-            >
-              <span className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-medium">
-                {lang === 'de' ? 'Teste unseren Prototyp' : 'Try out our prototype'}
-              </span>
-              <svg className="w-4 h-4 text-[#55555a] dark:text-[#e5e5ea] transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-              <img
-                src={figmaLogoImg}
-                alt="Figma Prototype"
-                className="w-24 h-24 object-contain transition-transform duration-300 group-hover:scale-105"
-              />
-            </a>
-          </motion.section>
-        )}
-
-        {/* Highlight */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-        >
-          <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-            {id === 'fishing'
-              ? (lang === 'de' ? 'MEIN HIGHLIGHT: RESPONSIVITÄT & INTERAKTION' : 'MY HIGHLIGHT: RESPONSIVENESS & INTERACTION')
-              : (lang === 'de' ? 'Das Highlight: Pitch vor der Branche' : 'The Highlight: Pitch to the Industry')
-            }
-          </h2>
-          {id === 'fishing' ? (
-            <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed w-full">
-              {project.highlight[lang]}
-            </p>
-          ) : (
-            <div className="flex flex-col md:flex-row gap-8 items-start">
-              <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1 md:max-w-[50%]">
-                {project.highlight[lang]}
-              </p>
-              {id === 'spryte' && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                  className="flex-shrink-0"
-                >
-                  <img src={groupPicImg} alt="Teamfoto der Projektgruppe Zitrone bei der SPRYTE-Präsentation vor UX-Experten" className="w-[450px] max-w-full h-auto rounded-2xl" />
-                  <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] mt-3 text-center">
-                    {lang === 'de' ? 'Präsentation vor UX-Experten der Migros, SBB und weiteren' : 'Presentation to UX experts from Migros, SBB and more'}
-                  </p>
-                </motion.div>
-              )}
-            </div>
-          )}
-        </motion.section>
-
-        {/* Testing & Accessibility */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
-          <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-            {lang === 'de' ? 'Testing & Accessibility' : 'Testing & Accessibility'}
-          </h2>
-          <div className="space-y-4">
-            {Array.isArray(project.testing[lang]) ? (
-              project.testing[lang].map((item, i) => (
-                <div key={i} className="flex gap-3">
-                  <span className="w-[140px] flex-shrink-0 font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] break-words">
-                    {item.title}
-                  </span>
-                  <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed flex-1">
-                    {item.desc}
-                  </p>
+              {/* Testing */}
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.45 }}
+              >
+                <h2 className="text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8] mb-4">
+                  Testing & Accessibility
+                </h2>
+                <div className="space-y-4">
+                  {Array.isArray(project.testing[lang]) ? (
+                    project.testing[lang].map((item, i) => (
+                      <div key={i} className="flex gap-4">
+                        <span className="min-w-[120px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                          {item.title}
+                        </span>
+                        <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light flex-1">
+                          {item.desc}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light">
+                      {project.testing[lang]}
+                    </p>
+                  )}
                 </div>
-              ))
-            ) : (
-              <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-                {project.testing[lang]}
-              </p>
-            )}
-          </div>
-        </motion.section>
+              </motion.section>
 
-        {/* Reflection */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
-          <h2 className="text-sm font-medium tracking-widest uppercase text-[#55555a] dark:text-[#e5e5ea] mb-4">
-            {t.projectDetail.reflection}
-          </h2>
-          <p className="text-lg text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed">
-            {project.reflection[lang]}
-          </p>
-        </motion.section>
-          </div>
+              {/* Reflection */}
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <h2 className="text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8] mb-4">
+                  {t.projectDetail.reflection}
+                </h2>
+                <p className="text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light">
+                  {project.reflection[lang]}
+                </p>
+              </motion.section>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
-    </div>
+      </div>
     </ClickSpark>
   );
 }
