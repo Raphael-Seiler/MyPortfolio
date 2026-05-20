@@ -739,7 +739,7 @@ export default function CircularGallery({
   items,
   bend = 1,
   textColor = '#ffffff',
-  textColorDark = '#f5f5f7',
+  textColorDark = '#e8eaed',
   borderRadius = 0.05,
   font = 'bold 28px -apple-system, BlinkMacSystemFont, SF Pro Display',
   scrollSpeed = 2,

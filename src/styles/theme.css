@@ -1,31 +1,37 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Apple-inspired design tokens */
-  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* Google-inspired design tokens */
+  --font-family: "Google Sans", "Roboto", -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  /* Colors - Light Mode - WCAG 2.2 AA Compliant */
+  /* Google Colors - Light Mode */
   --background-primary: #ffffff;
-  --background-secondary: #f5f5f7;
-  --background-tertiary: #fafafa;
-  --text-primary: #1d1d1f;
-  --text-secondary: #5e5e63; /* Darkened from #86868b for WCAG AA (4.5:1 contrast) */
-  --text-tertiary: #6e6e73; /* Darkened from #a1a1a6 for WCAG AA */
-  --accent-blue: #0066cc; /* Darkened from #0071e3 for better contrast */
-  --accent-blue-hover: #0055aa;
+  --background-secondary: #f8f9fa;
+  --background-tertiary: #f1f3f4;
+  --text-primary: #202124;
+  --text-secondary: #5f6368;
+  --text-tertiary: #80868b;
+  --accent-blue: #1a73e8;
+  --accent-blue-hover: #1557b0;
   --border-light: rgba(0, 0, 0, 0.12);
   --border-medium: rgba(0, 0, 0, 0.2);
 
-  /* Dark Mode Colors - WCAG 2.2 AA Compliant */
-  --background-primary-dark: #000000;
-  --background-secondary-dark: #1d1d1f;
-  --background-tertiary-dark: #2d2d2f;
-  --text-primary-dark: #ffffff; /* Brighter for better contrast */
-  --text-secondary-dark: #b8b8b8; /* Lightened from #a1a1a6 for WCAG AA */
-  --text-tertiary-dark: #989898; /* Lightened from #86868b for WCAG AA */
-  --accent-blue-dark: #4da6ff; /* Brightened from #2997ff for better contrast */
-  --accent-blue-hover-dark: #66b3ff;
-  --border-light-dark: rgba(255, 255, 255, 0.15);
+  /* Google Brand Colors */
+  --google-blue: #4285f4;
+  --google-red: #ea4335;
+  --google-yellow: #fbbc05;
+  --google-green: #34a853;
+
+  /* Dark Mode Colors */
+  --background-primary-dark: #202124;
+  --background-secondary-dark: #303134;
+  --background-tertiary-dark: #3c4043;
+  --text-primary-dark: #e8eaed;
+  --text-secondary-dark: #9aa0a6;
+  --text-tertiary-dark: #80868b;
+  --accent-blue-dark: #8ab4f8;
+  --accent-blue-hover-dark: #aecbfa;
+  --border-light-dark: rgba(255, 255, 255, 0.12);
   --border-medium-dark: rgba(255, 255, 255, 0.2);
 
   /* Typography */
@@ -38,26 +44,26 @@
   --section-padding: 80px;
   --section-padding-mobile: 40px;
 
-  /* Border Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  /* Border Radius - Material 3 Style (less rounded than Apple) */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+  /* Shadows - Material 3 Style */
+  --shadow-sm: 0 1px 2px 0 rgba(60, 64, 67, 0.1), 0 1px 3px 1px rgba(60, 64, 67, 0.06);
+  --shadow-md: 0 1px 2px 0 rgba(60, 64, 67, 0.1), 0 2px 6px 2px rgba(60, 64, 67, 0.08);
+  --shadow-lg: 0 1px 3px 0 rgba(60, 64, 67, 0.1), 0 4px 8px 3px rgba(60, 64, 67, 0.08);
+  --shadow-xl: 0 2px 4px 0 rgba(60, 64, 67, 0.1), 0 8px 16px 4px rgba(60, 64, 67, 0.08);
 
   /* Transitions */
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Focus Ring - WCAG 2.2 Visible Focus */
-  --focus-ring-color: #0066cc;
+  /* Focus Ring */
+  --focus-ring-color: #1a73e8;
   --focus-ring-offset: 2px;
   --focus-ring-width: 3px;
 
@@ -85,11 +91,11 @@
   --switch-background: var(--text-tertiary);
   --font-weight-normal: var(--font-weight-regular);
   --ring: var(--focus-ring-color);
-  --chart-1: #888888;
-  --chart-2: #666666;
-  --chart-3: #444444;
-  --chart-4: #222222;
-  --chart-5: #111111;
+  --chart-1: var(--google-blue);
+  --chart-2: var(--google-red);
+  --chart-3: var(--google-yellow);
+  --chart-4: var(--google-green);
+  --chart-5: #9aa0a6;
   --radius: 12px;
   --sidebar: var(--background-primary);
   --sidebar-foreground: var(--text-primary);
@@ -116,18 +122,18 @@
   --muted-foreground: var(--text-secondary-dark);
   --accent: var(--accent-blue-dark);
   --accent-foreground: #000000;
-  --destructive: #ff6b6b; /* Brighter red for dark mode */
+  --destructive: #ff6b6b;
   --destructive-foreground: #ffffff;
   --border: var(--border-light-dark);
   --input: var(--background-primary-dark);
   --ring: var(--focus-ring-color);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: #444444;
-  --chart-2: #666666;
-  --chart-3: #888888;
-  --chart-4: #aaaaaa;
-  --chart-5: #cccccc;
+  --chart-1: var(--google-blue);
+  --chart-2: var(--google-red);
+  --chart-3: var(--google-yellow);
+  --chart-4: var(--google-green);
+  --chart-5: #5f6368;
   --sidebar: var(--background-primary-dark);
   --sidebar-foreground: var(--text-primary-dark);
   --sidebar-primary: var(--accent-blue-dark);
@@ -191,7 +197,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Skip Link for keyboard users - WCAG 2.2 */
+  /* Skip Link for keyboard users */
   .skip-link {
     position: absolute;
     top: -100px;
@@ -218,7 +224,7 @@
     scroll-behavior: smooth;
   }
 
-  /* Reduced Motion Support - WCAG 2.2 Level A */
+  /* Reduced Motion Support */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -230,18 +236,16 @@
     }
   }
 
-  /* Focus Visible Styles - WCAG 2.2 Level AA */
+  /* Focus Visible Styles */
   :focus-visible {
     outline: var(--focus-ring-width) solid var(--focus-ring-color);
     outline-offset: var(--focus-ring-offset);
   }
 
-  /* Remove outline when not using keyboard */
   :focus:not(:focus-visible) {
     outline: none;
   }
 
-  /* Ensure focus is always visible for interactive elements */
   a:focus-visible,
   button:focus-visible,
   input:focus-visible,
@@ -269,29 +273,33 @@
 
   h1 {
     font-size: clamp(40px, 8vw, 80px);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1.05;
+    font-weight: var(--font-weight-regular);
+    line-height: 1.1;
     letter-spacing: -0.02em;
+    color: var(--text-primary);
   }
 
   h2 {
     font-size: clamp(32px, 5vw, 56px);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1.1;
+    font-weight: var(--font-weight-regular);
+    line-height: 1.15;
     letter-spacing: -0.015em;
+    color: var(--text-primary);
   }
 
   h3 {
     font-size: clamp(24px, 3vw, 32px);
-    font-weight: var(--font-weight-semibold);
-    line-height: 1.2;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.25;
     letter-spacing: -0.01em;
+    color: var(--text-primary);
   }
 
   h4 {
     font-size: var(--text-lg);
     font-weight: var(--font-weight-medium);
     line-height: 1.4;
+    color: var(--text-primary);
   }
 
   p {
@@ -305,6 +313,7 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    color: var(--text-primary);
   }
 
   button {
@@ -319,7 +328,7 @@
     line-height: 1.5;
   }
 
-  /* Apple-style links with underline on hover for clarity */
+  /* Google-style links */
   a {
     color: var(--accent-blue);
     text-decoration: none;
@@ -339,16 +348,16 @@
 
   /* Selection */
   ::selection {
-    background-color: rgba(0, 113, 227, 0.15);
+    background-color: rgba(26, 115, 232, 0.15);
     color: var(--text-primary);
   }
 
   .dark ::selection {
-    background-color: rgba(77, 166, 255, 0.25);
+    background-color: rgba(138, 180, 248, 0.25);
     color: var(--text-primary-dark);
   }
 
-  /* Ensure minimum touch target size - WCAG 2.2 Level AAA (44x44px minimum) */
+  /* Minimum touch target size */
   button,
   a,
   input[type="button"],
@@ -359,7 +368,6 @@
     min-width: 44px;
   }
 
-  /* Small buttons in dense UI can be smaller but need spacing */
   .touch-target-small {
     min-height: 32px;
     min-width: 32px;
