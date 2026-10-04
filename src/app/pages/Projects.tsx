@@ -12,6 +12,7 @@ const gradients: Record<string, string> = {
   spryte: "from-blue-500/10 via-sky-400/10 to-cyan-400/10",
   fishing: "from-emerald-500/10 via-teal-500/10 to-cyan-500/10",
   lakers: "from-yellow-400/10 via-amber-400/10 to-orange-400/10",
+  migros: "from-orange-500/10 via-orange-400/10 to-amber-300/10",
 };
 const fallbackGradient = "from-violet-500/10 via-purple-500/10 to-fuchsia-500/10";
 
