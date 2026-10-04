@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
