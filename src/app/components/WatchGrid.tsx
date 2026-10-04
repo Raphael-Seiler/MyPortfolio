@@ -14,34 +14,24 @@ import { projects, Project } from "../../content/projects";
 
 type Bubble = { key: string; src: string; contain: boolean; project: Project };
 
-/** Every distinct image of a project that works as an "app icon". */
-function bubblesFor(project: Project): Bubble[] {
+/** One "app icon" per project: its logo, or the card image if it has none. */
+function bubbleFor(project: Project): Bubble {
   const { images } = project;
-  const srcs = [images.card, images.logo, ...images.hero, ...images.gallery, images.highlightFigure?.src];
-  const unique = [...new Set(srcs.filter((s): s is string => !!s))];
-  return unique.map((src) => ({
-    key: `${project.meta.id}-${src}`,
+  const src = images.logo ?? images.card;
+  return {
+    key: project.meta.id,
     src,
     // logos and cut-outs keep their transparent edges, photos fill the circle
-    contain: src === images.logo || (src === images.card && !images.hero.includes(src)),
+    contain: src === images.logo || !images.hero.includes(src),
     project,
-  }));
+  };
 }
 
-/** Mix the projects so neighbouring icons belong to different projects. */
-function interleave(lists: Bubble[][]): Bubble[] {
-  const out: Bubble[] = [];
-  for (let i = 0; out.length < lists.reduce((n, l) => n + l.length, 0); i++) {
-    lists.forEach((l) => l[i] && out.push(l[i]));
-  }
-  return out;
-}
-
-/** Honeycomb rows like the watch face: 3-4-3, 4-5-4, … depending on the count. */
+/** Honeycomb rows like the watch face: 2-1, 3-4-3, 4-5-4, … depending on the count. */
 function rowSizes(count: number): number[] {
+  if (count <= 2) return [count];
   const rows: number[] = [];
-  let wide = Math.ceil(Math.sqrt(count * 1.2));
-  if (wide < 3) wide = 3;
+  const wide = Math.max(3, Math.ceil(Math.sqrt(count * 1.2)));
   let left = count;
   let narrow = true;
   while (left > 0) {
@@ -54,7 +44,7 @@ function rowSizes(count: number): number[] {
 }
 
 const SPACING = 1.08; // distance between centers, relative to icon size
-const MAX_SIZE = 140;
+const MAX_SIZE = 180;
 
 function Icon({
   bubble,
@@ -155,7 +145,7 @@ export function WatchGrid() {
   const [hovered, setHovered] = useState<Bubble | null>(null);
   const [canHover] = useState(() => typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches);
 
-  const bubbles = useMemo(() => interleave(projects.map(bubblesFor)), []);
+  const bubbles = useMemo(() => projects.map(bubbleFor), []);
   const rows = useMemo(() => rowSizes(bubbles.length), [bubbles.length]);
   const widest = Math.max(...rows);
 
@@ -176,7 +166,9 @@ export function WatchGrid() {
     const list: { x: number; y: number }[] = [];
     rows.forEach((n, r) => {
       const y = (r - (rows.length - 1) / 2) * rowStep;
-      for (let i = 0; i < n; i++) list.push({ x: (i - (n - 1) / 2) * step, y });
+      // rows with the same parity as the row above are shifted half a step so the icons interlock
+      const shift = r > 0 && n % 2 === rows[r - 1] % 2 ? step / 2 : 0;
+      for (let i = 0; i < n; i++) list.push({ x: (i - (n - 1) / 2) * step + shift, y });
     });
     return list;
   }, [rows, step, rowStep]);
