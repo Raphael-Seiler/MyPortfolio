@@ -200,7 +200,6 @@ export function Experience() {
                         y: depth < 0 ? 80 : -depth * step.y,
                         z: depth < 0 ? 300 : -depth * step.z,
                         opacity: hidden ? 0 : 1 - depth * 0.16,
-                        filter: `blur(${depth > 0 ? Math.min(depth * 0.6, 3) : 0}px)`,
                       }}
                       transition={transition}
                       style={{ zIndex: items.length - Math.abs(depth), pointerEvents: hidden ? "none" : "auto" }}
@@ -208,7 +207,8 @@ export function Experience() {
                         depth > 0 ? "cursor-pointer" : ""
                       }`}
                     >
-                      <div className="h-full flex flex-col overflow-hidden rounded-[22px] bg-white dark:bg-[#1c1c1e] border border-black/10 dark:border-white/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.45)]">
+                      <div className="h-full rounded-[22px] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.45)]">
+                      <div className="h-full flex flex-col overflow-hidden isolate rounded-[22px] [clip-path:inset(0_round_22px)] bg-white dark:bg-[#1c1c1e] border border-black/10 dark:border-white/10">
                         {/* Window title bar */}
                         <div className="relative h-11 shrink-0 flex items-center px-4 border-b border-black/5 dark:border-white/10 bg-[#f5f5f7] dark:bg-[#2c2c2e]">
                           <span className="flex gap-2" aria-hidden="true">
@@ -250,6 +250,7 @@ export function Experience() {
                             </a>
                           )}
                         </div>
+                      </div>
                       </div>
                     </motion.article>
                   );
