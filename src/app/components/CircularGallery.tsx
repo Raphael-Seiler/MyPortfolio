@@ -739,7 +739,7 @@ export default function CircularGallery({
   items,
   bend = 1,
   textColor = '#ffffff',
-  textColorDark = '#f5f5f7',
+  textColorDark = '#e8eaed',
   borderRadius = 0.05,
   font = 'bold 28px -apple-system, BlinkMacSystemFont, SF Pro Display',
   scrollSpeed = 2,
@@ -795,7 +795,7 @@ export default function CircularGallery({
 
   return (
     <div
-      className="relative w-full h-full overflow-hidden cursor-none touch-pan-y"
+      className="relative w-full h-full overflow-hidden touch-pan-y"
       ref={containerRef}
     />
   );

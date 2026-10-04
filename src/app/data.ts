@@ -1,3 +1,5 @@
+import ddfImg from "../assets/awards/ddf-2026.jpg";
+
 export const projects = [
   {
     id: "1",
@@ -120,4 +122,39 @@ export const experiences = [
     details: "Vertiefung in UX/UI Design, Interaction Design und visuelle Kommunikation. Kombination von technischem Wissen und kreativer Gestaltung.",
     detailsEn: "Specialized in UX/UI Design, Interaction Design and Visual Communication. Combination of technical knowledge and creative design."
   }
+];
+
+export const awards = [
+  {
+    id: "ddf-2026",
+    status: "won",
+    title: "Digital Design Festival 2026",
+    titleEn: "Digital Design Festival 2026",
+    result: "3. Platz",
+    resultEn: "3rd Place",
+    project: "SCRJ Lakers 2 – Live-Audio-Kommentar",
+    projectEn: "SCRJ Lakers 2 – Live Audio Commentary",
+    date: "13. Juli 2026",
+    dateEn: "July 13, 2026",
+    description: "Preis der Projektausstellung des BSc Digital Design an der OST, vergeben per Publikumsvoting. Gemeinsam mit Francisco Barbosa, Aaron Bänziger und Andri Vogt.",
+    descriptionEn: "Prize at the BSc Digital Design project exhibition at OST, decided by audience voting. Together with Francisco Barbosa, Aaron Bänziger and Andri Vogt.",
+    image: ddfImg,
+    link: "https://www.ost.ch/de/studium/informatik/bachelor-digital-design/projektausstellung-am-13-juli-2026-1",
+  },
+  {
+    id: "yia-2026",
+    status: "nominated",
+    title: "Young Innovators Award 2026",
+    titleEn: "Young Innovators Award 2026",
+    result: "Nominiert · Kategorie «Golden Idea»",
+    resultEn: "Nominated · Category “Golden Idea”",
+    project: "SCRJ Lakers 2 – Live-Audio-Kommentar",
+    projectEn: "SCRJ Lakers 2 – Live Audio Commentary",
+    date: "11. November 2026",
+    dateEn: "November 11, 2026",
+    description: "Aus dem Anwendungsprojekt 3 für den Young Innovators Award der OST nominiert. Eine externe Jury entscheidet, ob wir in der Kategorie «Golden Idea» den 1., 2. oder 3. Platz erreichen. Preisverleihung in der Aula, Campus Rapperswil-Jona.",
+    descriptionEn: "Nominated from Application Project 3 for OST's Young Innovators Award. An external jury will decide whether we place 1st, 2nd or 3rd in the “Golden Idea” category. Award ceremony at the Aula, Campus Rapperswil-Jona.",
+    image: null,
+    link: "https://www.ost.ch/de/forschung-und-dienstleistungen/informatik/young-innovators-award",
+  },
 ];
