@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { CSSProperties, ReactNode, useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check } from "lucide-react";
@@ -17,6 +17,30 @@ const pillButton =
   "inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:ring-offset-2";
 const primaryButton = `${pillButton} bg-[#1d1d1f] dark:bg-[#f5f5f7] text-white dark:text-[#1d1d1f] hover:bg-[#333336] dark:hover:bg-[#e5e5ea]`;
 const secondaryButton = `${pillButton} bg-[#f5f5f7] dark:bg-[#1d1d1f] ${strong} hover:bg-[#e8e8ed] dark:hover:bg-[#2c2c2e]`;
+
+/* ---------- project colour ---------- */
+
+const toRgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+const mix = (hex: string, target: string, amount: number) => {
+  const a = toRgb(hex);
+  const b = toRgb(target);
+  return `#${a.map((v, i) => Math.round(v + (b[i] - v) * amount).toString(16).padStart(2, "0")).join("")}`;
+};
+const alpha = (hex: string, a: number) => `rgba(${toRgb(hex).join(",")},${a})`;
+
+/** CSS variables for a project's main colour: --accent (bright), --accent-ink (readable on white), --accent-soft (tint). */
+const accentVars = (color: string) =>
+  ({
+    "--accent": color,
+    "--accent-ink": mix(color, "#000000", 0.3),
+    "--accent-light": mix(color, "#ffffff", 0.35),
+    "--accent-soft": alpha(color, 0.18),
+  }) as CSSProperties;
+
+// Text/details in the project colour: deep shade on light backgrounds, bright colour in dark mode
+const accentText = "text-[var(--accent-ink)] dark:text-[var(--accent)]";
+const accentGradient =
+  "bg-[linear-gradient(90deg,var(--accent-ink),var(--accent))] dark:bg-[linear-gradient(90deg,var(--accent),var(--accent-light))]";
 
 /* ---------- shared building blocks (teaser + full page) ---------- */
 
@@ -46,7 +70,7 @@ function Header({ pill, title, gradient, intro }: { pill: ReactNode; title: stri
       <h1 className={`text-[2rem] sm:text-5xl md:text-7xl font-semibold tracking-tight ${strong} max-w-4xl mx-auto leading-[1.05] break-words`}>
         {title}
       </h1>
-      <p className="mt-4 inline-block text-2xl md:text-4xl font-semibold tracking-tight bg-gradient-to-r from-[#ff9f0a] via-[#ff375f] to-[#bf5af2] bg-clip-text text-transparent">
+      <p className={`mt-4 inline-block text-2xl md:text-4xl font-semibold tracking-tight ${accentGradient} bg-clip-text text-transparent`}>
         {gradient}
       </p>
       {intro && <p className={`mt-6 text-lg md:text-xl ${muted} max-w-2xl mx-auto`}>{intro}</p>}
@@ -66,7 +90,9 @@ function Cover({ project, title }: { project: Project; title: string }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.9, delay: 0.15, ease }}
       className={`relative overflow-hidden rounded-[32px] aspect-[4/3] md:aspect-[16/9] ${
-        isPhoto && !screens ? "bg-black" : "bg-gradient-to-b from-[#f5f5f7] to-[#e8e8ed] dark:from-[#1d1d1f] dark:to-[#111113]"
+        isPhoto && !screens
+          ? "bg-black"
+          : "bg-[linear-gradient(180deg,var(--accent-soft),#f5f5f7)] dark:bg-[linear-gradient(180deg,var(--accent-soft),#111113)]"
       }`}
     >
       {screens ? (
@@ -108,7 +134,7 @@ function FloatingCard({ children }: { children: ReactNode }) {
   );
 }
 
-function PageShell({ children }: { children: ReactNode }) {
+function PageShell({ color, children }: { color: string; children: ReactNode }) {
   const [isDark, setIsDark] = useState(false);
   useEffect(() => {
     const checkDarkMode = () => setIsDark(document.documentElement.classList.contains("dark"));
@@ -119,8 +145,13 @@ function PageShell({ children }: { children: ReactNode }) {
   }, []);
   return (
     <ClickSpark sparkColor={isDark ? "#ffffff" : "#000000"} sparkSize={19} sparkRadius={40} sparkCount={13} duration={400} disableOnMobile>
-      <div className="w-full min-h-screen pt-28 pb-24">
-        <div className="max-w-6xl mx-auto px-6 md:px-12">{children}</div>
+      <div className="relative w-full min-h-screen pt-28 pb-24" style={accentVars(color)}>
+        {/* Faded glow in the project colour behind the top of the page */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[1100px] bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,var(--accent-soft),transparent_75%)]"
+        />
+        <div className="relative max-w-6xl mx-auto px-6 md:px-12">{children}</div>
       </div>
     </ClickSpark>
   );
@@ -142,9 +173,9 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
   );
 }
 
-function Eyebrow({ children, color }: { children: string; color: string }) {
+function Eyebrow({ children }: { children: string }) {
   return (
-    <p className="text-sm font-semibold tracking-tight mb-3" style={{ color }}>
+    <p className={`text-sm font-semibold tracking-tight mb-3 ${accentText}`}>
       {children}
     </p>
   );
@@ -155,7 +186,7 @@ function SectionTitle({ children }: { children: string }) {
 }
 
 /** Untitled entries become intro paragraphs, titled ones become numbered tiles. */
-function Steps({ value, color, icon }: { value: string | TitledText[]; color: string; icon?: "check" }) {
+function Steps({ value, icon }: { value: string | TitledText[]; icon?: "check" }) {
   if (!Array.isArray(value)) {
     return <p className={`text-xl md:text-2xl leading-relaxed ${muted} max-w-4xl`}>{value}</p>;
   }
@@ -181,11 +212,11 @@ function Steps({ value, color, icon }: { value: string | TitledText[]; color: st
               className={`${tile} p-7 md:p-8 flex flex-col`}
             >
               {icon === "check" ? (
-                <span className="w-9 h-9 rounded-full flex items-center justify-center text-white mb-6" style={{ backgroundColor: color }}>
+                <span className="w-9 h-9 rounded-full flex items-center justify-center text-white dark:text-black mb-6 bg-[var(--accent-ink)] dark:bg-[var(--accent)]">
                   <Check size={18} strokeWidth={2.5} aria-hidden="true" />
                 </span>
               ) : (
-                <span className="text-4xl font-semibold tracking-tight tabular-nums mb-6" style={{ color }}>
+                <span className={`text-4xl font-semibold tracking-tight tabular-nums mb-6 ${accentText}`}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
               )}
@@ -249,7 +280,7 @@ export function ProjectDetail() {
   const inProgress = !content.goal && !content.process && !content.result && !content.testing && !content.reflection;
   if (inProgress) {
     return (
-      <PageShell>
+      <PageShell color={accent}>
         <BackLink />
         <Header
           title={title}
@@ -257,8 +288,8 @@ export function ProjectDetail() {
           pill={
             <>
               <span className="relative flex h-2 w-2" aria-hidden="true">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-[#ff9f0a] opacity-70 animate-ping motion-reduce:animate-none" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff9f0a]" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-70 animate-ping motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent)]" />
               </span>
               {lang === "de" ? "In Arbeit" : "In progress"}
             </>
@@ -288,7 +319,7 @@ export function ProjectDetail() {
   const next = projects[(index + 1) % projects.length];
 
   return (
-    <PageShell>
+    <PageShell color={accent}>
       <BackLink />
       <Header
         title={title}
@@ -296,7 +327,7 @@ export function ProjectDetail() {
         intro={content.subtitle[lang]}
         pill={
           <>
-            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: accent }} aria-hidden="true" />
+            <span className="h-2 w-2 rounded-full bg-[var(--accent)]" aria-hidden="true" />
             {meta.category[lang]} · {meta.year}
           </>
         }
@@ -331,7 +362,7 @@ export function ProjectDetail() {
         {/* Charter as a big statement */}
         {content.charter[lang] && (
           <Reveal className="max-w-4xl">
-            <Eyebrow color={accent}>{t.projectDetail.projectCharter}</Eyebrow>
+            <Eyebrow>{t.projectDetail.projectCharter}</Eyebrow>
             <p className={`text-xl md:text-3xl font-semibold tracking-tight leading-[1.3] ${strong}`}>{content.charter[lang]}</p>
           </Reveal>
         )}
@@ -339,7 +370,7 @@ export function ProjectDetail() {
         {content.goal && (
           <Reveal className="grid md:grid-cols-[1fr_1.4fr] gap-6 md:gap-16 items-start">
             <div>
-              <Eyebrow color={accent}>{t.projectDetail.ourGoal}</Eyebrow>
+              <Eyebrow>{t.projectDetail.ourGoal}</Eyebrow>
               <h2 className={`text-3xl md:text-5xl font-semibold tracking-tight ${strong}`}>
                 {lang === "de" ? "Worum es ging." : "What it was about."}
               </h2>
@@ -350,18 +381,18 @@ export function ProjectDetail() {
 
         {content.process && (
           <Reveal>
-            <Eyebrow color={accent}>{lang === "de" ? t.projectDetail.prozess : t.projectDetail.process}</Eyebrow>
+            <Eyebrow>{lang === "de" ? t.projectDetail.prozess : t.projectDetail.process}</Eyebrow>
             <SectionTitle>{lang === "de" ? "Vom Problem zur Lösung." : "From problem to solution."}</SectionTitle>
-            <Steps value={content.process[lang]} color={accent} />
+            <Steps value={content.process[lang]} />
             {images.processFigures && <Figures figures={images.processFigures} />}
           </Reveal>
         )}
 
         {content.result && (
           <Reveal>
-            <Eyebrow color={accent}>{t.projectDetail.result}</Eyebrow>
+            <Eyebrow>{t.projectDetail.result}</Eyebrow>
             <SectionTitle>{lang === "de" ? "Das Ergebnis." : "The result."}</SectionTitle>
-            <Steps value={content.result[lang]} color={accent} />
+            <Steps value={content.result[lang]} />
           </Reveal>
         )}
 
@@ -370,7 +401,7 @@ export function ProjectDetail() {
           <Reveal>
             <div className="rounded-[32px] bg-[#1d1d1f] dark:bg-[#1c1c1e] text-[#f5f5f7] p-8 md:p-14 grid gap-10 md:gap-14 md:grid-cols-2 items-center overflow-hidden">
               <div>
-                <p className="text-sm font-semibold tracking-tight mb-3 text-[#ff9f0a]">{lang === "de" ? "Das Highlight" : "The highlight"}</p>
+                <p className="text-sm font-semibold tracking-tight mb-3 text-[var(--accent)]">{lang === "de" ? "Das Highlight" : "The highlight"}</p>
                 <p className="text-lg md:text-xl leading-relaxed text-[#d2d2d7]">{content.highlight[lang]}</p>
               </div>
               {images.highlightFigure ? (
@@ -397,16 +428,16 @@ export function ProjectDetail() {
 
         {content.testing && (
           <Reveal>
-            <Eyebrow color={accent}>Testing &amp; Accessibility</Eyebrow>
+            <Eyebrow>Testing &amp; Accessibility</Eyebrow>
             <SectionTitle>{lang === "de" ? "Geprüft und verbessert." : "Tested and refined."}</SectionTitle>
-            <Steps value={content.testing[lang]} color={accent} icon="check" />
+            <Steps value={content.testing[lang]} icon="check" />
           </Reveal>
         )}
 
         {/* Reflection as the closing statement */}
         {content.reflection && (
           <Reveal className="text-center max-w-3xl mx-auto">
-            <Eyebrow color={accent}>{t.projectDetail.reflection}</Eyebrow>
+            <Eyebrow>{t.projectDetail.reflection}</Eyebrow>
             <p className={`text-xl md:text-2xl font-semibold tracking-tight leading-snug ${strong}`}>{content.reflection[lang]}</p>
           </Reveal>
         )}

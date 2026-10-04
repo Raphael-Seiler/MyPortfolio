@@ -11,7 +11,7 @@ export const meta: ProjectMeta = {
   category: { de: "UX Design", en: "UX Design" },
   tags: ["ux", "ui"],
   year: "2024",
-  color: "#4285F4",
+  color: "#F4C300",
   stats: [
     { de: "6-köpfiges Team", en: "6-person team" },
     { de: "Figma Prototyp", en: "Figma prototype" },

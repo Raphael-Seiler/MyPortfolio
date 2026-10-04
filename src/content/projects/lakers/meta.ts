@@ -11,7 +11,7 @@ export const meta: ProjectMeta = {
   category: { de: "Digital Design", en: "Digital Design" },
   tags: ["ux", "ui"],
   year: "2026",
-  color: "#FBBC05",
+  color: "#C8102E",
   stats: [
     { de: "3. Platz Design Festival", en: "3rd place Design Festival" },
     { de: "Young Innovators nominiert", en: "Young Innovators nominee" },

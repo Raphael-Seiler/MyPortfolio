@@ -11,7 +11,7 @@ export const meta: ProjectMeta = {
   category: { de: "E-Commerce", en: "E-Commerce" },
   tags: ["ecommerce", "ui"],
   year: "2025",
-  color: "#34A853",
+  color: "#2E9B57",
   stats: [
     { de: "High-Fidelity Prototyp", en: "High-fidelity prototype" },
     { de: "Responsive Design", en: "Responsive design" },
