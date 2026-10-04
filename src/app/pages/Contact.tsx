@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowUp, Instagram, Linkedin, Mail, MessageCircle, RotateCcw } from "lucide-react";
+import { ArrowUp, Instagram, Linkedin, Pencil, RotateCcw, Send } from "lucide-react";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import ClickSpark from "../components/ClickSpark";
 import avatarImg from "../../assets/home/Raphi_Mii_4K.webp";
 
-const EMAIL = "raphi.seiler@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/rapha%C3%ABl-seiler-47b3a1338";
 const INSTAGRAM = "https://www.instagram.com/seiler_raphi/";
 
-type Step = "name" | "email" | "message" | "sending" | "done";
-type Bubble = { id: number; from: "raphi" | "me"; text: string; status?: string };
+type Step = "name" | "email" | "message" | "confirm" | "sending" | "done" | "failed";
+type Bubble = { id: number; from: "raphi" | "me"; text: string; status?: string; summary?: { name: string; email: string; message: string } };
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
@@ -84,10 +83,13 @@ export function Contact() {
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
-  }, [bubbles, typing, reduceMotion]);
+  }, [bubbles, typing, step, reduceMotion]);
 
-  const send = async (message: string, data: typeof answers) => {
+  /** Sends the message directly via Formspree (no mail app). */
+  const send = async () => {
+    const data = answers;
     setStep("sending");
+    setBubbles((b) => [...b, { id: nextId.current++, from: "me", text: de ? "Ja, senden" : "Yes, send it" }]);
     let ok = false;
     try {
       const response = await fetch("https://formspree.io/f/mqayvoaq", {
@@ -100,10 +102,13 @@ export function Contact() {
       ok = false;
     }
     if (!ok) {
-      // Fallback: open the visitor's mail app with everything filled in
-      window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent("Kontaktanfrage von " + data.name)}&body=${encodeURIComponent(
-        "Name: " + data.name + "\nE-Mail: " + data.email + "\n\n" + message,
-      )}`;
+      setStep("failed");
+      say([
+        de
+          ? "Oh nein, das hat gerade nicht geklappt. Deine Nachricht ist noch da – versuch es gleich nochmal."
+          : "Oh no, that didn't work just now. Your message is still here – please try again.",
+      ]);
+      return;
     }
     setBubbles((b) => b.map((x, i) => (i === b.length - 1 ? { ...x, status: de ? "Zugestellt" : "Delivered" } : x)));
     setStep("done");
@@ -114,10 +119,20 @@ export function Contact() {
     );
   };
 
+  /** Back to the message step with the text pre-filled. */
+  const edit = () => {
+    setBubbles((b) => [...b, { id: nextId.current++, from: "me", text: de ? "Nochmal bearbeiten" : "Edit it" }]);
+    setDraft(answers.message);
+    setStep("message");
+    say([de ? "Kein Problem. Pass deine Nachricht an und schick sie mir nochmal." : "No problem. Adjust your message and send it again."], () =>
+      inputRef.current?.focus(),
+    );
+  };
+
   const onSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     const value = draft.trim();
-    if (!value || typing || step === "sending" || step === "done") return;
+    if (!value || typing || !["name", "email", "message"].includes(step)) return;
     setBubbles((b) => [...b, { id: nextId.current++, from: "me", text: value }]);
     setDraft("");
 
@@ -140,7 +155,11 @@ export function Contact() {
     } else if (step === "message") {
       const data = { ...answers, message: value };
       setAnswers(data);
-      send(value, data);
+      setStep("confirm");
+      say([de ? "Hier nochmal alles auf einen Blick:" : "Here's everything at a glance:"], () => {
+        setBubbles((b) => [...b, { id: nextId.current++, from: "raphi", text: "", summary: data }]);
+        say([de ? "Soll ich die Nachricht so senden?" : "Shall I send it like this?"]);
+      });
     }
     inputRef.current?.focus();
   };
@@ -149,14 +168,14 @@ export function Contact() {
     name: de ? "Dein Name" : "Your name",
     email: de ? "deine@email.ch" : "your@email.com",
     message: de ? "Deine Nachricht" : "Your message",
+    confirm: de ? "Bitte bestätigen" : "Please confirm",
     sending: de ? "Wird gesendet …" : "Sending …",
     done: de ? "Nachricht gesendet" : "Message sent",
+    failed: de ? "Nicht gesendet" : "Not sent",
   }[step];
-  const inputDisabled = step === "sending" || step === "done";
+  const inputDisabled = !["name", "email", "message"].includes(step);
 
   const actions = [
-    { label: de ? "Nachricht" : "Message", icon: MessageCircle, onClick: () => inputRef.current?.focus() },
-    { label: "Mail", icon: Mail, href: `mailto:${EMAIL}` },
     { label: "LinkedIn", icon: Linkedin, href: LINKEDIN },
     { label: "Instagram", icon: Instagram, href: INSTAGRAM },
   ];
@@ -190,39 +209,27 @@ export function Contact() {
               <h2 className="mt-5 text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">Raphaël Seiler</h2>
               <p className="mt-1 text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Digital Design Student · OST" : "Digital Design student · OST"}</p>
 
-              <div className="mt-8 grid grid-cols-4 gap-2">
-                {actions.map(({ label, icon: Icon, href, onClick }) => {
-                  const inner = (
-                    <>
-                      <span className="w-12 h-12 rounded-full flex items-center justify-center bg-white dark:bg-[#2c2c2e] text-[#0071e3] dark:text-[#2997ff] shadow-sm transition-transform group-hover:scale-110 group-active:scale-95">
-                        <Icon size={20} aria-hidden="true" />
-                      </span>
-                      <span className="text-xs font-medium text-[#0071e3] dark:text-[#2997ff]">{label}</span>
-                    </>
-                  );
-                  const cls = "group flex flex-col items-center gap-2 rounded-2xl py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066cc]";
-                  return href ? (
-                    <a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className={cls}>
-                      {inner}
-                    </a>
-                  ) : (
-                    <button key={label} type="button" onClick={onClick} className={cls}>
-                      {inner}
-                    </button>
-                  );
-                })}
+              <div className="mt-8 flex justify-center gap-6">
+                {actions.map(({ label, icon: Icon, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex flex-col items-center gap-2 rounded-2xl px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066cc]"
+                  >
+                    <span className="w-12 h-12 rounded-full flex items-center justify-center bg-white dark:bg-[#2c2c2e] text-[#0071e3] dark:text-[#2997ff] shadow-sm transition-transform group-hover:scale-110 group-active:scale-95">
+                      <Icon size={20} aria-hidden="true" />
+                    </span>
+                    <span className="text-xs font-medium text-[#0071e3] dark:text-[#2997ff]">{label}</span>
+                  </a>
+                ))}
               </div>
 
-              <dl className="mt-8 text-left rounded-2xl bg-white dark:bg-[#2c2c2e] divide-y divide-black/5 dark:divide-white/10">
-                <div className="px-5 py-3">
-                  <dt className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "E-Mail" : "Email"}</dt>
-                  <dd>
-                    <a href={`mailto:${EMAIL}`} className="text-[#0071e3] dark:text-[#2997ff] hover:underline break-all">{EMAIL}</a>
-                  </dd>
-                </div>
+              <dl className="mt-8 text-left rounded-2xl bg-white dark:bg-[#2c2c2e]">
                 <div className="px-5 py-3">
                   <dt className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Ort" : "Location"}</dt>
-                  <dd className="text-[#1d1d1f] dark:text-[#f5f5f7]">{de ? "Liechtenstein / Ostschweiz" : "Liechtenstein / Eastern Switzerland"}</dd>
+                  <dd className="text-[#1d1d1f] dark:text-[#f5f5f7]">Rapperswil-Jona</dd>
                 </div>
               </dl>
             </motion.aside>
@@ -267,7 +274,18 @@ export function Contact() {
                               : "bg-[#e9e9eb] dark:bg-[#3a3a3c] text-[#1d1d1f] dark:text-[#f5f5f7] rounded-[20px] rounded-bl-[6px]"
                           }`}
                         >
-                          {b.text}
+                          {b.summary ? (
+                            <span className="block min-w-[220px]">
+                              <span className="block text-xs text-[#86868b]">{de ? "Name" : "Name"}</span>
+                              <span className="block font-medium mb-2">{b.summary.name}</span>
+                              <span className="block text-xs text-[#86868b]">{de ? "E-Mail" : "Email"}</span>
+                              <span className="block font-medium mb-2 break-all">{b.summary.email}</span>
+                              <span className="block text-xs text-[#86868b]">{de ? "Nachricht" : "Message"}</span>
+                              <span className="block">{b.summary.message}</span>
+                            </span>
+                          ) : (
+                            b.text
+                          )}
                         </p>
                         {b.status && <span className="mt-1 mr-1 text-[11px] text-[#86868b]">{b.status}</span>}
                       </motion.div>
@@ -296,6 +314,31 @@ export function Contact() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+
+                {(step === "confirm" || step === "failed") && !typing && bubbles[bubbles.length - 1]?.from === "raphi" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex flex-wrap justify-end gap-2 pt-2"
+                  >
+                    <button
+                      type="button"
+                      onClick={edit}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#0a84ff] text-[#0a84ff] text-sm font-medium hover:bg-[#0a84ff]/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066cc]"
+                    >
+                      <Pencil size={14} aria-hidden="true" />
+                      {de ? "Bearbeiten" : "Edit"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={send}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0a84ff] text-white text-sm font-medium hover:bg-[#0071e3] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066cc] focus-visible:ring-offset-2"
+                    >
+                      <Send size={14} aria-hidden="true" />
+                      {step === "failed" ? (de ? "Nochmal senden" : "Try again") : de ? "Ja, senden" : "Yes, send it"}
+                    </button>
+                  </motion.div>
+                )}
 
                 {step === "done" && !typing && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex justify-center pt-6">
