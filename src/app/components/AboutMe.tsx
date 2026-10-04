@@ -6,12 +6,10 @@ import {
   useTransform,
   MotionValue,
 } from "motion/react";
-import { Car, ChevronLeft, ChevronRight, Coffee, Fish, Sparkles, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
-
-// Icons for the hobbies, in the order of translations.home.hobbiesList
-const hobbyIcons = [Car, Fish, Coffee, Users];
+import { HobbyBook } from "./HobbyBook";
 
 // Left padding that lines the gallery up with the max-w-6xl content column
 const galleryInset = "max(1.5rem, calc((100vw - 72rem) / 2 + 3rem))";
@@ -54,18 +52,14 @@ function Statement({ lead, text }: { lead: string; text: string }) {
   );
 }
 
-function CardShell({ index, dark, children }: { index: number; dark?: boolean; children: ReactNode }) {
+function CardShell({ index, children }: { index: number; children: ReactNode }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
-      className={`snap-start shrink-0 w-[78vw] sm:w-[440px] md:w-[480px] min-h-[420px] md:min-h-[460px] rounded-[28px] p-8 md:p-10 flex flex-col ${
-        dark
-          ? "bg-[#1d1d1f] text-[#f5f5f7] dark:bg-[#f5f5f7] dark:text-[#1d1d1f]"
-          : "bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#1d1d1f] dark:text-[#f5f5f7]"
-      }`}
+      className="snap-start shrink-0 w-[78vw] sm:w-[440px] md:w-[480px] min-h-[420px] md:min-h-[460px] rounded-[28px] p-8 md:p-10 flex flex-col bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#1d1d1f] dark:text-[#f5f5f7]"
     >
       {children}
     </motion.article>
@@ -185,38 +179,23 @@ export function AboutMe() {
           </p>
         </CardShell>
 
-        {/* Hobbies */}
-        <CardShell index={2} dark>
-          <Eyebrow className="text-[#30d158] dark:text-[#248a3d]">{t.hobbies}</Eyebrow>
-          <h4 className="text-2xl md:text-3xl font-semibold tracking-tight mb-10">{t.wennIchNichtDesigne}</h4>
-          <ul className="mt-auto grid grid-cols-2 gap-3">
-            {t.hobbiesList.map((item, i) => {
-              const Icon = hobbyIcons[i] ?? Sparkles;
-              return (
-                <li
-                  key={item}
-                  className="rounded-2xl bg-white/10 dark:bg-black/5 p-4 flex flex-col gap-3"
-                >
-                  <Icon size={26} strokeWidth={1.75} aria-hidden="true" />
-                  <span className="text-sm md:text-base font-medium leading-snug">{item}</span>
-                </li>
-              );
-            })}
-          </ul>
-        </CardShell>
-
         {/* Spacer so the last card can snap to the start on wide screens */}
         <div className="shrink-0 w-px" aria-hidden="true" />
       </div>
 
       {/* Paddle navigation */}
-      <div className="max-w-6xl mx-auto px-6 md:px-12 mt-6 flex justify-end gap-3">
+      <div className={`max-w-6xl mx-auto px-6 md:px-12 mt-6 flex justify-end gap-3 ${canPrev || canNext ? "" : "invisible"}`}>
         <button type="button" onClick={() => scrollByCard(-1)} disabled={!canPrev} className={paddleClass} aria-label={lang === "de" ? "Zurück" : "Previous"}>
           <ChevronLeft size={20} />
         </button>
         <button type="button" onClick={() => scrollByCard(1)} disabled={!canNext} className={paddleClass} aria-label={lang === "de" ? "Weiter" : "Next"}>
           <ChevronRight size={20} />
         </button>
+      </div>
+
+      {/* Hobbies as a book, full width below the gallery */}
+      <div className="max-w-6xl mx-auto px-6 md:px-12 mt-16 md:mt-24">
+        <HobbyBook />
       </div>
     </section>
   );
