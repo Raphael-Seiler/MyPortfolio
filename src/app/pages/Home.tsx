@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { Link, useNavigate } from "react-router";
-import MagicBento from "../components/MagicBento";
+import { AboutMe } from "../components/AboutMe";
 import CircularGallery from "../components/CircularGallery";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
@@ -11,39 +11,6 @@ import { ArrowRight, ArrowUpRight, Medal, Star } from "lucide-react";
 import { projects, allAwards } from "../../content/projects";
 import imgDefault from "../../assets/home/Raphi_Mii_4K.webp";
 import imgHover from "../../assets/home/Raphi_Mii_4K_pose.webp";
-
-// Apple-style minimal icons
-const LightbulbIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
-    <path d="M9 21h6"/>
-    <path d="M10 17l2 2 2-2"/>
-  </svg>
-);
-
-const ZapIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-  </svg>
-);
-
-const TargetIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <circle cx="12" cy="12" r="6"/>
-    <circle cx="12" cy="12" r="2"/>
-  </svg>
-);
-
-const CoffeeIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
-    <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
-    <line x1="6" x2="6" y1="1" y2="4"/>
-    <line x1="10" x2="10" y1="1" y2="4"/>
-    <line x1="14" x2="14" y1="1" y2="4"/>
-  </svg>
-);
 
 export function Home() {
   const [isHovering, setIsHovering] = useState(false);
@@ -268,85 +235,8 @@ export function Home() {
           </div>
         </section>
 
-        {/* About Section - Bento Grid */}
-        <section className="py-24 md:py-32">
-          <div className="max-w-6xl mx-auto px-6 md:px-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-16"
-            >
-              <h3 className="text-3xl md:text-5xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
-                {t.home.aboutTitle}
-              </h3>
-              <p className="text-lg text-[#5e5e63] dark:text-[#b8b8b8] max-w-2xl mx-auto">
-                {t.home.aboutSubtitle}
-              </p>
-            </motion.div>
-
-            <MagicBento
-              cards={[
-                {
-                  label: t.home.philosophie,
-                  title: t.home.philosophieTitle,
-                  description: t.home.philosophieText,
-                  className: "card-span-2-md",
-                  icon: <LightbulbIcon />
-                },
-                {
-                  label: t.home.staerken,
-                  title: t.home.staerkenTitle,
-                  description: (
-                    <ul className="list-disc list-inside space-y-1 text-left text-[#5e5e63] dark:text-[#b8b8b8]">
-                      {t.home.staerkenList.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  ),
-                  icon: <ZapIcon />
-                },
-                {
-                  label: t.home.entwicklung,
-                  title: t.home.entwicklungTitle,
-                  description: (
-                    <ul className="list-disc list-inside space-y-1 text-left text-[#5e5e63] dark:text-[#b8b8b8]">
-                      {t.home.entwicklungList.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  ),
-                  icon: <TargetIcon />
-                },
-                {
-                  label: t.home.hobbies,
-                  title: t.home.wennIchNichtDesigne,
-                  description: (
-                    <ul className="list-disc list-inside space-y-1 text-left text-[#5e5e63] dark:text-[#b8b8b8]">
-                      {t.home.hobbiesList.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  ),
-                  className: "card-col-span-2-md",
-                  icon: <CoffeeIcon />
-                }
-              ]}
-              textAutoHide={true}
-              enableStars
-              enableSpotlight
-              enableBorderGlow={true}
-              enableTilt
-              enableMagnetism={false}
-              clickEffect
-              spotlightRadius={290}
-              particleCount={12}
-              glowColor="0, 113, 227"
-              disableAnimations={false}
-            />
-          </div>
-        </section>
+        {/* About Me */}
+        <AboutMe />
 
       </div>
     </ClickSpark>
