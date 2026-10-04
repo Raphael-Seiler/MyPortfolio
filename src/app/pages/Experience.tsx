@@ -7,7 +7,7 @@ import ClickSpark from "../components/ClickSpark";
 import { timeline } from "../../content/timeline";
 
 // Depth of the Time Machine stack: each older window sits higher and further away
-const STEP = { desktop: { y: 46, z: 170 }, phone: { y: 26, z: 120 } };
+const STEP = { desktop: { y: 36, z: 170 }, phone: { y: 22, z: 120 } };
 const VISIBLE_BEHIND = 4;
 
 function useIsDesktop() {
@@ -182,7 +182,7 @@ export function Experience() {
                 onKeyDown={onKeyDown}
                 onPointerDown={onPointerDown}
                 onPointerUp={onPointerUp}
-                className="relative flex-1 h-[560px] md:h-[620px] touch-pan-y focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0066cc] rounded-[32px]"
+                className="relative flex-1 h-[680px] md:h-[780px] touch-pan-y focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0066cc] rounded-[32px]"
                 style={{ perspective: 1400, perspectiveOrigin: "50% 0%" }}
               >
                 {items.map((item, i) => {
@@ -204,7 +204,7 @@ export function Experience() {
                       }}
                       transition={transition}
                       style={{ zIndex: items.length - Math.abs(depth), pointerEvents: hidden ? "none" : "auto" }}
-                      className={`absolute left-4 right-4 md:left-12 md:right-12 lg:left-20 lg:right-20 top-[150px] md:top-[230px] h-[380px] md:h-[350px] ${
+                      className={`absolute left-4 right-4 md:left-12 md:right-12 lg:left-20 lg:right-20 top-[110px] md:top-[180px] h-[460px] md:h-[420px] ${
                         depth > 0 ? "cursor-pointer" : ""
                       }`}
                     >
@@ -221,7 +221,7 @@ export function Experience() {
                           </span>
                         </div>
 
-                        <div className="flex-1 min-h-0 p-6 md:p-10 flex flex-col">
+                        <div className="flex-1 min-h-0 p-7 md:p-12 flex flex-col">
                           <p
                             className={`text-sm font-semibold mb-2 flex items-center gap-2 ${
                               item.award ? "text-[#bf4800] dark:text-[#ff9f0a]" : "text-[#0071e3] dark:text-[#2997ff]"
@@ -231,10 +231,10 @@ export function Experience() {
                               (item.award.status === "won" ? <Medal size={16} aria-hidden="true" /> : <Star size={16} aria-hidden="true" />)}
                             {item.company}
                           </p>
-                          <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-3">
+                          <h2 className="text-2xl md:text-4xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
                             {item.role}
                           </h2>
-                          <p className={`text-base md:text-lg text-[#5e5e63] dark:text-[#b8b8b8] leading-relaxed ${item.award ? "line-clamp-2" : "line-clamp-4"}`}>
+                          <p className={`text-base md:text-lg text-[#5e5e63] dark:text-[#b8b8b8] leading-relaxed ${item.award ? "line-clamp-3" : "line-clamp-6"}`}>
                             {item.details || item.description}
                           </p>
                           {item.award && (
