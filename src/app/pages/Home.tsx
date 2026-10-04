@@ -1,14 +1,14 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { AboutMe } from "../components/AboutMe";
-import CircularGallery from "../components/CircularGallery";
+import { WatchGrid } from "../components/WatchGrid";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import ClickSpark from "../components/ClickSpark";
 import { useEffect } from "react";
 import { ArrowRight, ArrowUpRight, Medal, Star } from "lucide-react";
-import { projects, allAwards } from "../../content/projects";
+import { allAwards } from "../../content/projects";
 import imgDefault from "../../assets/home/Raphi_Mii_4K.webp";
 import imgHover from "../../assets/home/Raphi_Mii_4K_pose.webp";
 
@@ -30,10 +30,6 @@ export function Home() {
 
   const t = translations[lang];
 
-  const galleryItems = useMemo(
-    () => projects.flatMap((p) => p.images.gallery.map((image) => ({ image }))),
-    []
-  );
 
   return (
     <ClickSpark
@@ -124,7 +120,7 @@ export function Home() {
           </motion.div>
         </section>
 
-        {/* Featured Projects Carousel Section */}
+        {/* Featured Projects - Apple Watch style app grid */}
         <section className="py-24 bg-[#f5f5f7] dark:bg-[#1d1d1f]">
           <div className="max-w-7xl mx-auto px-6 md:px-12">
             <motion.div
@@ -142,13 +138,7 @@ export function Home() {
               </p>
             </motion.div>
 
-            <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
-              <CircularGallery
-                items={galleryItems}
-                textColor="#1d1d1f"
-                onItemClick={() => navigate('/projects')}
-              />
-            </div>
+            <WatchGrid />
           </div>
         </section>
 
