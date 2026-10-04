@@ -7,6 +7,7 @@ import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import { getProject, Figure, Localized, TitledText } from "../../content/projects";
 import figmaLogoImg from "../../assets/shared/Figma-logo.svg";
+import underConstructionGif from "../../assets/shared/under-construction.gif";
 
 const headingClass =
   "text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8]";
@@ -100,6 +101,58 @@ export function ProjectDetail() {
 
   const { content, images, links } = project;
   const title = content.title[lang];
+
+  // A project without case-study sections yet only shows its title, cover and a construction note
+  const inProgress = !content.goal && !content.process && !content.result && !content.testing && !content.reflection;
+  if (inProgress) {
+    const cover = images.hero[0] ?? images.card;
+    return (
+      <ClickSpark sparkColor={isDark ? '#ffffff' : '#000000'} sparkSize={19} sparkRadius={40} sparkCount={13} duration={400} disableOnMobile>
+        <div className="w-full min-h-screen">
+          <div className="max-w-5xl mx-auto px-6 md:px-12 py-20 pt-32">
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-2 text-sm font-medium text-[#5e5e63] hover:text-[#1d1d1f] dark:text-[#b8b8b8] dark:hover:text-[#f5f5f7] transition-colors mb-12 focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-lg px-2 py-1"
+            >
+              <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
+              <span>{t.projectDetail.backToProjects}</span>
+            </Link>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-4xl md:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]"
+            >
+              {title}
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="mt-12 rounded-2xl overflow-hidden bg-[#f5f5f7] dark:bg-[#1d1d1f] flex justify-center"
+            >
+              <img src={cover} alt={title} className="w-full h-auto max-h-[560px] object-contain" />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mt-12 mx-auto max-w-md rounded-3xl bg-white p-6 border border-[#d2d2d7]/50 dark:border-white/10"
+            >
+              <img
+                src={underConstructionGif}
+                alt={lang === 'de' ? 'Diese Projektseite ist noch im Aufbau' : 'This project page is under construction'}
+                className="w-full h-auto"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </ClickSpark>
+    );
+  }
 
   return (
     <ClickSpark
