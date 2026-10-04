@@ -1,350 +1,349 @@
-import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Linkedin, Instagram, Mail } from 'lucide-react';
-import { translations } from '../translations';
-import { useLanguage } from '../context/LanguageContext';
-import ClickSpark from '../components/ClickSpark';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ArrowUp, Instagram, Linkedin, Mail, MessageCircle, RotateCcw } from "lucide-react";
+import { translations } from "../translations";
+import { useLanguage } from "../context/LanguageContext";
+import ClickSpark from "../components/ClickSpark";
+import avatarImg from "../../assets/home/Raphi_Mii_4K.webp";
 
-interface FormData {
-  name: string;
-  email: string;
-  message: string;
-}
+const EMAIL = "raphi.seiler@gmail.com";
+const LINKEDIN = "https://www.linkedin.com/in/rapha%C3%ABl-seiler-47b3a1338";
+const INSTAGRAM = "https://www.instagram.com/seiler_raphi/";
 
-interface FormErrors {
-  name?: string;
-  email?: string;
-  message?: string;
-}
+type Step = "name" | "email" | "message" | "sending" | "done";
+type Bubble = { id: number; from: "raphi" | "me"; text: string; status?: string };
 
+const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+/** Contact as an iMessage conversation: Raphi asks, the visitor answers in the compose bar. */
 export function Contact() {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-  const [hasFocus, setHasFocus] = useState<keyof FormData | null>(null);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { lang } = useLanguage();
+  const t = translations[lang];
+  const de = lang === "de";
+  const reduceMotion = useReducedMotion();
 
+  const [isDark, setIsDark] = useState(false);
   useEffect(() => {
-    const checkDarkMode = () => {
-      setIsDark(document.documentElement.classList.contains('dark'));
-    };
+    const checkDarkMode = () => setIsDark(document.documentElement.classList.contains("dark"));
     checkDarkMode();
     const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     return () => observer.disconnect();
   }, []);
 
-  const t = translations[lang];
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
+  const [typing, setTyping] = useState(false);
+  const [step, setStep] = useState<Step>("name");
+  const [draft, setDraft] = useState("");
+  const [answers, setAnswers] = useState({ name: "", email: "", message: "" });
+  const nextId = useRef(0);
+  const timers = useRef<number[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = t.contact.nameRequired;
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = t.contact.emailRequired;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t.contact.emailInvalid;
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = t.contact.messageRequired;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  // Raphi "types" for a moment before each message appears
+  const say = (texts: string[], then?: () => void) => {
+    const pause = reduceMotion ? 150 : 900;
+    let delay = 0;
+    texts.forEach((text, i) => {
+      timers.current.push(window.setTimeout(() => setTyping(true), delay));
+      delay += pause + Math.min(text.length * 12, 700);
+      timers.current.push(
+        window.setTimeout(() => {
+          setTyping(false);
+          setBubbles((b) => [...b, { id: nextId.current++, from: "raphi", text }]);
+          if (i === texts.length - 1) then?.();
+        }, delay),
+      );
+      delay += 250;
+    });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const start = () => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    setBubbles([]);
+    setAnswers({ name: "", email: "", message: "" });
+    setDraft("");
+    setStep("name");
+    say(
+      de
+        ? ["Hallo! 👋", "Schön, dass du vorbeischaust. Ich freue mich über jede Nachricht.", "Wie heisst du?"]
+        : ["Hi there! 👋", "Great to have you here. I'm happy about every message.", "What's your name?"],
+    );
+  };
 
-    if (!validateForm()) {
-      return;
-    }
+  // Restart the conversation when the page opens or the language changes
+  useEffect(() => {
+    start();
+    return () => timers.current.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
-    setIsSubmitting(true);
+  // Keep the newest message in view
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
+  }, [bubbles, typing, reduceMotion]);
 
+  const send = async (message: string, data: typeof answers) => {
+    setStep("sending");
+    let ok = false;
     try {
-      const response = await fetch('https://formspree.io/f/mqayvoaq', {
-        method: 'POST',
-        body: JSON.stringify(formData),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+      const response = await fetch("https://formspree.io/f/mqayvoaq", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { Accept: "application/json", "Content-Type": "application/json" },
       });
-
-      if (response.ok) {
-        setIsSubmitted(true);
-        setFormData({ name: '', email: '', message: '' });
-        setTimeout(() => setIsSubmitted(false), 5000);
-      } else {
-        throw new Error('Form submission failed');
-      }
+      ok = response.ok;
     } catch {
-      // Fallback: open mail client
-      const mailtoLink = `mailto:raphi.seiler@gmail.com?subject=Kontaktanfrage von ${encodeURIComponent(formData.name)}&body=${encodeURIComponent('Name: ' + formData.name + '\nE-Mail: ' + formData.email + '\n\n' + formData.message)}`;
-      window.location.href = mailtoLink;
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setIsSubmitted(false), 5000);
-    } finally {
-      setIsSubmitting(false);
+      ok = false;
     }
+    if (!ok) {
+      // Fallback: open the visitor's mail app with everything filled in
+      window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent("Kontaktanfrage von " + data.name)}&body=${encodeURIComponent(
+        "Name: " + data.name + "\nE-Mail: " + data.email + "\n\n" + message,
+      )}`;
+    }
+    setBubbles((b) => b.map((x, i) => (i === b.length - 1 ? { ...x, status: de ? "Zugestellt" : "Delivered" } : x)));
+    setStep("done");
+    say(
+      de
+        ? [`Danke, ${data.name}! Deine Nachricht ist angekommen.`, "Ich melde mich so bald wie möglich bei dir. 🙌"]
+        : [`Thanks, ${data.name}! Your message arrived.`, "I'll get back to you as soon as I can. 🙌"],
+    );
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
-    // Clear error when user starts typing
-    if (errors[id as keyof FormErrors]) {
-      setErrors(prev => ({ ...prev, [id]: undefined }));
+  const onSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    const value = draft.trim();
+    if (!value || typing || step === "sending" || step === "done") return;
+    setBubbles((b) => [...b, { id: nextId.current++, from: "me", text: value }]);
+    setDraft("");
+
+    if (step === "name") {
+      setAnswers((a) => ({ ...a, name: value }));
+      setStep("email");
+      say(
+        de
+          ? [`Freut mich, ${value}!`, "Unter welcher E-Mail-Adresse kann ich dir antworten?"]
+          : [`Nice to meet you, ${value}!`, "Which email address can I reply to?"],
+      );
+    } else if (step === "email") {
+      if (!isEmail(value)) {
+        say([de ? "Hmm, das sieht nicht nach einer E-Mail-Adresse aus. Probierst du es nochmal?" : "Hmm, that doesn't look like an email address. Try again?"]);
+        return;
+      }
+      setAnswers((a) => ({ ...a, email: value }));
+      setStep("message");
+      say([de ? "Perfekt. Und was möchtest du mir sagen?" : "Perfect. And what would you like to tell me?"]);
+    } else if (step === "message") {
+      const data = { ...answers, message: value };
+      setAnswers(data);
+      send(value, data);
     }
+    inputRef.current?.focus();
   };
+
+  const placeholder = {
+    name: de ? "Dein Name" : "Your name",
+    email: de ? "deine@email.ch" : "your@email.com",
+    message: de ? "Deine Nachricht" : "Your message",
+    sending: de ? "Wird gesendet …" : "Sending …",
+    done: de ? "Nachricht gesendet" : "Message sent",
+  }[step];
+  const inputDisabled = step === "sending" || step === "done";
+
+  const actions = [
+    { label: de ? "Nachricht" : "Message", icon: MessageCircle, onClick: () => inputRef.current?.focus() },
+    { label: "Mail", icon: Mail, href: `mailto:${EMAIL}` },
+    { label: "LinkedIn", icon: Linkedin, href: LINKEDIN },
+    { label: "Instagram", icon: Instagram, href: INSTAGRAM },
+  ];
 
   return (
-    <ClickSpark
-      sparkColor={isDark ? '#ffffff' : '#000000'}
-      sparkSize={19}
-      sparkRadius={40}
-      sparkCount={13}
-      duration={400}
-      disableOnMobile
-    >
-      <div className="w-full min-h-screen flex items-center">
-        <div className="max-w-2xl mx-auto px-6 md:px-12 w-full relative">
+    <ClickSpark sparkColor={isDark ? "#ffffff" : "#000000"} sparkSize={19} sparkRadius={40} sparkCount={13} duration={400} disableOnMobile>
+      <div className="relative w-full min-h-screen overflow-hidden pt-32 pb-24">
+        {/* Soft colour glow behind the page */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_20%_15%,rgba(0,113,227,0.12),transparent_70%),radial-gradient(ellipse_55%_45%_at_85%_75%,rgba(191,90,242,0.12),transparent_70%)]"
+        />
 
-          {/* Header */}
-          <div className="mb-12 text-center relative z-10 pt-20">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4"
-            >
-              {t.contact.title}
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-xl text-[#5e5e63] dark:text-[#b8b8b8] font-light"
-            >
-              {t.contact.description}
-            </motion.p>
-          </div>
-
-          {/* Contact Form Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
-            className="relative z-10 bg-[#f5f5f7] dark:bg-[#1d1d1f] p-8 md:p-10 rounded-3xl border border-[#d2d2d7] dark:border-[#424245] transition-all duration-300"
-          >
-            {isSubmitted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-12"
-                role="alert"
-                aria-live="polite"
-              >
-                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] flex items-center justify-center">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#1d1d1f] dark:text-[#f5f5f7]" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-2">{t.contact.sent}</h3>
-                <p className="text-[#5e5e63] dark:text-[#b8b8b8] font-light">{t.contact.thankYou}</p>
-              </motion.div>
-            ) : (
-              <div className="relative">
-                <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-                  <div className="space-y-4">
-                    {/* Name Field */}
-                    <div className="relative group">
-                      <label
-                        htmlFor="name"
-                        className={`block text-sm font-medium mb-2 ${
-                          errors.name
-                            ? 'text-red-600 dark:text-red-400'
-                            : 'text-[#5e5e63] dark:text-[#b8b8b8]'
-                        }`}
-                      >
-                        {t.contact.name}
-                        <span className="text-red-500 ml-1" aria-hidden="true">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        onFocus={() => setHasFocus('name')}
-                        onBlur={() => setHasFocus(null)}
-                        required
-                        aria-required="true"
-                        aria-invalid={!!errors.name}
-                        aria-describedby={errors.name ? 'name-error' : undefined}
-                        className={`w-full bg-white dark:bg-[#000000] border rounded-xl px-4 py-4 text-[#1d1d1f] dark:text-[#f5f5f7] focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:border-transparent transition-all ${
-                          errors.name
-                            ? 'border-red-500 dark:border-red-400'
-                            : 'border-[#d2d2d7] dark:border-[#424245]'
-                        }`}
-                        placeholder={t.contact.namePlaceholder}
-                        autoComplete="name"
-                      />
-                      {errors.name && (
-                        <p id="name-error" className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">
-                          {errors.name}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Email Field */}
-                    <div className="relative group">
-                      <label
-                        htmlFor="email"
-                        className={`block text-sm font-medium mb-2 ${
-                          errors.email
-                            ? 'text-red-600 dark:text-red-400'
-                            : 'text-[#5e5e63] dark:text-[#b8b8b8]'
-                        }`}
-                      >
-                        {t.contact.emailLabel}
-                        <span className="text-red-500 ml-1" aria-hidden="true">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        onFocus={() => setHasFocus('email')}
-                        onBlur={() => setHasFocus(null)}
-                        required
-                        aria-required="true"
-                        aria-invalid={!!errors.email}
-                        aria-describedby={errors.email ? 'email-error' : undefined}
-                        className={`w-full bg-white dark:bg-[#000000] border rounded-xl px-4 py-4 text-[#1d1d1f] dark:text-[#f5f5f7] focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:border-transparent transition-all ${
-                          errors.email
-                            ? 'border-red-500 dark:border-red-400'
-                            : 'border-[#d2d2d7] dark:border-[#424245]'
-                        }`}
-                        placeholder={t.contact.emailPlaceholder}
-                        autoComplete="email"
-                      />
-                      {errors.email && (
-                        <p id="email-error" className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">
-                          {errors.email}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Message Field */}
-                    <div className="relative group">
-                      <label
-                        htmlFor="message"
-                        className={`block text-sm font-medium mb-2 ${
-                          errors.message
-                            ? 'text-red-600 dark:text-red-400'
-                            : 'text-[#5e5e63] dark:text-[#b8b8b8]'
-                        }`}
-                      >
-                        {t.contact.message}
-                        <span className="text-red-500 ml-1" aria-hidden="true">*</span>
-                      </label>
-                      <textarea
-                        id="message"
-                        name="message"
-                        rows={4}
-                        value={formData.message}
-                        onChange={handleChange}
-                        onFocus={() => setHasFocus('message')}
-                        onBlur={() => setHasFocus(null)}
-                        required
-                        aria-required="true"
-                        aria-invalid={!!errors.message}
-                        aria-describedby={errors.message ? 'message-error' : undefined}
-                        className={`w-full bg-white dark:bg-[#000000] border rounded-xl px-4 py-4 text-[#1d1d1f] dark:text-[#f5f5f7] focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:border-transparent transition-all resize-none ${
-                          errors.message
-                            ? 'border-red-500 dark:border-red-400'
-                            : 'border-[#d2d2d7] dark:border-[#424245]'
-                        }`}
-                        placeholder={t.contact.messagePlaceholder}
-                      />
-                      {errors.message && (
-                        <p id="message-error" className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">
-                          {errors.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    aria-busy={isSubmitting}
-                    className={`w-full py-4 text-white dark:text-[#1d1d1f] rounded-xl font-medium tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
-                      hasFocus
-                        ? 'bg-[#1d1d1f] dark:bg-[#f5f5f7]'
-                        : 'bg-[#1d1d1f]/90 dark:bg-[#f5f5f7]/90'
-                    }`}
-                  >
-                    {isSubmitting
-                      ? t.contact.sending
-                      : t.contact.send
-                    }
-                  </button>
-                </form>
-              </div>
-            )}
+        <div className="relative max-w-6xl mx-auto px-6 md:px-12">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-12 md:mb-16">
+            <h1 className="text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">{t.contact.title}</h1>
+            <p className="text-xl text-[#5e5e63] dark:text-[#b8b8b8] max-w-xl">{t.contact.description}</p>
           </motion.div>
 
-          {/* Social Links */}
-          <div className="mt-12 flex justify-center items-center space-x-8" role="list" aria-label={t.contact.socialLinks}>
-            <a
-              href="https://www.linkedin.com/in/rapha%C3%ABl-seiler-47b3a1338"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center gap-2 group"
-              role="listitem"
-              aria-label={t.contact.linkedIn}
+          <div className="grid gap-8 lg:gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] items-start">
+            {/* Contact card, like in the iOS Contacts app */}
+            <motion.aside
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-[32px] bg-[#f5f5f7]/80 dark:bg-[#1d1d1f]/80 backdrop-blur-xl border border-black/5 dark:border-white/10 p-8 text-center lg:sticky lg:top-28"
             >
-              <div className="w-14 h-14 rounded-full bg-[#f5f5f7] dark:bg-[#1d1d1f] flex items-center justify-center transition-all duration-300 group-hover:bg-[#0A66C2] group-hover:scale-110">
-                <Linkedin size={22} strokeWidth={1.5} className="text-[#5e5e63] dark:text-[#b8b8b8] group-hover:text-white transition-colors" aria-hidden="true" />
+              <div className="mx-auto w-32 h-32 rounded-full overflow-hidden bg-gradient-to-b from-[#d2d2d7] to-[#a1a1a6] dark:from-[#48484a] dark:to-[#2c2c2e]">
+                <img src={avatarImg} alt="Raphaël Seiler" className="w-full h-full object-cover object-top scale-[1.35] translate-y-[14%]" />
               </div>
-              <span className="text-xs text-[#5e5e63] dark:text-[#b8b8b8] opacity-0 group-hover:opacity-100 transition-opacity">{t.contact.linkedIn}</span>
-            </a>
-            <a
-              href="https://www.instagram.com/seiler_raphi/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center gap-2 group"
-              role="listitem"
-              aria-label={t.contact.instagram}
+              <h2 className="mt-5 text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">Raphaël Seiler</h2>
+              <p className="mt-1 text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Digital Design Student · OST" : "Digital Design student · OST"}</p>
+
+              <div className="mt-8 grid grid-cols-4 gap-2">
+                {actions.map(({ label, icon: Icon, href, onClick }) => {
+                  const inner = (
+                    <>
+                      <span className="w-12 h-12 rounded-full flex items-center justify-center bg-white dark:bg-[#2c2c2e] text-[#0071e3] dark:text-[#2997ff] shadow-sm transition-transform group-hover:scale-110 group-active:scale-95">
+                        <Icon size={20} aria-hidden="true" />
+                      </span>
+                      <span className="text-xs font-medium text-[#0071e3] dark:text-[#2997ff]">{label}</span>
+                    </>
+                  );
+                  const cls = "group flex flex-col items-center gap-2 rounded-2xl py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0066cc]";
+                  return href ? (
+                    <a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className={cls}>
+                      {inner}
+                    </a>
+                  ) : (
+                    <button key={label} type="button" onClick={onClick} className={cls}>
+                      {inner}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <dl className="mt-8 text-left rounded-2xl bg-white dark:bg-[#2c2c2e] divide-y divide-black/5 dark:divide-white/10">
+                <div className="px-5 py-3">
+                  <dt className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "E-Mail" : "Email"}</dt>
+                  <dd>
+                    <a href={`mailto:${EMAIL}`} className="text-[#0071e3] dark:text-[#2997ff] hover:underline break-all">{EMAIL}</a>
+                  </dd>
+                </div>
+                <div className="px-5 py-3">
+                  <dt className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Ort" : "Location"}</dt>
+                  <dd className="text-[#1d1d1f] dark:text-[#f5f5f7]">{de ? "Liechtenstein / Ostschweiz" : "Liechtenstein / Eastern Switzerland"}</dd>
+                </div>
+              </dl>
+            </motion.aside>
+
+            {/* Messages window */}
+            <motion.section
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              aria-label={de ? "Nachricht an Raphaël" : "Message to Raphaël"}
+              className="rounded-[32px] overflow-hidden bg-white dark:bg-[#1c1c1e] border border-black/5 dark:border-white/10 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.35)] flex flex-col h-[620px]"
             >
-              <div className="w-14 h-14 rounded-full bg-[#f5f5f7] dark:bg-[#1d1d1f] flex items-center justify-center transition-all duration-300 group-hover:bg-[#E4405F] group-hover:scale-110">
-                <Instagram size={22} strokeWidth={1.5} className="text-[#5e5e63] dark:text-[#b8b8b8] group-hover:text-white transition-colors" aria-hidden="true" />
+              {/* Header */}
+              <div className="shrink-0 flex flex-col items-center gap-1 py-4 bg-[#f5f5f7]/90 dark:bg-[#2c2c2e]/90 backdrop-blur-xl border-b border-black/5 dark:border-white/10">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-[#d2d2d7] to-[#a1a1a6] dark:from-[#48484a] dark:to-[#2c2c2e]">
+                  <img src={avatarImg} alt="" aria-hidden="true" className="w-full h-full object-cover object-top scale-[1.35] translate-y-[14%]" />
+                </div>
+                <span className="text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">Raphi</span>
               </div>
-              <span className="text-xs text-[#5e5e63] dark:text-[#b8b8b8] opacity-0 group-hover:opacity-100 transition-opacity">{t.contact.instagram}</span>
-            </a>
-            <a
-              href="mailto:raphi.seiler@gmail.com"
-              className="flex flex-col items-center gap-2 group"
-              role="listitem"
-              aria-label={t.contact.email}
-            >
-              <div className="w-14 h-14 rounded-full bg-[#f5f5f7] dark:bg-[#1d1d1f] flex items-center justify-center transition-all duration-300 group-hover:bg-[#1d1d1f] dark:group-hover:bg-[#f5f5f7] group-hover:scale-110">
-                <Mail size={22} strokeWidth={1.5} className="text-[#5e5e63] dark:text-[#b8b8b8] group-hover:text-white dark:group-hover:text-[#1d1d1f] transition-colors" aria-hidden="true" />
+
+              {/* Conversation */}
+              <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 md:px-6 py-6 space-y-2" role="log" aria-live="polite">
+                <p className="text-center text-xs text-[#86868b] mb-4">{de ? "Heute" : "Today"}</p>
+                <AnimatePresence initial={false}>
+                  {bubbles.map((b, i) => {
+                    const mine = b.from === "me";
+                    const lastOfGroup = bubbles[i + 1]?.from !== b.from;
+                    return (
+                      <motion.div
+                        key={b.id}
+                        layout
+                        initial={{ opacity: 0, y: 12, scale: 0.92 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                        className={`flex flex-col ${mine ? "items-end" : "items-start"} ${lastOfGroup ? "pb-2" : ""}`}
+                        style={{ transformOrigin: mine ? "bottom right" : "bottom left" }}
+                      >
+                        <p
+                          className={`max-w-[80%] px-4 py-2.5 text-[15px] leading-snug whitespace-pre-wrap break-words ${
+                            mine
+                              ? "bg-[#0a84ff] text-white rounded-[20px] rounded-br-[6px]"
+                              : "bg-[#e9e9eb] dark:bg-[#3a3a3c] text-[#1d1d1f] dark:text-[#f5f5f7] rounded-[20px] rounded-bl-[6px]"
+                          }`}
+                        >
+                          {b.text}
+                        </p>
+                        {b.status && <span className="mt-1 mr-1 text-[11px] text-[#86868b]">{b.status}</span>}
+                      </motion.div>
+                    );
+                  })}
+                  {typing && (
+                    <motion.div
+                      key="typing"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="flex items-start"
+                      style={{ transformOrigin: "bottom left" }}
+                      aria-label={de ? "Raphi schreibt" : "Raphi is typing"}
+                    >
+                      <span className="flex gap-1 px-4 py-3.5 rounded-[20px] rounded-bl-[6px] bg-[#e9e9eb] dark:bg-[#3a3a3c]">
+                        {[0, 1, 2].map((d) => (
+                          <motion.span
+                            key={d}
+                            className="w-2 h-2 rounded-full bg-[#8e8e93]"
+                            animate={reduceMotion ? undefined : { opacity: [0.3, 1, 0.3], y: [0, -2, 0] }}
+                            transition={{ duration: 1, repeat: Infinity, delay: d * 0.15 }}
+                          />
+                        ))}
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {step === "done" && !typing && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex justify-center pt-6">
+                    <button
+                      type="button"
+                      onClick={start}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f5f5f7] dark:bg-[#2c2c2e] text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-[#e8e8ed] dark:hover:bg-[#3a3a3c] transition-colors"
+                    >
+                      <RotateCcw size={14} aria-hidden="true" />
+                      {de ? "Neue Nachricht" : "New message"}
+                    </button>
+                  </motion.div>
+                )}
               </div>
-              <span className="text-xs text-[#5e5e63] dark:text-[#b8b8b8] opacity-0 group-hover:opacity-100 transition-opacity">{t.contact.email}</span>
-            </a>
+
+              {/* Compose bar */}
+              <form onSubmit={onSubmit} className="shrink-0 flex items-end gap-2 px-3 md:px-4 py-3 border-t border-black/5 dark:border-white/10 bg-white dark:bg-[#1c1c1e]">
+                <label htmlFor="compose" className="sr-only">
+                  {placeholder}
+                </label>
+                <textarea
+                  id="compose"
+                  ref={inputRef}
+                  rows={1}
+                  value={draft}
+                  disabled={inputDisabled}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      onSubmit(e);
+                    }
+                  }}
+                  placeholder={placeholder}
+                  autoComplete={step === "name" ? "name" : step === "email" ? "email" : "off"}
+                  inputMode={step === "email" ? "email" : "text"}
+                  className="flex-1 resize-none max-h-32 rounded-[20px] border border-[#d2d2d7] dark:border-[#48484a] bg-transparent px-4 py-2.5 text-[15px] text-[#1d1d1f] dark:text-[#f5f5f7] placeholder:text-[#a1a1a6] focus:outline-none focus:border-[#0a84ff] disabled:opacity-60"
+                />
+                <button
+                  type="submit"
+                  disabled={!draft.trim() || typing || inputDisabled}
+                  aria-label={de ? "Senden" : "Send"}
+                  className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center bg-[#0a84ff] text-white transition-all hover:bg-[#0071e3] disabled:bg-[#d2d2d7] dark:disabled:bg-[#48484a] disabled:cursor-default"
+                >
+                  <ArrowUp size={20} strokeWidth={2.5} />
+                </button>
+              </form>
+            </motion.section>
           </div>
         </div>
       </div>
