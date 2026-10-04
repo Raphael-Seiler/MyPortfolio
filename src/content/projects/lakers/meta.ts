@@ -2,7 +2,7 @@ import type { ProjectMeta } from "../types";
 
 export const meta: ProjectMeta = {
   id: "lakers",
-  title: "SCRJ Lakers 2",
+  title: "SCRJ Lakers",
   tagline: { de: "Live-Audio-Kommentar", en: "Live Audio Commentary" },
   description: {
     de: "Gruppenprojekt aus dem Anwendungsprojekt 3 im BSc Digital Design an der OST. 3. Platz am Digital Design Festival 2026.",

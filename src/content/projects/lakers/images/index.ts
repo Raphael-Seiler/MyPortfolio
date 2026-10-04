@@ -4,10 +4,11 @@ import type { ProjectImages } from "../../types";
 
 // TODO: add project screenshots / mockups here.
 export const images: ProjectImages = {
-  card: festival,
+  card: logo,
   logo,
-  hero: [festival],
-  gallery: [festival],
+  // no hero photo: the cover shows the logo (card image)
+  hero: [],
+  gallery: [logo],
 };
 
 export const festivalPhoto = festival;

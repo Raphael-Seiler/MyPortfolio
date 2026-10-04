@@ -55,9 +55,10 @@ function Statement({ lead, text }: { lead: string; text: string }) {
 function CardShell({ index, children }: { index: number; children: ReactNode }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      // fade and scale only: moving the cards vertically would make the horizontal gallery scroll vertically
+      initial={{ opacity: 0, scale: 0.96 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-80px 0px" }}
       transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
       className="snap-start shrink-0 w-[78vw] sm:w-[440px] md:w-[480px] min-h-[420px] md:min-h-[460px] rounded-[28px] p-8 md:p-10 flex flex-col bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#1d1d1f] dark:text-[#f5f5f7]"
     >
@@ -135,7 +136,7 @@ export function AboutMe() {
       {/* Card gallery */}
       <div
         ref={scrollerRef}
-        className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex gap-6 overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory pt-2 pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{ paddingInline: galleryInset, scrollPaddingInline: galleryInset }}
         role="region"
         aria-label={t.aboutTitle}
