@@ -1,4 +1,5 @@
 import { FC, useRef, useState, useEffect, MutableRefObject } from 'react';
+import { useNavigate } from 'react-router';
 import { mat4, quat, vec2, vec3 } from 'gl-matrix';
 import { translations } from '../translations';
 import { useLanguage } from '../context/LanguageContext';
@@ -1082,7 +1083,7 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
   const [isMoving, setIsMoving] = useState<boolean>(false);
   const [isDark, setIsDark] = useState(false);
   const [isNarrow, setIsNarrow] = useState(false);
-  const [containerWidth, setContainerWidth] = useState(0);
+  const navigate = useNavigate();
   const { lang } = useLanguage();
   const t = translations[lang];
 
@@ -1099,7 +1100,6 @@ const InfiniteMenu: FC<InfiniteMenuProps> = ({ items = [], scale = 1.0, onItemCl
   useEffect(() => {
     const handleResize = () => {
       setIsNarrow(window.innerWidth < 768);
-      setContainerWidth(window.innerWidth);
     };
     handleResize();
     window.addEventListener('resize', handleResize);

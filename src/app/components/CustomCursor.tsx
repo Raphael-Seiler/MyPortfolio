@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface CustomCursorProps {
   isDark: boolean;
 }
 
-export function CustomCursor({ isDark }: CustomCursorProps) {
+export function CustomCursor(_props: CustomCursorProps) {
   const cursorRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: -100, y: -100 });
   const cursorPos = useRef({ x: -100, y: -100 });
-  const rafId = useRef<number>();
+  const rafId = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

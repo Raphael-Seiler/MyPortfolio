@@ -241,6 +241,12 @@ export function Layout() {
         <p className="text-xs text-[#55555a] dark:text-[#e5e5ea] font-medium">
           © {new Date().getFullYear()} {translations[lang].footer.copyright}
         </p>
+        <NavLink
+          to="/accessibility"
+          className="pointer-events-auto text-xs text-[#55555a] dark:text-[#e5e5ea] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] transition-colors"
+        >
+          {translations[lang].footer.accessibility}
+        </NavLink>
       </footer>
     </div>
   );

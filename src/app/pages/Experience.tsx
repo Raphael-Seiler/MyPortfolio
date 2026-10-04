@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import {
   motion,
   useScroll,
@@ -7,8 +7,8 @@ import {
   useMotionValue,
   AnimatePresence,
 } from "motion/react";
-import { Car, ChevronLeft, ChevronRight } from "lucide-react";
-import { experiences } from "../data";
+import { Car, ChevronLeft, ChevronRight, Medal, Star } from "lucide-react";
+import { timeline as experiences } from "../../content/timeline";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import ClickSpark from "../components/ClickSpark";
@@ -89,7 +89,7 @@ export function Experience() {
   );
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [expandUpdateCounter, setExpandUpdateCounter] = useState(0);
+  const [, setExpandUpdateCounter] = useState(0);
   const expandProgressRef = useRef<number[]>([]);
 
   // Update active index based on actual scroll position and proximity to stations
@@ -565,7 +565,7 @@ export function Experience() {
 }
 
 // Subcomponent for the experience card
-function ItemCard({ exp, isActive, expandProgress = 1, isMobile = false }: { exp: any; isActive: boolean; expandProgress?: number; isMobile?: boolean }) {
+function ItemCard({ exp, expandProgress = 1, isMobile = false }: { exp: any; isActive?: boolean; expandProgress?: number; isMobile?: boolean }) {
   const { lang } = useLanguage();
 
   const role = lang === 'en' && exp.roleEn ? exp.roleEn : exp.role;
@@ -615,6 +615,11 @@ function ItemCard({ exp, isActive, expandProgress = 1, isMobile = false }: { exp
             : "text-[#55555a] dark:text-[#e5e5ea]"
         }`}
       >
+        {exp.award && (
+          <span className="inline-block align-text-bottom mr-2 text-[#ff9f0a] dark:text-[#ffd60a]" aria-hidden="true">
+            {exp.award.status === "won" ? <Medal size={20} /> : <Star size={20} />}
+          </span>
+        )}
         {role}
       </h3>
       <h4 className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-medium">
@@ -638,6 +643,16 @@ function ItemCard({ exp, isActive, expandProgress = 1, isMobile = false }: { exp
               <p className="text-sm text-[#55555a] dark:text-[#e5e5ea] font-light leading-relaxed mb-4">
                 {description}
               </p>
+            )}
+            {exp.award && (
+              <a
+                href={exp.award.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mb-2 text-xs font-medium text-[#1d1d1f] dark:text-[#f5f5f7] underline underline-offset-4 pointer-events-auto"
+              >
+                {lang === 'de' ? 'Zur OST-Seite' : 'View on OST website'} →
+              </a>
             )}
             {details && (
               <>

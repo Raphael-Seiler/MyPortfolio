@@ -64,7 +64,7 @@ const ParticleCard: React.FC<{
   const clearParticles = () => {
     timeoutsRef.current.forEach(clearTimeout);
     magnetismRef.current?.kill();
-    particlesRef.current.forEach(p => { gsap.to(p, { scale: 0, opacity: 0, duration: 0.3, ease: 'back.in(1.7)', onComplete: () => p.parentNode?.removeChild(p) }); });
+    particlesRef.current.forEach(p => { gsap.to(p, { scale: 0, opacity: 0, duration: 0.3, ease: 'back.in(1.7)', onComplete: () => { p.parentNode?.removeChild(p); } }); });
     particlesRef.current = [];
   };
 
@@ -105,7 +105,7 @@ const ParticleCard: React.FC<{
       const ripple = document.createElement('div');
       ripple.style.cssText = `position:absolute;left:${x-25}px;top:${y-25}px;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,rgba(${glowColor},0.8) 0%,transparent 70%);pointer-events:none;z-index:99;`;
       el.appendChild(ripple);
-      gsap.fromTo(ripple, { scale: 0, opacity: 1 }, { scale: maxD/25, opacity: 0, duration: 0.6, ease: 'power2.out', onComplete: () => ripple.parentNode?.removeChild(ripple) });
+      gsap.fromTo(ripple, { scale: 0, opacity: 1 }, { scale: maxD/25, opacity: 0, duration: 0.6, ease: 'power2.out', onComplete: () => { ripple.parentNode?.removeChild(ripple); } });
     };
     el.addEventListener('mouseenter', enter);
     el.addEventListener('mouseleave', leave);
@@ -118,35 +118,6 @@ const ParticleCard: React.FC<{
     <div ref={cardRef} className={`relative overflow-hidden ${className}`} style={style}>
       {children}
     </div>
-  );
-};
-
-const GlobalSpotlight: React.FC<{
-  radius?: number;
-  glowColor?: string;
-  disableAnimations?: boolean;
-}> = ({ radius = DEFAULT_SPOTLIGHT_RADIUS, glowColor = DEFAULT_GLOW_COLOR, disableAnimations = false }) => {
-  const [pos, setPos] = useState({ x: -1000, y: -1000 });
-  const rafRef = useRef<number>();
-
-  useEffect(() => {
-    if (disableAnimations) return;
-    const handler = (e: MouseEvent) => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(() => setPos({ x: e.clientX, y: e.clientY }));
-    };
-    window.addEventListener('mousemove', handler);
-    return () => { window.removeEventListener('mousemove', handler); if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [disableAnimations]);
-
-  return (
-    <div
-      className="pointer-events-none fixed inset-0 z-[9999]"
-      style={{
-        background: `radial-gradient(${radius}px circle at ${pos.x}px ${pos.y}px, rgba(${glowColor}, 0.15), transparent 40%)`,
-        mixBlendMode: 'screen'
-      }}
-    />
   );
 };
 
@@ -163,7 +134,6 @@ const useMobile = (breakpoint = MOBILE_BREAKPOINT) => {
 
 const MagicBento: React.FC<BentoProps> = ({
   cards,
-  textAutoHide = false,
   enableStars = false,
   enableSpotlight = false,
   enableBorderGlow = false,

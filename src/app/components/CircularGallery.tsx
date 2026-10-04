@@ -119,8 +119,6 @@ class Title {
     });
     this.mesh = new Mesh(this.gl, { geometry, program });
     const aspect = width / height;
-    const textHeightScaled = this.plane.scale.y * 0.15;
-    const textWidthScaled = textHeightScaled * aspect;
     // Title size scales with circle/image size
     const titleHeight = this.plane.scale.y * 0.12;
     const titleWidth = titleHeight * aspect;
@@ -169,7 +167,7 @@ class Media {
   renderer: Renderer;
   scene: Transform;
   screen: ScreenSize;
-  text?: string;
+  text: string;
   viewport: Viewport;
   bend: number;
   textColor: string;
@@ -211,7 +209,7 @@ class Media {
     this.renderer = renderer;
     this.scene = scene;
     this.screen = screen;
-    this.text = text;
+    this.text = text ?? '';
     this.viewport = viewport;
     this.bend = bend;
     this.textColor = textColor;
@@ -382,7 +380,7 @@ class Media {
 }
 
 interface AppConfig {
-  items?: { image: string; text: string }[];
+  items?: { image: string; text?: string }[];
   bend?: number;
   textColor?: string;
   borderRadius?: number;
@@ -409,7 +407,7 @@ class App {
   scene!: Transform;
   planeGeometry!: Plane;
   medias: Media[] = [];
-  mediasImages: { image: string; text: string }[] = [];
+  mediasImages: { image: string; text?: string }[] = [];
   screen!: { width: number; height: number };
   viewport!: { width: number; height: number };
   raf: number = 0;
@@ -507,7 +505,7 @@ class App {
   }
 
   createMedias(
-    items: { image: string; text: string }[] | undefined,
+    items: { image: string; text?: string }[] | undefined,
     bend: number = 1,
     textColor: string,
     borderRadius: number,
@@ -539,7 +537,7 @@ class App {
         renderer: this.renderer,
         scene: this.scene,
         screen: this.screen,
-        text: data.text,
+        text: data.text ?? '',
         viewport: this.viewport,
         bend,
         textColor,
@@ -739,7 +737,7 @@ export default function CircularGallery({
   items,
   bend = 1,
   textColor = '#ffffff',
-  textColorDark = '#f5f5f7',
+  textColorDark = '#e8eaed',
   borderRadius = 0.05,
   font = 'bold 28px -apple-system, BlinkMacSystemFont, SF Pro Display',
   scrollSpeed = 2,
@@ -795,7 +793,7 @@ export default function CircularGallery({
 
   return (
     <div
-      className="relative w-full h-full overflow-hidden cursor-none touch-pan-y"
+      className="relative w-full h-full overflow-hidden touch-pan-y"
       ref={containerRef}
     />
   );
