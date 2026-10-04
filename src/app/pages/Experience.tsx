@@ -4,6 +4,7 @@ import { ArrowUpRight, ChevronDown, ChevronUp, Medal, Star } from "lucide-react"
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import ClickSpark from "../components/ClickSpark";
+import { AppSwitcher } from "../components/AppSwitcher";
 import { timeline } from "../../content/timeline";
 
 // Depth of the Time Machine stack: each older window sits higher and further away
@@ -31,7 +32,8 @@ export function Experience() {
   const { lang } = useLanguage();
   const t = translations[lang];
   const reduceMotion = useReducedMotion();
-  const step = useIsDesktop() ? STEP.desktop : STEP.phone;
+  const isDesktop = useIsDesktop();
+  const step = isDesktop ? STEP.desktop : STEP.phone;
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -82,7 +84,7 @@ export function Experience() {
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, [last]);
+  }, [last, isDesktop]);
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "ArrowUp" || e.key === "PageUp") { e.preventDefault(); older(); }
@@ -148,25 +150,10 @@ export function Experience() {
         </div>
 
         <div className="relative max-w-6xl mx-auto px-6 md:px-12">
-          {/* Year chips (phones) */}
-          <div className="md:hidden -mx-6 px-6 mb-4 flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {items.map((item, i) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setActive(i)}
-                aria-current={i === active ? "step" : undefined}
-                className={`shrink-0 px-4 h-11 rounded-full text-sm font-medium transition-colors ${
-                  i === active
-                    ? "bg-[#1d1d1f] text-white dark:bg-[#f5f5f7] dark:text-[#1d1d1f]"
-                    : "bg-[#f5f5f7] text-[#5e5e63] dark:bg-[#1d1d1f] dark:text-[#b8b8b8]"
-                }`}
-              >
-                {item.period}
-              </button>
-            ))}
-          </div>
-
+          {!isDesktop ? (
+            <AppSwitcher items={items} />
+          ) : (
+          <>
           {/* Time Machine */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -316,20 +303,8 @@ export function Experience() {
             </div>
           </motion.div>
 
-          {/* Controls (phones) */}
-          <div className="md:hidden mt-4 flex items-center justify-between gap-4">
-            <p className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">
-              {lang === "de" ? "Wische oder wähle ein Jahr." : "Swipe or pick a year."}
-            </p>
-            <div className="flex gap-2">
-              <button type="button" onClick={older} disabled={active === 0} className={navButton} aria-label={lang === "de" ? "Früher" : "Earlier"}>
-                <ChevronUp size={20} />
-              </button>
-              <button type="button" onClick={newer} disabled={active === last} className={navButton} aria-label={lang === "de" ? "Später" : "Later"}>
-                <ChevronDown size={20} />
-              </button>
-            </div>
-          </div>
+          </>
+          )}
         </div>
       </div>
     </ClickSpark>
