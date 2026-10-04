@@ -7,8 +7,8 @@ import CircularGallery from "../components/CircularGallery";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import { projects, allAwards } from "../../content/projects";
-import imgDefault from "../../assets/home/Raphi_Mii_4K.png";
-import imgHover from "../../assets/home/Raphi_Mii_4K_pose.png";
+import imgDefault from "../../assets/home/Raphi_Mii_4K.webp";
+import imgHover from "../../assets/home/Raphi_Mii_4K_pose.webp";
 
 const LightbulbIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

@@ -1,5 +1,5 @@
-import landing from "./LandingPage.png";
-import logo from "./FishingLogo.png";
+import landing from "./LandingPage.webp";
+import logo from "./FishingLogo.webp";
 import tilesOthers from "./Kachel_andere.png";
 import tilesMine from "./Kachel_meine.png";
 import type { ProjectImages } from "../../types";

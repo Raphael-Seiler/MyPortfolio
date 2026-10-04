@@ -1,4 +1,4 @@
-import festival from "./festival-2026.jpg";
+import festival from "./festival-2026.webp";
 import type { ProjectImages } from "../../types";
 
 // TODO: add project screenshots / mockups here.

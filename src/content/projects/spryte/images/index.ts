@@ -1,11 +1,11 @@
 import fruitDude from "./Fruit_Dude.png";
-import grouppic from "./Grouppic.png";
+import grouppic from "./Grouppic.webp";
 import screen1 from "./Screen_1.png";
 import screen2 from "./Screen_2.png";
 import screen3 from "./Screen_3.png";
-import screen4 from "./Screen_4.png";
+import screen4 from "./Screen_4.webp";
 import logo from "./Spryte_Logo.png";
-import userFlow from "./UserFlow.png";
+import userFlow from "./UserFlow.webp";
 import type { ProjectImages } from "../../types";
 
 export const images: ProjectImages = {
