@@ -6,15 +6,9 @@ import MagicBento from "../components/MagicBento";
 import CircularGallery from "../components/CircularGallery";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
-import { awards } from "../data";
+import { projects, allAwards } from "../../content/projects";
 import imgDefault from "../../assets/home/Raphi_Mii_4K.png";
 import imgHover from "../../assets/home/Raphi_Mii_4K_pose.png";
-import screen2Img from "../../assets/projects/spryte/Screen_2.png";
-import fishingLogoImg from "../../assets/projects/fishing/FishingLogo.png";
-import fishingLandingImg from "../../assets/projects/fishing/LandingPage.png";
-import screen3Img from "../../assets/projects/spryte/Screen_3.png";
-import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
-import lakersImg from "../../assets/awards/ddf-2026.jpg";
 
 const LightbulbIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -55,14 +49,10 @@ export function Home() {
 
   const t = translations[lang];
 
-  const galleryItems = useMemo(() => [
-    { image: screen2Img },
-    { image: fishingLogoImg },
-    { image: lakersImg },
-    { image: fishingLandingImg },
-    { image: screen3Img },
-    { image: fruitDudeImg },
-  ], []);
+  const galleryItems = useMemo(
+    () => projects.flatMap((p) => p.images.gallery.map((image) => ({ image }))),
+    []
+  );
 
   return (
     <div className="w-full">
@@ -192,7 +182,7 @@ export function Home() {
           </motion.div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            {awards.map((award, i) => (
+            {allAwards.map(({ award, project }, i) => (
               <motion.a
                 key={award.id}
                 href={award.link}
@@ -207,7 +197,7 @@ export function Home() {
                 {award.image && (
                   <img
                     src={award.image}
-                    alt={lang === 'en' ? award.titleEn : award.title}
+                    alt={award.title[lang]}
                     loading="lazy"
                     className="w-full aspect-[3/2] object-cover"
                   />
@@ -218,22 +208,20 @@ export function Home() {
                       {award.status === "won" ? <Medal size={22} /> : <Star size={20} />}
                     </span>
                     <span className="text-sm font-medium text-[#1a73e8] dark:text-[#8ab4f8]">
-                      {lang === 'en' ? award.resultEn : award.result}
+                      {award.result[lang]}
                     </span>
                   </div>
                   <h4 className="text-xl font-medium text-[#202124] dark:text-[#e8eaed]">
-                    {lang === 'en' ? award.titleEn : award.title}
+                    {award.title[lang]}
                   </h4>
-                  {award.project && (
-                    <p className="text-sm font-medium text-[#202124] dark:text-[#e8eaed]">
-                      {lang === 'en' ? award.projectEn : award.project}
+                  <p className="text-sm font-medium text-[#202124] dark:text-[#e8eaed]">
+                      {project.content.title[lang]}
                     </p>
-                  )}
                   <p className="text-sm text-[#5f6368] dark:text-[#9aa0a6] leading-relaxed">
-                    {lang === 'en' ? award.descriptionEn : award.description}
+                    {award.description[lang]}
                   </p>
                   <p className="text-xs text-[#5f6368] dark:text-[#9aa0a6]">
-                    {lang === 'en' ? award.dateEn : award.date}
+                    {award.date[lang]}
                   </p>
                 </div>
               </motion.a>

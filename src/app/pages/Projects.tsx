@@ -1,78 +1,11 @@
 import { useNavigate } from "react-router";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
-import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
-import fishingLandingImg from "../../assets/projects/fishing/LandingPage.png";
-import screen2Img from "../../assets/projects/spryte/Screen_2.png";
-import lakersImg from "../../assets/awards/ddf-2026.jpg";
 import { motion } from "motion/react";
 import { ArrowRight, ExternalLink } from "lucide-react";
+import { projects as allProjects, allAwards } from "../../content/projects";
 
-const projects = [
-  {
-    id: "spryte",
-    image: screen2Img,
-    logo: fruitDudeImg,
-    title: "SPRYTE",
-    tagline: { de: "Place Your Pixels", en: "Place Your Pixels" },
-    description: {
-      de: "Ein interaktives Ökosystem für standortübergreifende Pixel-Kunst, das Menschen über Hierarchien und Standorte hinweg spielerisch verbindet.",
-      en: "An interactive ecosystem for cross-location pixel art that playfully connects people across hierarchies and locations."
-    },
-    category: { de: "UX Design", en: "UX Design" },
-    tags: ["ux", "ui"],
-    year: "2024",
-    color: "#4285F4",
-    bgColor: "bg-gradient-to-br from-[#4285F4]/10 via-[#34A853]/5 to-transparent",
-    darkBgColor: "dark:from-[#4285F4]/10 dark:via-[#34A853]/5",
-    stats: [
-      { de: "6-köpfiges Team", en: "6-person team" },
-      { de: "Figma Prototyp", en: "Figma prototype" }
-    ]
-  },
-  {
-    id: "fishing",
-    image: fishingLandingImg,
-    logo: null,
-    title: "Helvetic Fishing Co.",
-    tagline: { de: "Fishing E-Commerce", en: "Fishing E-Commerce" },
-    description: {
-      de: "Ein moderner E-Commerce-Shop für die Schweizer Fischerei-Community mit adaptivem Responsive Design.",
-      en: "A modern e-commerce shop for the Swiss fishing community with adaptive responsive design."
-    },
-    category: { de: "E-Commerce", en: "E-Commerce" },
-    tags: ["ecommerce", "ui"],
-    year: "2025",
-    color: "#34A853",
-    bgColor: "bg-gradient-to-br from-[#34A853]/10 via-[#FBBC05]/5 to-transparent",
-    darkBgColor: "dark:from-[#34A853]/10 dark:via-[#FBBC05]/5",
-    stats: [
-      { de: "High-Fidelity Prototyp", en: "High-fidelity prototype" },
-      { de: "Responsive Design", en: "Responsive design" }
-    ]
-  },
-  {
-    id: "lakers",
-    image: lakersImg,
-    logo: null,
-    title: "SCRJ Lakers 2",
-    tagline: { de: "Live-Audio-Kommentar", en: "Live Audio Commentary" },
-    description: {
-      de: "Gruppenprojekt aus dem Anwendungsprojekt 3 im BSc Digital Design an der OST. 3. Platz am Digital Design Festival 2026.",
-      en: "Group project from Application Project 3 in the BSc Digital Design at OST. 3rd place at the Digital Design Festival 2026."
-    },
-    category: { de: "Digital Design", en: "Digital Design" },
-    tags: ["ux", "ui"],
-    year: "2026",
-    color: "#FBBC05",
-    bgColor: "bg-gradient-to-br from-[#FBBC05]/10 via-[#EA4335]/5 to-transparent",
-    darkBgColor: "dark:from-[#FBBC05]/10 dark:via-[#EA4335]/5",
-    stats: [
-      { de: "3. Platz Design Festival", en: "3rd place Design Festival" },
-      { de: "Young Innovators nominiert", en: "Young Innovators nominee" }
-    ]
-  }
-];
+const projects = allProjects.map((p) => ({ ...p.meta, image: p.images.card }));
 
 export function Projects() {
   const navigate = useNavigate();
@@ -181,19 +114,11 @@ export function Projects() {
                 <div className="lg:col-span-3 relative h-80 lg:h-auto min-h-[400px] overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/5 dark:to-black/20 z-10 pointer-events-none" />
                   <div className="absolute inset-0 flex items-center justify-center p-8">
-                    {featuredProject.logo ? (
-                      <img
-                        src={featuredProject.logo}
-                        alt={`${featuredProject.title} Logo`}
-                        className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                    ) : (
-                      <img
+                    <img
                         src={featuredProject.image}
                         alt={`${featuredProject.title} Preview`}
                         className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
-                    )}
                   </div>
                 </div>
               </div>
@@ -230,19 +155,11 @@ export function Projects() {
                 {/* Image */}
                 <div className="relative h-64 overflow-hidden bg-[#f8f9fa] dark:bg-[#202124]">
                   <div className="absolute inset-0 flex items-center justify-center p-8">
-                    {project.logo ? (
-                      <img
-                        src={project.logo}
-                        alt={`${project.title} Logo`}
-                        className="w-full h-full object-contain rounded-lg group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                    ) : (
-                      <img
+                    <img
                         src={project.image}
                         alt={`${project.title} Preview`}
                         className="w-full h-full object-contain rounded-lg group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
-                    )}
                   </div>
                   {/* Overlay gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -296,9 +213,9 @@ export function Projects() {
             className="grid grid-cols-2 md:grid-cols-4 gap-4"
           >
             {[
-              { number: "3", label: { de: "Projekte", en: "Projects" } },
+              { number: String(projects.length), label: { de: "Projekte", en: "Projects" } },
               { number: "2", label: { de: "Jahre Erfahrung", en: "Years Experience" } },
-              { number: "2", label: { de: "Auszeichnungen", en: "Awards" } },
+              { number: String(allAwards.length), label: { de: "Auszeichnungen", en: "Awards" } },
               { number: "∞", label: { de: "Begeisterung", en: "Passion" } },
             ].map((stat, index) => (
               <motion.div
