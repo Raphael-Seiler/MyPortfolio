@@ -10,6 +10,7 @@ export function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [hasFocus, setHasFocus] = useState(false);
+  const [sendFailed, setSendFailed] = useState(false);
   const { lang } = useLanguage();
 
   useEffect(() => {
@@ -29,6 +30,8 @@ export function Contact() {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     
+    setSendFailed(false);
+
     // Send email via Formspree
     fetch('https://formspree.io/f/xkopgkeq', {
       method: 'POST',
@@ -36,17 +39,14 @@ export function Contact() {
       headers: {
         'Accept': 'application/json'
       }
-    }).then(() => {
+    }).then((response) => {
+      if (!response.ok) throw new Error('Form submission failed');
       setIsSubmitted(true);
       form.reset();
       setTimeout(() => setIsSubmitted(false), 4000);
     }).catch(() => {
-      // Fallback: open mail client
-      const name = formData.get('name');
-      const email = formData.get('email');
-      const message = formData.get('message');
-      const mailtoLink = `mailto:raphi.seiler@gmail.com?subject=Kontaktanfrage von ${name}&body=Name: ${name}%0D%0AE-Mail: ${email}%0D%0A%0D%0A${message}`;
-      window.location.href = mailtoLink;
+      // Keep the form filled in so nothing is lost
+      setSendFailed(true);
     });
   };
 
@@ -156,6 +156,11 @@ export function Contact() {
                 >
                   {t.contact.send}
                 </button>
+                {sendFailed && (
+                  <p role="alert" className="text-sm text-[#d70015] dark:text-[#ff6961] text-center">
+                    {lang === 'de' ? 'Die Nachricht konnte nicht gesendet werden. Bitte versuche es später nochmal.' : 'Your message could not be sent. Please try again later.'}
+                  </p>
+                )}
               </form>
             </div>
           )}
