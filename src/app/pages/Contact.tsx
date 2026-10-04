@@ -207,7 +207,7 @@ export function Contact() {
                 <img src={avatarImg} alt="Raphaël Seiler" className="w-full h-full object-cover object-top scale-[1.35] translate-y-[14%]" />
               </div>
               <h2 className="mt-5 text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">Raphaël Seiler</h2>
-              <p className="mt-1 text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Digital Design Student · OST" : "Digital Design student · OST"}</p>
+              <p className="mt-1 text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Digital Design Student" : "Digital Design student"}</p>
 
               <div className="mt-8 flex justify-center gap-6">
                 {actions.map(({ label, icon: Icon, href }) => (
@@ -228,8 +228,10 @@ export function Contact() {
 
               <dl className="mt-8 text-left rounded-2xl bg-white dark:bg-[#2c2c2e]">
                 <div className="px-5 py-3">
-                  <dt className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Ort" : "Location"}</dt>
-                  <dd className="text-[#1d1d1f] dark:text-[#f5f5f7]">Rapperswil-Jona</dd>
+                  <dt className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">{de ? "Hochschule" : "University"}</dt>
+                  <dd className="text-[#1d1d1f] dark:text-[#f5f5f7]">
+                    {de ? "OST – Ostschweizer Fachhochschule" : "OST – Eastern Switzerland University of Applied Sciences"}
+                  </dd>
                 </div>
               </dl>
             </motion.aside>
