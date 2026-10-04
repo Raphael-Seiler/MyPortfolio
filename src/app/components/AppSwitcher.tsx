@@ -49,7 +49,12 @@ function Card({
     const d = index - p;
     return d >= 0 ? 1 : Math.max(0.86, 1 + d * 0.04);
   });
-  const shade = useTransform(pos, (p) => Math.min(0.35, Math.max(0, (p - index) * 0.12)));
+  // Cards that are not in focus are slightly transparent
+  // Cards further back fade out completely so their text doesn't shine through each other
+  const cardOpacity = useTransform(pos, (p) => {
+    const d = Math.abs(index - p);
+    return d <= 1 ? 1 - d * 0.45 : Math.max(0, 0.55 - (d - 1) * 0.55);
+  });
   // Only the card in focus shows its label, so the labels of stacked cards don't overlap
   const labelOpacity = useTransform(pos, (p) => Math.max(0, 1 - Math.abs(index - p) * 1.6));
   const Icon = iconFor(item);
@@ -61,7 +66,7 @@ function Card({
   return (
     <motion.div
       className="absolute top-0 left-0 h-full"
-      style={{ width, x, scale, zIndex: index, transformOrigin: "50% 60%" }}
+      style={{ width, x, scale, opacity: cardOpacity, zIndex: index, transformOrigin: "50% 60%" }}
       exit={{ y: -500, opacity: 0, transition: { duration: 0.3, ease: "easeIn" } }}
     >
       <motion.div
@@ -106,8 +111,6 @@ function Card({
               </a>
             )}
           </div>
-          {/* Older cards are dimmed a little, like in the switcher */}
-          <motion.div className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: shade }} />
         </div>
       </motion.div>
     </motion.div>
