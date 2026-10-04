@@ -16,18 +16,19 @@ import fishingLandingImg from "../../assets/projects/fishing/LandingPage.png";
 import fishingLogoImg from "../../assets/projects/fishing/FishingLogo.png";
 import kachelAndereImg from "../../assets/projects/fishing/Kachel_andere.png";
 import kachelMeineImg from "../../assets/projects/fishing/Kachel_meine.png";
+import lakersImg from "../../assets/awards/ddf-2026.jpg";
 
 const placeholderProjects: Record<string, {
   title: { de: string; en: string };
   description: { de: string; en: string };
   image: string;
   charter: { de: string; en: string };
-  goal: { de: string; en: string };
-  process: { de: string; en: string } | { title: string; desc: string }[];
-  result: { de: string; en: string } | { title: string; desc: string }[];
-  reflection: { de: string; en: string };
-  highlight: { de: string; en: string };
-  testing: { de: string; en: string } | { title: string; desc: string }[];
+  goal?: { de: string; en: string };
+  process?: { de: string; en: string } | { title: string; desc: string }[];
+  result?: { de: string; en: string } | { title: string; desc: string }[];
+  reflection?: { de: string; en: string };
+  highlight?: { de: string; en: string };
+  testing?: { de: string; en: string } | { title: string; desc: string }[];
 }> = {
   "spryte": {
     title: { de: "SPRYTE", en: "SPRYTE" },
@@ -139,33 +140,23 @@ const placeholderProjects: Record<string, {
       en: "This individual project was a huge milestone for me. I was able to take my Figma skills to a whole new level, especially through the logic behind state changes. It was a valuable experience to see how a systematic structure improves the maintainability of a design. My conclusion: Good design is far more than just aesthetics. I have proven that my concept is solid and has the potential to successfully solve complex design challenges in real-world practice."
     }
   },
-  "3": {
-    title: { de: "Wireframe Kit", en: "Wireframe Kit" },
+  "lakers": {
+    title: { de: "SCRJ Lakers 2 – Live-Audio-Kommentar", en: "SCRJ Lakers 2 – Live Audio Commentary" },
     description: {
-      de: "Ein UI-Kit für schnelle Prototypen und Wireframes in Figma.",
-      en: "A UI kit for rapid prototyping and wireframes in Figma."
+      de: "Gruppenprojekt aus dem Anwendungsprojekt 3 im BSc Digital Design an der OST.",
+      en: "Group project from Application Project 3 in the BSc Digital Design at OST."
     },
-    image: "https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: lakersImg,
     charter: {
-      de: "Ein persönliches Side-Projekt zur Beschleunigung des eigenen Design-Workflows. Das Kit sollte wiederverwendbare Komponenten für schnelle Low-Fidelity-Prototypen bieten.",
-      en: "A personal side project to accelerate my own design workflow. The kit should provide reusable components for rapid low-fidelity prototypes."
+      de: "SCRJ Lakers 2 – Live-Audio-Kommentar entstand im Anwendungsprojekt 3 des BSc Digital Design an der OST, gemeinsam mit Francisco Barbosa, Aaron Bänziger und Andri Vogt.",
+      en: "SCRJ Lakers 2 – Live Audio Commentary was created in Application Project 3 of the BSc Digital Design at OST, together with Francisco Barbosa, Aaron Bänziger and Andri Vogt."
     },
-    goal: {
-      de: "Designern ein Werkzeug an die Hand geben, das schnelles Iterieren von Konzepten ermöglicht, ohne sich in Details zu verlieren.",
-      en: "Provide designers with a tool that enables rapid iteration of concepts without getting lost in details."
-    },
-    process: {
-      de: "Analyse bestehender Design-Systeme, Identifikation der häufigsten UI-Muster, Erstellung einer modularen Bibliothek in Figma mit Auto-Layout und Variantensystem.",
-      en: "Analysis of existing design systems, identification of most common UI patterns, creation of a modular library in Figma with auto-layout and variant system."
-    },
-    result: {
-      de: "Eine Bibliothek mit über 100 Komponenten, die Wireframing von 2 Stunden auf 30 Minuten reduziert. Öffentlich auf Figma Community geteilt.",
-      en: "A library with over 100 components, reducing wireframing from 2 hours to 30 minutes. Shared publicly on Figma Community."
-    },
-    reflection: {
-      de: "Die Modularität war der Schlüssel. Für zukünftige Versionen plane ich mehr Industrie-spezifische Templates und Integration von Design-Tokens.",
-      en: "Modularity was the key. For future versions, I plan more industry-specific templates and integration of design tokens."
+    highlight: {
+      de: "3. Platz am Digital Design Festival 2026 (per Publikumsvoting) und Nomination für den Young Innovators Award 2026 in der Kategorie «Golden Idea».",
+      en: "3rd place at the Digital Design Festival 2026 (audience vote) and nominated for the Young Innovators Award 2026 in the “Golden Idea” category."
     }
+    // TODO: goal, process, result, testing, reflection, images and prototype link.
+    // Sections without content are not rendered.
   }
 };
 
@@ -212,14 +203,18 @@ export function ProjectDetail() {
         </motion.div>
 
         {/* Hero Images Grid */}
-        {id === 'fishing' ? (
+        {id === 'fishing' || id === 'lakers' ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-12"
           >
-            <img src={fishingLandingImg} alt="Fishing E-Commerce Landing Page" className="w-full h-auto object-contain rounded-xl" />
+            <img
+              src={id === 'lakers' ? lakersImg : fishingLandingImg}
+              alt={id === 'lakers' ? "Digital Design Festival 2026" : "Fishing E-Commerce Landing Page"}
+              className="w-full h-auto object-contain rounded-xl"
+            />
           </motion.div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
@@ -247,13 +242,13 @@ export function ProjectDetail() {
           className="bg-[#f8f9fa] dark:bg-[#303134] rounded-xl p-8 md:p-12"
         >
           {/* Logo */}
-          <div className="flex justify-center mb-10">
+          {id !== 'lakers' && <div className="flex justify-center mb-10">
             {id === 'fishing' ? (
               <img src={fishingLogoImg} alt="Fishing Logo" className="h-24 md:h-36 w-auto object-contain" />
             ) : (
               <img src={spryteLogoImg} alt="SPRYTE Logo" className="h-24 md:h-36 w-auto object-contain" />
             )}
-          </div>
+          </div>}
 
           {/* Sections */}
           <div className="space-y-12">
@@ -275,6 +270,7 @@ export function ProjectDetail() {
             )}
 
             {/* Goal */}
+            {project.goal && (
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -288,8 +284,10 @@ export function ProjectDetail() {
                 {project.goal[lang]}
               </p>
             </motion.section>
+            )}
 
             {/* Process */}
+            {project.process && (
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -327,6 +325,7 @@ export function ProjectDetail() {
                 )}
               </div>
             </motion.section>
+            )}
 
             {/* Kachel Images for Fishing */}
             {id === 'fishing' && (
@@ -355,6 +354,7 @@ export function ProjectDetail() {
             )}
 
             {/* Result */}
+            {project.result && (
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -384,6 +384,7 @@ export function ProjectDetail() {
               </div>
 
               {/* Figma Prototype Link */}
+              {id !== 'lakers' && (
               <div className="flex flex-col items-center gap-3 mt-8">
                 <a
                   href={id === 'fishing'
@@ -404,9 +405,12 @@ export function ProjectDetail() {
                   <img src={figmaLogoImg} alt="Figma" className="w-12 h-12 object-contain transition-transform group-hover:scale-110" />
                 </a>
               </div>
+              )}
             </motion.section>
+            )}
 
             {/* Highlight */}
+            {project.highlight && (
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -437,8 +441,10 @@ export function ProjectDetail() {
                 </p>
               )}
             </motion.section>
+            )}
 
             {/* Testing */}
+            {project.testing && (
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -467,8 +473,10 @@ export function ProjectDetail() {
                 )}
               </div>
             </motion.section>
+            )}
 
             {/* Reflection */}
+            {project.reflection && (
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -482,6 +490,7 @@ export function ProjectDetail() {
                 {project.reflection[lang]}
               </p>
             </motion.section>
+            )}
           </div>
         </motion.div>
       </div>

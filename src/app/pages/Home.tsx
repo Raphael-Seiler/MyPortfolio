@@ -11,6 +11,10 @@ import imgDefault from "../../assets/home/Raphi_Mii_4K.png";
 import imgHover from "../../assets/home/Raphi_Mii_4K_pose.png";
 import screen2Img from "../../assets/projects/spryte/Screen_2.png";
 import fishingLogoImg from "../../assets/projects/fishing/FishingLogo.png";
+import fishingLandingImg from "../../assets/projects/fishing/LandingPage.png";
+import screen3Img from "../../assets/projects/spryte/Screen_3.png";
+import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
+import lakersImg from "../../assets/awards/ddf-2026.jpg";
 
 const LightbulbIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -54,10 +58,10 @@ export function Home() {
   const galleryItems = useMemo(() => [
     { image: screen2Img },
     { image: fishingLogoImg },
-    { image: 'https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { image: 'https://images.unsplash.com/photo-1551651061-a9f70670893a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjB1aXxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { image: 'https://images.unsplash.com/photo-1586717791821-0c862716d8b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { image: 'https://images.unsplash.com/photo-1581299970385-123f894d8a95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+    { image: lakersImg },
+    { image: fishingLandingImg },
+    { image: screen3Img },
+    { image: fruitDudeImg },
   ], []);
 
   return (

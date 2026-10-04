@@ -4,6 +4,7 @@ import { useLanguage } from "../context/LanguageContext";
 import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
 import fishingLandingImg from "../../assets/projects/fishing/LandingPage.png";
 import screen2Img from "../../assets/projects/spryte/Screen_2.png";
+import lakersImg from "../../assets/awards/ddf-2026.jpg";
 import { motion } from "motion/react";
 import { ArrowRight, ExternalLink } from "lucide-react";
 
@@ -51,24 +52,24 @@ const projects = [
     ]
   },
   {
-    id: "3",
-    image: "https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    id: "lakers",
+    image: lakersImg,
     logo: null,
-    title: "Wireframe Kit",
-    tagline: { de: "Rapid Prototyping", en: "Rapid Prototyping" },
+    title: "SCRJ Lakers 2",
+    tagline: { de: "Live-Audio-Kommentar", en: "Live Audio Commentary" },
     description: {
-      de: "Ein modulares UI-Kit mit über 100 Komponenten für schnelle Prototypen und Wireframes in Figma.",
-      en: "A modular UI kit with over 100 components for rapid prototyping and wireframes in Figma."
+      de: "Gruppenprojekt aus dem Anwendungsprojekt 3 im BSc Digital Design an der OST. 3. Platz am Digital Design Festival 2026.",
+      en: "Group project from Application Project 3 in the BSc Digital Design at OST. 3rd place at the Digital Design Festival 2026."
     },
-    category: { de: "UI Kit", en: "UI Kit" },
-    tags: ["ui"],
-    year: "2024",
+    category: { de: "Digital Design", en: "Digital Design" },
+    tags: ["ux", "ui"],
+    year: "2026",
     color: "#FBBC05",
     bgColor: "bg-gradient-to-br from-[#FBBC05]/10 via-[#EA4335]/5 to-transparent",
     darkBgColor: "dark:from-[#FBBC05]/10 dark:via-[#EA4335]/5",
     stats: [
-      { de: "100+ Komponenten", en: "100+ components" },
-      { de: "Figma Community", en: "Figma Community" }
+      { de: "3. Platz Design Festival", en: "3rd place Design Festival" },
+      { de: "Young Innovators nominiert", en: "Young Innovators nominee" }
     ]
   }
 ];
@@ -297,7 +298,7 @@ export function Projects() {
             {[
               { number: "3", label: { de: "Projekte", en: "Projects" } },
               { number: "2", label: { de: "Jahre Erfahrung", en: "Years Experience" } },
-              { number: "100+", label: { de: "Komponenten", en: "Components" } },
+              { number: "2", label: { de: "Auszeichnungen", en: "Awards" } },
               { number: "∞", label: { de: "Begeisterung", en: "Passion" } },
             ].map((stat, index) => (
               <motion.div
