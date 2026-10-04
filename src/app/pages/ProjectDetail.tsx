@@ -1,46 +1,219 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { motion } from "motion/react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import ClickSpark from "../components/ClickSpark";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
-import { getProject, Figure, Localized, TitledText } from "../../content/projects";
+import { getProject, projects, Figure, Localized, Project, TitledText } from "../../content/projects";
 import figmaLogoImg from "../../assets/shared/Figma-logo.svg";
 import underConstructionGif from "../../assets/shared/under-construction.gif";
 
-const headingClass =
-  "text-xs font-semibold tracking-widest uppercase text-[#5e5e63] dark:text-[#b8b8b8]";
-const bodyClass = "text-[#1d1d1f] dark:text-[#f5f5f7] leading-relaxed font-light";
+const ease = [0.22, 1, 0.36, 1] as const;
+const muted = "text-[#5e5e63] dark:text-[#b8b8b8]";
+const strong = "text-[#1d1d1f] dark:text-[#f5f5f7]";
+const tile = "rounded-[28px] bg-[#f5f5f7] dark:bg-[#1d1d1f]";
+const pillButton =
+  "inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:ring-offset-2";
+const primaryButton = `${pillButton} bg-[#1d1d1f] dark:bg-[#f5f5f7] text-white dark:text-[#1d1d1f] hover:bg-[#333336] dark:hover:bg-[#e5e5ea]`;
+const secondaryButton = `${pillButton} bg-[#f5f5f7] dark:bg-[#1d1d1f] ${strong} hover:bg-[#e8e8ed] dark:hover:bg-[#2c2c2e]`;
 
-function Section({ title, delay = 0, spaced, children }: { title: string; delay?: number; spaced?: boolean; children: ReactNode }) {
+/* ---------- shared building blocks (teaser + full page) ---------- */
+
+function BackLink() {
+  const { lang } = useLanguage();
+  return (
+    <Link
+      to="/projects"
+      className={`inline-flex items-center gap-2 text-sm font-medium ${muted} hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-lg px-2 py-1`}
+    >
+      <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
+      <span>{translations[lang].projectDetail.backToProjects}</span>
+    </Link>
+  );
+}
+
+/** Centered header: status pill, big title, gradient line and an optional intro. */
+function Header({ pill, title, gradient, intro }: { pill: ReactNode; title: string; gradient: string; intro?: string }) {
+  return (
+    <motion.header
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease }}
+      className="text-center mt-10 md:mt-14 mb-12 md:mb-16"
+    >
+      <span className={`inline-flex items-center gap-2 rounded-full ${tile} px-4 py-1.5 text-sm font-medium ${strong} mb-6`}>{pill}</span>
+      <h1 className={`text-[2rem] sm:text-5xl md:text-7xl font-semibold tracking-tight ${strong} max-w-4xl mx-auto leading-[1.05] break-words`}>
+        {title}
+      </h1>
+      <p className="mt-4 inline-block text-2xl md:text-4xl font-semibold tracking-tight bg-gradient-to-r from-[#ff9f0a] via-[#ff375f] to-[#bf5af2] bg-clip-text text-transparent">
+        {gradient}
+      </p>
+      {intro && <p className={`mt-6 text-lg md:text-xl ${muted} max-w-2xl mx-auto`}>{intro}</p>}
+    </motion.header>
+  );
+}
+
+/** Large rounded cover. One photo fills it, several screens stand side by side. */
+function Cover({ project, title }: { project: Project; title: string }) {
+  const { hero, card } = project.images;
+  const screens = hero.length > 1 ? hero : null;
+  const cover = hero[0] ?? card;
+  const isPhoto = hero.includes(cover);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.9, delay: 0.15, ease }}
+      className={`relative overflow-hidden rounded-[32px] aspect-[4/3] md:aspect-[16/9] ${
+        isPhoto && !screens ? "bg-black" : "bg-gradient-to-b from-[#f5f5f7] to-[#e8e8ed] dark:from-[#1d1d1f] dark:to-[#111113]"
+      }`}
+    >
+      {screens ? (
+        <div className="absolute inset-0 flex items-center justify-center gap-3 md:gap-6 px-6 md:px-16">
+          {screens.map((src, i) => (
+            <motion.img
+              key={src}
+              src={src}
+              alt={`${title} ${i + 1}`}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: i % 2 ? 18 : -18 }}
+              transition={{ duration: 0.8, delay: 0.3 + i * 0.1, ease }}
+              className="h-[72%] w-auto max-w-[24%] object-contain rounded-[14px] md:rounded-[24px] shadow-[0_30px_60px_-25px_rgba(0,0,0,0.45)]"
+            />
+          ))}
+        </div>
+      ) : (
+        <img
+          src={cover}
+          alt={title}
+          className={`absolute inset-0 w-full h-full ${isPhoto ? "object-cover object-top" : "object-contain p-10 md:p-16"}`}
+        />
+      )}
+    </motion.div>
+  );
+}
+
+/** Glass card that floats over the bottom edge of the cover. */
+function FloatingCard({ children }: { children: ReactNode }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay: 0.45, ease }}
+      className="relative z-10 -mt-10 md:-mt-28 mx-auto max-w-md rounded-[28px] bg-white/85 dark:bg-[#1d1d1f]/85 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] p-6 text-center"
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function PageShell({ children }: { children: ReactNode }) {
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const checkDarkMode = () => setIsDark(document.documentElement.classList.contains("dark"));
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <ClickSpark sparkColor={isDark ? "#ffffff" : "#000000"} sparkSize={19} sparkRadius={40} sparkCount={13} duration={400} disableOnMobile>
+      <div className="w-full min-h-screen pt-28 pb-24">
+        <div className="max-w-6xl mx-auto px-6 md:px-12">{children}</div>
+      </div>
+    </ClickSpark>
+  );
+}
+
+/* ---------- full case study sections ---------- */
+
+function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, ease }}
+      className={className}
     >
-      <h2 className={`${headingClass} ${spaced ? "mb-6" : "mb-4"}`}>{title}</h2>
       {children}
     </motion.section>
   );
 }
 
-/** Renders either a plain paragraph or a list of titled paragraphs. */
-function TextOrSteps({ value, titleWidth }: { value: string | TitledText[]; titleWidth: string }) {
-  if (!Array.isArray(value)) return <p className={bodyClass}>{value}</p>;
+function Eyebrow({ children, color }: { children: string; color: string }) {
   return (
-    <div className="space-y-4">
-      {value.map((item, i) => (
-        <div key={i} className={item.title ? "flex gap-4" : ""}>
-          {item.title && (
-            <span className={`${titleWidth} flex-shrink-0 font-medium text-[#1d1d1f] dark:text-[#f5f5f7]`}>
-              {item.title}
-            </span>
-          )}
-          <p className={`${bodyClass} flex-1`}>{item.desc}</p>
+    <p className="text-sm font-semibold tracking-tight mb-3" style={{ color }}>
+      {children}
+    </p>
+  );
+}
+
+function SectionTitle({ children }: { children: string }) {
+  return <h2 className={`text-3xl md:text-5xl font-semibold tracking-tight ${strong} mb-8 md:mb-12`}>{children}</h2>;
+}
+
+/** Untitled entries become intro paragraphs, titled ones become numbered tiles. */
+function Steps({ value, color, icon }: { value: string | TitledText[]; color: string; icon?: "check" }) {
+  if (!Array.isArray(value)) {
+    return <p className={`text-xl md:text-2xl leading-relaxed ${muted} max-w-4xl`}>{value}</p>;
+  }
+  const intro = value.filter((s) => !s.title);
+  const titled = value.filter((s) => s.title);
+  const cols = titled.length >= 4 ? "lg:grid-cols-4" : titled.length === 3 ? "lg:grid-cols-3" : "";
+  return (
+    <>
+      {intro.map((s, i) => (
+        <p key={i} className={`text-xl md:text-2xl leading-relaxed ${muted} max-w-4xl mb-6`}>
+          {s.desc}
+        </p>
+      ))}
+      {titled.length > 0 && (
+        <div className={`grid gap-4 md:gap-6 md:grid-cols-2 ${cols} ${intro.length ? "mt-10" : ""}`}>
+          {titled.map((s, i) => (
+            <motion.div
+              key={s.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: i * 0.08, ease }}
+              className={`${tile} p-7 md:p-8 flex flex-col`}
+            >
+              {icon === "check" ? (
+                <span className="w-9 h-9 rounded-full flex items-center justify-center text-white mb-6" style={{ backgroundColor: color }}>
+                  <Check size={18} strokeWidth={2.5} aria-hidden="true" />
+                </span>
+              ) : (
+                <span className="text-4xl font-semibold tracking-tight tabular-nums mb-6" style={{ color }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              )}
+              <h3 className={`text-xl md:text-2xl font-semibold tracking-tight ${strong} mb-3`}>{s.title}</h3>
+              <p className={`text-base leading-relaxed ${muted}`}>{s.desc}</p>
+            </motion.div>
+          ))}
         </div>
+      )}
+    </>
+  );
+}
+
+function Figures({ figures }: { figures: Figure[] }) {
+  const { lang } = useLanguage();
+  return (
+    <div className={`mt-10 grid gap-4 md:gap-6 ${figures.length > 1 ? "md:grid-cols-2" : ""}`}>
+      {figures.map((fig) => (
+        <figure key={fig.src} className={`${tile} p-6 md:p-10 flex flex-col items-center`}>
+          <div className="w-full rounded-2xl bg-white p-4 flex justify-center">
+            <img
+              src={fig.src}
+              alt={fig.alt}
+              className={`w-full ${figures.length > 1 ? "h-[340px]" : "max-h-[520px]"} object-contain ${fig.blend ? "mix-blend-multiply" : ""}`}
+            />
+          </div>
+          {fig.caption && <figcaption className={`mt-4 text-sm ${muted}`}>{fig.caption[lang]}</figcaption>}
+        </figure>
       ))}
     </div>
   );
@@ -49,289 +222,206 @@ function TextOrSteps({ value, titleWidth }: { value: string | TitledText[]; titl
 function Caption({ text }: { text?: Localized }) {
   const { lang } = useLanguage();
   if (!text) return null;
-  return <p className="text-xs text-[#5e5e63] dark:text-[#b8b8b8] mt-3 text-center">{text[lang]}</p>;
+  return <p className="mt-3 text-sm text-[#a1a1a6]">{text[lang]}</p>;
 }
 
-function ProcessFigures({ figures }: { figures: Figure[] }) {
-  const single = figures.length === 1;
-  return (
-    <div className={single ? "mt-8 flex justify-center" : "mt-8 grid grid-cols-1 md:grid-cols-2 gap-6"}>
-      {figures.map((fig) => (
-        <div key={fig.src} className={`bg-white dark:bg-[#000000] rounded-2xl ${single ? "p-6" : "p-4"}`}>
-          <img
-            src={fig.src}
-            alt={fig.alt}
-            className={
-              single
-                ? "w-full max-w-[500px] h-auto"
-                : `w-full h-[350px] object-contain ${fig.blend ? "mix-blend-multiply dark:mix-blend-screen" : ""}`
-            }
-          />
-          <Caption text={fig.caption} />
-        </div>
-      ))}
-    </div>
-  );
-}
+/* ---------- page ---------- */
 
 export function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
   const { lang } = useLanguage();
   const project = id ? getProject(id) : undefined;
   const t = translations[lang];
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const checkDarkMode = () => {
-      setIsDark(document.documentElement.classList.contains('dark'));
-    };
-    checkDarkMode();
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
-  }, []);
 
   if (!project) {
     return (
       <div className="w-full h-full flex items-center justify-center">
-        <p className="text-[#5e5e63] dark:text-[#b8b8b8]">{t.projectDetail.projectNotFound}</p>
+        <p className={muted}>{t.projectDetail.projectNotFound}</p>
       </div>
     );
   }
 
-  const { content, images, links } = project;
+  const { meta, content, images, links } = project;
   const title = content.title[lang];
+  const accent = meta.color;
 
   // A project without case-study sections yet only shows its title, cover and a construction note
   const inProgress = !content.goal && !content.process && !content.result && !content.testing && !content.reflection;
   if (inProgress) {
-    const cover = images.hero[0] ?? images.card;
-    const isPhoto = images.hero.includes(cover);
     return (
-      <ClickSpark sparkColor={isDark ? '#ffffff' : '#000000'} sparkSize={19} sparkRadius={40} sparkCount={13} duration={400} disableOnMobile>
-        <div className="w-full min-h-screen pt-28 pb-24">
-          <div className="max-w-6xl mx-auto px-6 md:px-12">
-            <Link
-              to="/projects"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#5e5e63] hover:text-[#1d1d1f] dark:text-[#b8b8b8] dark:hover:text-[#f5f5f7] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-lg px-2 py-1"
-            >
-              <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
-              <span>{t.projectDetail.backToProjects}</span>
-            </Link>
-
-            {/* Teaser headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="text-center mt-10 md:mt-14 mb-12 md:mb-16"
-            >
-              <span className="inline-flex items-center gap-2 rounded-full bg-[#f5f5f7] dark:bg-[#1d1d1f] px-4 py-1.5 text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-6">
-                <span className="relative flex h-2 w-2" aria-hidden="true">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-[#ff9f0a] opacity-70 animate-ping motion-reduce:animate-none" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff9f0a]" />
-                </span>
-                {lang === 'de' ? 'In Arbeit' : 'In progress'}
+      <PageShell>
+        <BackLink />
+        <Header
+          title={title}
+          gradient={lang === "de" ? "Bald verfügbar." : "Coming soon."}
+          pill={
+            <>
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#ff9f0a] opacity-70 animate-ping motion-reduce:animate-none" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff9f0a]" />
               </span>
-              <h1 className="text-[2rem] sm:text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] max-w-4xl mx-auto leading-[1.05] break-words">
-                {title}
-              </h1>
-              <p className="mt-4 inline-block text-2xl md:text-4xl font-semibold tracking-tight bg-gradient-to-r from-[#ff9f0a] via-[#ff375f] to-[#bf5af2] bg-clip-text text-transparent">
-                {lang === 'de' ? 'Bald verfügbar.' : 'Coming soon.'}
-              </p>
-            </motion.div>
-
-            {/* Cover */}
-            <motion.div
-              initial={{ opacity: 0, y: 40, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className={`relative overflow-hidden rounded-[32px] aspect-[4/3] md:aspect-[16/9] ${isPhoto ? 'bg-black' : 'bg-[#f5f5f7] dark:bg-[#1d1d1f]'}`}
-            >
-              <img
-                src={cover}
-                alt={title}
-                className={`absolute inset-0 w-full h-full ${isPhoto ? 'object-cover' : 'object-contain p-10 md:p-16'}`}
-              />
-            </motion.div>
-
-            {/* Floating construction card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-10 -mt-10 md:-mt-28 mx-auto max-w-sm rounded-[28px] bg-white/85 dark:bg-[#1d1d1f]/85 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] p-6 text-center"
-            >
-              <div className="mx-auto w-36 h-36 rounded-[32px] bg-white overflow-hidden shadow-sm ring-1 ring-black/5">
-                <img
-                  src={underConstructionGif}
-                  alt={lang === 'de' ? 'Baustelle: diese Projektseite ist noch im Aufbau' : 'Construction site: this project page is still being built'}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <p className="mt-5 text-lg font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
-                {lang === 'de' ? 'Diese Fallstudie entsteht gerade.' : 'This case study is being built.'}
-              </p>
-              <Link
-                to="/projects"
-                className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] text-white dark:text-[#1d1d1f] text-sm font-medium hover:bg-[#333336] dark:hover:bg-[#e5e5ea] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:ring-offset-2"
-              >
-                {lang === 'de' ? 'Andere Projekte ansehen' : 'See other projects'}
-              </Link>
-            </motion.div>
+              {lang === "de" ? "In Arbeit" : "In progress"}
+            </>
+          }
+        />
+        <Cover project={project} title={title} />
+        <FloatingCard>
+          <div className="mx-auto w-36 h-36 rounded-[32px] bg-white overflow-hidden shadow-sm ring-1 ring-black/5">
+            <img
+              src={underConstructionGif}
+              alt={lang === "de" ? "Baustelle: diese Projektseite ist noch im Aufbau" : "Construction site: this project page is still being built"}
+              className="w-full h-full object-contain"
+            />
           </div>
-        </div>
-      </ClickSpark>
+          <p className={`mt-5 text-lg font-semibold tracking-tight ${strong}`}>
+            {lang === "de" ? "Diese Fallstudie entsteht gerade." : "This case study is being built."}
+          </p>
+          <Link to="/projects" className={`mt-5 ${primaryButton}`}>
+            {lang === "de" ? "Andere Projekte ansehen" : "See other projects"}
+          </Link>
+        </FloatingCard>
+      </PageShell>
     );
   }
 
+  const index = projects.findIndex((p) => p.meta.id === meta.id);
+  const next = projects[(index + 1) % projects.length];
+
   return (
-    <ClickSpark
-      sparkColor={isDark ? '#ffffff' : '#000000'}
-      sparkSize={19}
-      sparkRadius={40}
-      sparkCount={13}
-      duration={400}
-      disableOnMobile
-    >
-    <div className="w-full min-h-screen">
-      {/* Hero Section */}
-      <div className="max-w-5xl mx-auto px-6 md:px-12 py-20 pt-32">
-        <Link
-          to="/projects"
-          className="inline-flex items-center gap-2 text-sm font-medium text-[#5e5e63] hover:text-[#1d1d1f] dark:text-[#b8b8b8] dark:hover:text-[#f5f5f7] transition-colors mb-12 focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-lg px-2 py-1"
-        >
-          <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
-          <span>{t.projectDetail.backToProjects}</span>
-        </Link>
+    <PageShell>
+      <BackLink />
+      <Header
+        title={title}
+        gradient={meta.tagline[lang]}
+        intro={content.subtitle[lang]}
+        pill={
+          <>
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: accent }} aria-hidden="true" />
+            {meta.category[lang]} · {meta.year}
+          </>
+        }
+      />
+      <Cover project={project} title={title} />
 
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
-            {title}
-          </h1>
-          <p className="text-xl text-[#5e5e63] dark:text-[#b8b8b8] font-light max-w-2xl">{content.subtitle[lang]}</p>
-        </motion.div>
-
-        {/* Hero Images */}
-        {images.hero.length === 1 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-12"
-          >
-            <img src={images.hero[0]} alt={title} className="w-full h-auto object-contain rounded-2xl" />
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-            {images.hero.map((src, i) => (
-              <motion.div
-                key={src}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
-                className="overflow-hidden rounded-2xl bg-[#f5f5f7] dark:bg-[#1d1d1f]"
-              >
-                <img src={src} alt={`${title} ${i + 1}`} className="w-full h-auto object-cover rounded-2xl" />
-              </motion.div>
+      <FloatingCard>
+        {images.logo && (
+          <div className="mx-auto w-28 h-28 rounded-[28px] bg-white shadow-sm ring-1 ring-black/5 flex items-center justify-center p-4">
+            <img src={images.logo} alt={`${meta.title} Logo`} className="max-w-full max-h-full object-contain" />
+          </div>
+        )}
+        {meta.stats.length > 0 && (
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            {meta.stats.map((stat) => (
+              <span key={stat.de} className={`px-3 py-1.5 rounded-full ${tile} text-xs font-medium ${strong}`}>
+                {stat[lang]}
+              </span>
             ))}
           </div>
         )}
-      </div>
+        {links.prototype && (
+          <a href={links.prototype} target="_blank" rel="noopener noreferrer" className={`mt-5 ${primaryButton}`}>
+            <img src={figmaLogoImg} alt="" className="w-4 h-4 object-contain" aria-hidden="true" />
+            {t.projectDetail.tryPrototype}
+            <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+        )}
+      </FloatingCard>
 
-      {/* Content Section */}
-      <div className="max-w-5xl mx-auto px-6 md:px-12 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="bg-[#f5f5f7] dark:bg-[#1d1d1f] rounded-3xl p-8 md:p-12"
-        >
-          {images.logo && (
-            <div className="flex justify-center mb-10">
-              <img src={images.logo} alt={`${title} Logo`} className="h-24 md:h-36 w-auto object-contain" />
+      <div className="mt-24 md:mt-32 space-y-24 md:space-y-36">
+        {/* Charter as a big statement */}
+        {content.charter[lang] && (
+          <Reveal className="max-w-4xl">
+            <Eyebrow color={accent}>{t.projectDetail.projectCharter}</Eyebrow>
+            <p className={`text-xl md:text-3xl font-semibold tracking-tight leading-[1.3] ${strong}`}>{content.charter[lang]}</p>
+          </Reveal>
+        )}
+
+        {content.goal && (
+          <Reveal className="grid md:grid-cols-[1fr_1.4fr] gap-6 md:gap-16 items-start">
+            <div>
+              <Eyebrow color={accent}>{t.projectDetail.ourGoal}</Eyebrow>
+              <h2 className={`text-3xl md:text-5xl font-semibold tracking-tight ${strong}`}>
+                {lang === "de" ? "Worum es ging." : "What it was about."}
+              </h2>
             </div>
-          )}
+            <p className={`text-xl md:text-2xl leading-relaxed ${muted}`}>{content.goal[lang]}</p>
+          </Reveal>
+        )}
 
-          <div className="space-y-12">
-            <Section title={t.projectDetail.projectCharter}>
-              <p className={`text-lg ${bodyClass}`}>{content.charter[lang]}</p>
-            </Section>
+        {content.process && (
+          <Reveal>
+            <Eyebrow color={accent}>{lang === "de" ? t.projectDetail.prozess : t.projectDetail.process}</Eyebrow>
+            <SectionTitle>{lang === "de" ? "Vom Problem zur Lösung." : "From problem to solution."}</SectionTitle>
+            <Steps value={content.process[lang]} color={accent} />
+            {images.processFigures && <Figures figures={images.processFigures} />}
+          </Reveal>
+        )}
 
-            {content.goal && (
-              <Section title={t.projectDetail.ourGoal} delay={0.1}>
-                <p className={`text-lg ${bodyClass}`}>{content.goal[lang]}</p>
-              </Section>
-            )}
+        {content.result && (
+          <Reveal>
+            <Eyebrow color={accent}>{t.projectDetail.result}</Eyebrow>
+            <SectionTitle>{lang === "de" ? "Das Ergebnis." : "The result."}</SectionTitle>
+            <Steps value={content.result[lang]} color={accent} />
+          </Reveal>
+        )}
 
-            {content.process && (
-              <Section title={lang === "de" ? t.projectDetail.prozess : t.projectDetail.process} delay={0.2} spaced>
-                <TextOrSteps value={content.process[lang]} titleWidth="min-w-[100px]" />
-                {images.processFigures && <ProcessFigures figures={images.processFigures} />}
-              </Section>
-            )}
-
-            {content.result && (
-              <Section title={t.projectDetail.result} delay={0.3} spaced>
-                <TextOrSteps value={content.result[lang]} titleWidth="w-[100px]" />
-
-                {links.prototype && (
-                  <div className="flex flex-col items-center gap-3 mt-8">
-                    <a
-                      href={links.prototype}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex flex-col items-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-2xl p-4"
-                    >
-                      <span className="text-sm font-medium text-[#0066cc] dark:text-[#4da6ff] group-hover:text-[#004d99] dark:group-hover:text-[#80c0ff] transition-colors">
-                        {t.projectDetail.tryPrototype}
-                      </span>
-                      <svg className="text-[#0066cc] dark:text-[#4da6ff] w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M12 5v14" />
-                        <path d="M19 12l-7 7-7-7" />
-                      </svg>
-                      <img src={figmaLogoImg} alt="Figma" className="w-12 h-12 object-contain transition-transform group-hover:scale-110" />
-                    </a>
-                  </div>
-                )}
-              </Section>
-            )}
-
-            {content.highlight && (
-              <Section title={lang === "de" ? "Das Highlight" : "The Highlight"} delay={0.4}>
-                {images.highlightFigure ? (
-                  <div className="flex flex-col md:flex-row gap-8 items-start">
-                    <p className={`${bodyClass} flex-1`}>{content.highlight[lang]}</p>
-                    <div className="flex-shrink-0">
-                      <img
-                        src={images.highlightFigure.src}
-                        alt={images.highlightFigure.alt}
-                        className="w-[400px] max-w-full h-auto rounded-2xl"
-                      />
-                      <Caption text={images.highlightFigure.caption} />
+        {/* Highlight as a dark feature card */}
+        {content.highlight && (
+          <Reveal>
+            <div className="rounded-[32px] bg-[#1d1d1f] dark:bg-[#1c1c1e] text-[#f5f5f7] p-8 md:p-14 grid gap-10 md:gap-14 md:grid-cols-2 items-center overflow-hidden">
+              <div>
+                <p className="text-sm font-semibold tracking-tight mb-3 text-[#ff9f0a]">{lang === "de" ? "Das Highlight" : "The highlight"}</p>
+                <p className="text-lg md:text-xl leading-relaxed text-[#d2d2d7]">{content.highlight[lang]}</p>
+              </div>
+              {images.highlightFigure ? (
+                <figure>
+                  <img
+                    src={images.highlightFigure.src}
+                    alt={images.highlightFigure.alt}
+                    className="w-full h-auto rounded-[20px]"
+                  />
+                  <Caption text={images.highlightFigure.caption} />
+                </figure>
+              ) : (
+                images.logo && (
+                  <div className="flex justify-center">
+                    <div className="w-48 h-48 md:w-64 md:h-64 rounded-[48px] bg-white flex items-center justify-center p-8">
+                      <img src={images.logo} alt="" aria-hidden="true" className="max-w-full max-h-full object-contain" />
                     </div>
                   </div>
-                ) : (
-                  <p className={bodyClass}>{content.highlight[lang]}</p>
-                )}
-              </Section>
-            )}
+                )
+              )}
+            </div>
+          </Reveal>
+        )}
 
-            {content.testing && (
-              <Section title="Testing & Accessibility" delay={0.45}>
-                <TextOrSteps value={content.testing[lang]} titleWidth="min-w-[120px]" />
-              </Section>
-            )}
+        {content.testing && (
+          <Reveal>
+            <Eyebrow color={accent}>Testing &amp; Accessibility</Eyebrow>
+            <SectionTitle>{lang === "de" ? "Geprüft und verbessert." : "Tested and refined."}</SectionTitle>
+            <Steps value={content.testing[lang]} color={accent} icon="check" />
+          </Reveal>
+        )}
 
-            {content.reflection && (
-              <Section title={t.projectDetail.reflection} delay={0.5}>
-                <p className={bodyClass}>{content.reflection[lang]}</p>
-              </Section>
-            )}
-          </div>
-        </motion.div>
+        {/* Reflection as the closing statement */}
+        {content.reflection && (
+          <Reveal className="text-center max-w-3xl mx-auto">
+            <Eyebrow color={accent}>{t.projectDetail.reflection}</Eyebrow>
+            <p className={`text-xl md:text-2xl font-semibold tracking-tight leading-snug ${strong}`}>{content.reflection[lang]}</p>
+          </Reveal>
+        )}
+
+        {/* Next steps */}
+        <Reveal className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link to={`/projects/${next.meta.id}`} className={primaryButton}>
+            {lang === "de" ? "Nächstes Projekt" : "Next project"}: {next.meta.title}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+          <Link to="/projects" className={secondaryButton}>
+            {lang === "de" ? "Alle Projekte" : "All projects"}
+          </Link>
+        </Reveal>
       </div>
-    </div>
-    </ClickSpark>
+    </PageShell>
   );
 }
