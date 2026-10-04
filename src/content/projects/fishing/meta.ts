@@ -12,8 +12,6 @@ export const meta: ProjectMeta = {
   tags: ["ecommerce", "ui"],
   year: "2025",
   color: "#34A853",
-  bgColor: "bg-gradient-to-br from-[#34A853]/10 via-[#FBBC05]/5 to-transparent",
-  darkBgColor: "dark:from-[#34A853]/10 dark:via-[#FBBC05]/5",
   stats: [
     { de: "High-Fidelity Prototyp", en: "High-fidelity prototype" },
     { de: "Responsive Design", en: "Responsive design" },

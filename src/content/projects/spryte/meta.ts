@@ -12,8 +12,6 @@ export const meta: ProjectMeta = {
   tags: ["ux", "ui"],
   year: "2024",
   color: "#4285F4",
-  bgColor: "bg-gradient-to-br from-[#4285F4]/10 via-[#34A853]/5 to-transparent",
-  darkBgColor: "dark:from-[#4285F4]/10 dark:via-[#34A853]/5",
   stats: [
     { de: "6-köpfiges Team", en: "6-person team" },
     { de: "Figma Prototyp", en: "Figma prototype" },

@@ -14,10 +14,8 @@ export interface ProjectMeta {
   category: Localized;
   tags: string[];
   year: string;
-  /** Accent color (hex) */
+  /** Accent color (hex), each design derives its own tints from it */
   color: string;
-  bgColor: string;
-  darkBgColor: string;
   stats: Localized[];
 }
 

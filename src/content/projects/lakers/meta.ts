@@ -12,8 +12,6 @@ export const meta: ProjectMeta = {
   tags: ["ux", "ui"],
   year: "2026",
   color: "#FBBC05",
-  bgColor: "bg-gradient-to-br from-[#FBBC05]/10 via-[#EA4335]/5 to-transparent",
-  darkBgColor: "dark:from-[#FBBC05]/10 dark:via-[#EA4335]/5",
   stats: [
     { de: "3. Platz Design Festival", en: "3rd place Design Festival" },
     { de: "Young Innovators nominiert", en: "Young Innovators nominee" },
