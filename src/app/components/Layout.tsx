@@ -264,13 +264,13 @@ export function Layout() {
                 >
                   <Instagram size={16} strokeWidth={2} />
                 </a>
-                <a
-                  href="mailto:raphi.seiler@gmail.com"
+                <NavLink
+                  to="/contact"
                   className="w-9 h-9 rounded-full bg-white dark:bg-[#202124] border border-[#dadce0] dark:border-[#5f6368] flex items-center justify-center text-[#5f6368] dark:text-[#9aa0a6] hover:text-[#1a73e8] hover:border-[#1a73e8] dark:hover:text-[#8ab4f8] transition-colors"
-                  aria-label="Email"
+                  aria-label={lang === 'de' ? 'Kontakt' : 'Contact'}
                 >
                   <Mail size={16} strokeWidth={2} />
-                </a>
+                </NavLink>
               </div>
             </div>
 
@@ -308,12 +308,12 @@ export function Layout() {
                   </NavLink>
                 </li>
                 <li>
-                  <a
-                    href="mailto:raphi.seiler@gmail.com"
+                  <NavLink
+                    to="/contact"
                     className="text-sm text-[#5f6368] dark:text-[#9aa0a6] hover:text-[#1a73e8] dark:hover:text-[#8ab4f8] transition-colors"
                   >
                     {lang === 'de' ? 'Kontakt' : 'Contact'}
-                  </a>
+                  </NavLink>
                 </li>
               </ul>
             </div>

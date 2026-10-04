@@ -20,6 +20,7 @@ export function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [hasFocus, setHasFocus] = useState<keyof FormData | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [sendFailed, setSendFailed] = useState(false);
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { lang } = useLanguage();
@@ -55,9 +56,10 @@ export function Contact() {
     }
 
     setIsSubmitting(true);
+    setSendFailed(false);
 
     try {
-      const response = await fetch('https://formspree.io/f/mqayvoaq', {
+      const response = await fetch('https://formspree.io/f/xkopgkeq', {
         method: 'POST',
         body: JSON.stringify(formData),
         headers: {
@@ -74,11 +76,8 @@ export function Contact() {
         throw new Error('Form submission failed');
       }
     } catch {
-      const mailtoLink = `mailto:raphi.seiler@gmail.com?subject=Kontaktanfrage von ${encodeURIComponent(formData.name)}&body=${encodeURIComponent('Name: ' + formData.name + '\nE-Mail: ' + formData.email + '\n\n' + formData.message)}`;
-      window.location.href = mailtoLink;
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setIsSubmitted(false), 5000);
+      // Keep the form filled in so nothing is lost
+      setSendFailed(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -278,6 +277,11 @@ export function Contact() {
                     : t.contact.send
                   }
                 </button>
+                {sendFailed && (
+                  <p role="alert" className="text-sm text-[#d93025] dark:text-[#f28b82] text-center">
+                    {lang === 'de' ? 'Die Nachricht konnte nicht gesendet werden. Bitte versuche es später nochmal.' : 'Your message could not be sent. Please try again later.'}
+                  </p>
+                )}
               </form>
             </div>
           )}

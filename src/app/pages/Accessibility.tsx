@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { Link } from 'react-router';
 import { useEffect, useState } from 'react';
 import { translations } from '../translations';
 import { useLanguage } from '../context/LanguageContext';
@@ -166,8 +167,8 @@ export function Accessibility() {
           <p className="text-[#5f6368] dark:text-[#9aa0a6] font-normal leading-relaxed mb-6">
             {t.accessibility.feedbackDescription}
           </p>
-          <a
-            href="mailto:raphi.seiler@gmail.com?subject=Accessibility Feedback"
+          <Link
+            to="/contact"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a73e8] text-white rounded-md text-sm font-medium hover:bg-[#1557b0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#1a73e8] focus:ring-offset-2"
           >
             {t.accessibility.getInTouch}
@@ -175,7 +176,7 @@ export function Accessibility() {
               <path d="M5 12h14"/>
               <path d="M12 5l7 7-7 7"/>
             </svg>
-          </a>
+          </Link>
         </motion.section>
       </div>
     </div>
