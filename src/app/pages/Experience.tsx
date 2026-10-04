@@ -105,9 +105,30 @@ export function Experience() {
 
   return (
     <ClickSpark sparkColor={isDark ? "#ffffff" : "#000000"} sparkSize={19} sparkRadius={40} sparkCount={13} duration={400} disableOnMobile>
-      <div className="w-full min-h-screen bg-[#ffffff] dark:bg-[#000000] pt-32 pb-24">
+      <div className="relative w-full min-h-screen overflow-hidden bg-[#ffffff] dark:bg-[#000000] pt-32 pb-24">
+        {/* Backdrop over the whole page: soft sky in light mode, deep space in dark mode */}
+        <div aria-hidden="true" className="absolute inset-0 dark:hidden bg-[radial-gradient(ellipse_90%_70%_at_50%_100%,#cfe0ff_0%,#eef2fb_45%,#ffffff_80%)]" />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 hidden dark:block"
+          style={{
+            backgroundImage: [
+              "radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.8), transparent)",
+              "radial-gradient(1px 1px at 72% 12%, rgba(255,255,255,0.7), transparent)",
+              "radial-gradient(1.5px 1.5px at 38% 34%, rgba(255,255,255,0.6), transparent)",
+              "radial-gradient(1px 1px at 88% 44%, rgba(255,255,255,0.7), transparent)",
+              "radial-gradient(1px 1px at 22% 66%, rgba(255,255,255,0.5), transparent)",
+              "radial-gradient(1.5px 1.5px at 58% 8%, rgba(255,255,255,0.6), transparent)",
+              "radial-gradient(1px 1px at 6% 48%, rgba(255,255,255,0.6), transparent)",
+              "radial-gradient(1px 1px at 92% 78%, rgba(255,255,255,0.6), transparent)",
+              "radial-gradient(1.5px 1.5px at 48% 86%, rgba(255,255,255,0.5), transparent)",
+              "radial-gradient(1px 1px at 30% 92%, rgba(255,255,255,0.6), transparent)",
+              "radial-gradient(ellipse 90% 70% at 50% 100%, #2b3f8f 0%, #101634 45%, #000000 80%)",
+            ].join(","),
+          }}
+        />
         {/* Hero */}
-        <div className="max-w-6xl mx-auto px-6 md:px-12 mb-12">
+        <div className="relative max-w-6xl mx-auto px-6 md:px-12 mb-12">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -126,7 +147,7 @@ export function Experience() {
           </motion.p>
         </div>
 
-        <div className="max-w-6xl mx-auto px-6 md:px-12">
+        <div className="relative max-w-6xl mx-auto px-6 md:px-12">
           {/* Year chips (phones) */}
           <div className="md:hidden -mx-6 px-6 mb-4 flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {items.map((item, i) => (
@@ -146,31 +167,13 @@ export function Experience() {
             ))}
           </div>
 
-          {/* Time Machine panel */}
+          {/* Time Machine */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="relative overflow-hidden rounded-[32px] border border-black/5 dark:border-white/10"
+            className="relative"
           >
-            {/* Backdrop: soft sky in light mode, deep space in dark mode */}
-            <div className="absolute inset-0 dark:hidden bg-[radial-gradient(ellipse_at_50%_115%,#cfe0ff_0%,#eef2fb_45%,#f5f5f7_75%)]" />
-            <div
-              className="absolute inset-0 hidden dark:block"
-              style={{
-                backgroundImage: [
-                  "radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.8), transparent)",
-                  "radial-gradient(1px 1px at 72% 12%, rgba(255,255,255,0.7), transparent)",
-                  "radial-gradient(1.5px 1.5px at 38% 34%, rgba(255,255,255,0.6), transparent)",
-                  "radial-gradient(1px 1px at 88% 44%, rgba(255,255,255,0.7), transparent)",
-                  "radial-gradient(1px 1px at 22% 66%, rgba(255,255,255,0.5), transparent)",
-                  "radial-gradient(1.5px 1.5px at 58% 8%, rgba(255,255,255,0.6), transparent)",
-                  "radial-gradient(1px 1px at 6% 48%, rgba(255,255,255,0.6), transparent)",
-                  "radial-gradient(ellipse at 50% 120%, #2b3f8f 0%, #101634 40%, #000000 75%)",
-                ].join(","),
-              }}
-            />
-
             <div className="relative flex">
               {/* Stage */}
               <div
