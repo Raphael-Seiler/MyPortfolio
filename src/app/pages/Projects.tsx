@@ -1,58 +1,25 @@
 import { useNavigate } from "react-router";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
-import fruitDudeImg from "../../assets/projects/spryte/Fruit_Dude.png";
-import fishingLandingImg from "../../assets/projects/fishing/LandingPage.png";
-import screen2Img from "../../assets/projects/spryte/Screen_2.png";
 import ClickSpark from "../components/ClickSpark";
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
+import { projects as allProjects } from "../../content/projects";
 
-const projects = [
-  {
-    id: "spryte",
-    image: screen2Img,
-    logo: fruitDudeImg,
-    title: "SPRYTE",
-    tagline: { de: "Place Your Pixels", en: "Place Your Pixels" },
-    description: {
-      de: "Ein interaktives Ökosystem für standortübergreifende Pixel-Kunst.",
-      en: "An interactive ecosystem for cross-location pixel art."
-    },
-    category: { de: "Schulprojekt", en: "School Project" },
-    year: "2024",
-    gradient: "from-orange-400/10 via-amber-400/10 to-yellow-400/10"
-  },
-  {
-    id: "fishing",
-    image: fishingLandingImg,
-    logo: null,
-    title: "Helvetic Fishing Co.",
-    tagline: { de: "Fishing E-Commerce", en: "Fishing E-Commerce" },
-    description: {
-      de: "Ein moderner E-Commerce-Shop für die Schweizer Fischerei-Community.",
-      en: "A modern e-commerce shop for the Swiss fishing community."
-    },
-    category: { de: "Schulprojekt", en: "School Project" },
-    year: "2025",
-    gradient: "from-emerald-500/10 via-teal-500/10 to-cyan-500/10"
-  },
-  {
-    id: "3",
-    image: "https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    logo: null,
-    title: "Wireframe Kit",
-    tagline: { de: "Rapid Prototyping", en: "Rapid Prototyping" },
-    description: {
-      de: "Ein UI-Kit für schnelle Prototypen und Wireframes in Figma.",
-      en: "A UI kit for rapid prototyping and wireframes in Figma."
-    },
-    category: { de: "Schulprojekt", en: "School Project" },
-    year: "2024",
-    gradient: "from-orange-500/10 via-amber-500/10 to-yellow-500/10"
-  }
-];
+// Card tints for this design, keyed by project id (fallback for new projects)
+const gradients: Record<string, string> = {
+  spryte: "from-blue-500/10 via-sky-400/10 to-cyan-400/10",
+  fishing: "from-emerald-500/10 via-teal-500/10 to-cyan-500/10",
+  lakers: "from-yellow-400/10 via-amber-400/10 to-orange-400/10",
+};
+const fallbackGradient = "from-violet-500/10 via-purple-500/10 to-fuchsia-500/10";
+
+const projects = allProjects.map((p) => ({
+  ...p.meta,
+  image: p.images.card,
+  gradient: gradients[p.meta.id] ?? fallbackGradient,
+}));
 
 export function Projects() {
   const navigate = useNavigate();
@@ -153,19 +120,11 @@ export function Projects() {
                   {/* Image Side */}
                   <div className="relative h-80 md:h-[500px] overflow-hidden order-1 md:order-2">
                     <div className="absolute inset-0 flex items-center justify-center p-6">
-                      {project.logo ? (
-                        <img
-                          src={project.logo}
-                          alt={`${project.title} Logo`}
-                          className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700 ease-out"
-                        />
-                      ) : (
-                        <img
+                      <img
                           src={project.image}
                           alt={`${project.title} Preview`}
                           className="w-full h-full object-contain rounded-2xl group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
-                      )}
                     </div>
                   </div>
                 </div>

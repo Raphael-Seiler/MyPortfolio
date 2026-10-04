@@ -7,10 +7,10 @@ import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import ClickSpark from "../components/ClickSpark";
 import { useEffect } from "react";
-import imgDefault from "../../assets/home/Raphi_Mii_4K.png";
-import imgHover from "../../assets/home/Raphi_Mii_4K_pose.png";
-import screen2Img from "../../assets/projects/spryte/Screen_2.png";
-import fishingLogoImg from "../../assets/projects/fishing/FishingLogo.png";
+import { Medal, Star } from "lucide-react";
+import { projects, allAwards } from "../../content/projects";
+import imgDefault from "../../assets/home/Raphi_Mii_4K.webp";
+import imgHover from "../../assets/home/Raphi_Mii_4K_pose.webp";
 
 // Apple-style minimal icons
 const LightbulbIcon = () => (
@@ -63,14 +63,10 @@ export function Home() {
 
   const t = translations[lang];
 
-  const galleryItems = useMemo(() => [
-    { image: screen2Img },
-    { image: fishingLogoImg },
-    { image: 'https://images.unsplash.com/photo-1761122827167-159d1d272313?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlZnJhbWUlMjBza2V0Y2glMjB1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { image: 'https://images.unsplash.com/photo-1551651061-a9f70670893a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjB1aXxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { image: 'https://images.unsplash.com/photo-1586717791821-0c862716d8b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1eCUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { image: 'https://images.unsplash.com/photo-1581299970385-123f894d8a95?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1aSUyMGRlc2lnbnxlbnwxfHx8fDE3NzI3MTk0OTF8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-  ], []);
+  const galleryItems = useMemo(
+    () => projects.flatMap((p) => p.images.gallery.map((image) => ({ image }))),
+    []
+  );
 
   return (
     <ClickSpark
@@ -185,6 +181,73 @@ export function Home() {
                 textColor="#1d1d1f"
                 onItemClick={() => navigate('/projects')}
               />
+            </div>
+          </div>
+        </section>
+
+        {/* Awards Section */}
+        <section className="py-24 md:py-32">
+          <div className="max-w-6xl mx-auto px-6 md:px-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <h3 className="text-3xl md:text-5xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
+                {lang === 'de' ? 'Auszeichnungen.' : 'Awards.'}
+              </h3>
+              <p className="text-lg text-[#5e5e63] dark:text-[#b8b8b8] max-w-2xl mx-auto">
+                {lang === 'de' ? 'Anerkennung für meine Arbeit an der OST.' : 'Recognition for my work at OST.'}
+              </p>
+            </motion.div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {allAwards.map(({ award, project }, i) => (
+                <motion.a
+                  key={award.id}
+                  href={award.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                  className="group flex flex-col overflow-hidden rounded-3xl bg-[#f5f5f7] dark:bg-[#1d1d1f] border border-[#d2d2d7]/50 dark:border-white/10 hover:scale-[1.01] transition-transform duration-500 ease-out"
+                >
+                  {award.image && (
+                    <img
+                      src={award.image}
+                      alt={award.title[lang]}
+                      loading="lazy"
+                      className="w-full aspect-[3/2] object-cover"
+                    />
+                  )}
+                  <div className="p-6 flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] text-white dark:text-[#1d1d1f]">
+                        {award.status === "won" ? <Medal size={22} /> : <Star size={20} />}
+                      </span>
+                      <span className="text-sm font-medium text-[#0066cc] dark:text-[#4da6ff]">
+                        {award.result[lang]}
+                      </span>
+                    </div>
+                    <h4 className="text-xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+                      {award.title[lang]}
+                    </h4>
+                    <p className="text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">
+                      {project.content.title[lang]}
+                    </p>
+                    <p className="text-sm text-[#5e5e63] dark:text-[#b8b8b8] font-light leading-relaxed">
+                      {award.description[lang]}
+                    </p>
+                    <p className="text-xs text-[#5e5e63] dark:text-[#b8b8b8]">
+                      {award.date[lang]}
+                    </p>
+                  </div>
+                </motion.a>
+              ))}
             </div>
           </div>
         </section>

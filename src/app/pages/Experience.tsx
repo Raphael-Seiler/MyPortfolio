@@ -1,9 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import ClickSpark from "../components/ClickSpark";
+import { Medal, Star } from "lucide-react";
 import { experiences } from "../data";
+import { allAwards } from "../../content/projects";
+
+type TimelineItem = {
+  id: string;
+  role: string;
+  company: string;
+  period: string;
+  description: string;
+  details?: string;
+  award?: { status: "won" | "nominated"; link: string };
+};
 
 export function Experience() {
   const { lang } = useLanguage();
@@ -20,6 +32,27 @@ export function Experience() {
   }, []);
 
   const t = translations[lang];
+
+  const pick = (de: string, en?: string) => (lang === 'en' && en ? en : de);
+
+  const items: TimelineItem[] = [
+    ...experiences.map((exp) => ({
+      id: exp.id,
+      role: pick(exp.role, exp.roleEn),
+      company: pick(exp.company, exp.companyEn),
+      period: pick(exp.period, exp.periodEn),
+      description: pick(exp.description, exp.descriptionEn),
+      details: pick(exp.details, exp.detailsEn),
+    })),
+    ...allAwards.map(({ award, project }) => ({
+      id: award.id,
+      role: `${award.title[lang]} – ${award.result[lang]}`,
+      company: project.content.title[lang],
+      period: award.date[lang],
+      description: award.description[lang],
+      award: { status: award.status, link: award.link },
+    })),
+  ];
 
   return (
     <ClickSpark
@@ -59,13 +92,7 @@ export function Experience() {
               {/* Timeline Line - visible on all screen sizes */}
               <div className="absolute left-[80px] sm:left-[180px] top-0 bottom-0 w-px bg-[#d2d2d7] dark:bg-[#424245] transform -translate-x-1/2" />
 
-              {experiences.map((exp, index) => {
-                const role = lang === 'en' && exp.roleEn ? exp.roleEn : exp.role;
-                const company = lang === 'en' && exp.companyEn ? exp.companyEn : exp.company;
-                const period = lang === 'en' && exp.periodEn ? exp.periodEn : exp.period;
-                const description = lang === 'en' && exp.descriptionEn ? exp.descriptionEn : exp.description;
-                const details = lang === 'en' && exp.detailsEn ? exp.detailsEn : exp.details;
-
+              {items.map((exp, index) => {
                 return (
                   <motion.div
                     key={exp.id}
@@ -76,14 +103,14 @@ export function Experience() {
                     className="relative"
                   >
                     {/* Timeline Dot - centered on the line and vertically on the tile */}
-                    <div className="absolute left-[80px] sm:left-[180px] top-1/2 w-3 h-3 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] transform -translate-x-1/2 -translate-y-1/2 z-10 ring-4 ring-white dark:ring-[#000000]" />
+                    <div className={`absolute left-[80px] sm:left-[180px] top-1/2 w-3 h-3 rounded-full ${exp.award ? "bg-[#ff9f0a] dark:bg-[#ffd60a]" : "bg-[#1d1d1f] dark:bg-[#f5f5f7]"} transform -translate-x-1/2 -translate-y-1/2 z-10 ring-4 ring-white dark:ring-[#000000]`} />
 
                     {/* Content Row - date on left, card on right */}
                     <div className="flex sm:flex-row flex-row items-stretch">
                       {/* Date on the left side of the timeline */}
                       <div className="w-[80px] sm:w-[180px] flex-shrink-0 flex items-center justify-end sm:pr-4 pr-4">
                         <span className="text-xs sm:text-sm font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] text-right">
-                          {period}
+                          {exp.period}
                         </span>
                       </div>
 
@@ -91,22 +118,38 @@ export function Experience() {
                       <div className="flex-1 sm:pl-8 pl-4">
                         <div className="bg-[#f5f5f7] dark:bg-[#1d1d1f] rounded-2xl p-4 sm:p-6 min-h-[160px]">
                           {/* Role */}
-                          <h3 className="text-base sm:text-lg font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1">
-                            {role}
+                          <h3 className="text-base sm:text-lg font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] mb-1 flex items-start gap-2">
+                            {exp.award && (
+                              <span className="mt-0.5 text-[#ff9f0a] dark:text-[#ffd60a] flex-shrink-0" aria-hidden="true">
+                                {exp.award.status === "won" ? <Medal size={20} /> : <Star size={20} />}
+                              </span>
+                            )}
+                            {exp.role}
                           </h3>
 
                           {/* Company */}
                           <p className="text-xs sm:text-sm text-[#5e5e63] dark:text-[#b8b8b8] font-medium mb-3">
-                            {company}
+                            {exp.company}
                           </p>
 
                           {/* Description */}
                           <p className="text-xs sm:text-sm text-[#5e5e63] dark:text-[#b8b8b8] font-light leading-relaxed">
-                            {description}
+                            {exp.description}
                           </p>
 
+                          {exp.award && (
+                            <a
+                              href={exp.award.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-3 inline-block text-xs font-medium text-[#0066cc] dark:text-[#4da6ff] hover:underline"
+                            >
+                              {lang === 'de' ? 'Zur OST-Seite' : 'View on OST website'} →
+                            </a>
+                          )}
+
                           {/* Details */}
-                          {details && (
+                          {exp.details && (
                             <details className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-[#d2d2d7] dark:border-[#424245] group">
                               <summary className="text-xs font-medium text-[#0066cc] dark:text-[#4da6ff] cursor-pointer list-none flex items-center gap-1 hover:underline">
                                 {lang === 'de' ? 'Mehr erfahren' : 'Learn more'}
@@ -115,7 +158,7 @@ export function Experience() {
                                 </svg>
                               </summary>
                               <p className="mt-2 text-xs sm:text-sm text-[#5e5e63] dark:text-[#b8b8b8] font-light leading-relaxed">
-                                {details}
+                                {exp.details}
                               </p>
                             </details>
                           )}

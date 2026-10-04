@@ -128,7 +128,7 @@ export function Layout() {
                         }`
                       }
                     >
-                      {({ isActive }) => link.name}
+                      {link.name}
                     </NavLink>
                   </li>
                 ))}
