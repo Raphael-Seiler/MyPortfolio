@@ -92,7 +92,7 @@ export function Contact() {
     setBubbles((b) => [...b, { id: nextId.current++, from: "me", text: de ? "Ja, senden" : "Yes, send it" }]);
     let ok = false;
     try {
-      const response = await fetch("https://formspree.io/f/mqayvoaq", {
+      const response = await fetch("https://formspree.io/f/xkopgkeq", {
         method: "POST",
         body: JSON.stringify(data),
         headers: { Accept: "application/json", "Content-Type": "application/json" },

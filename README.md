@@ -7,7 +7,7 @@ Personal portfolio of Raphaël Seiler, BSc Digital Design student at the OST (Os
 - **Home** — intro, project carousel, awards, about me
 - **Projects** — overview and a case-study page per project
 - **Experience** — CV timeline (education, work) including awards
-- **Contact** — form (via [Formspree](https://formspree.io), with a `mailto:` fallback) and social links
+- **Contact** — chat-style form that sends via [Formspree](https://formspree.io) (no email address on the site) and social links
 - **Accessibility** statement page
 - German / English toggle and light / dark mode (both remembered per visitor)
 
