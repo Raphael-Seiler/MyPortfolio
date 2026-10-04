@@ -2,18 +2,7 @@ import { motion } from "motion/react";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
 import { Medal, Star } from "lucide-react";
-import { experiences } from "../data";
-import { allAwards } from "../../content/projects";
-
-type TimelineItem = {
-  id: string;
-  role: string;
-  company: string;
-  period: string;
-  description: string;
-  details?: string;
-  award?: { status: "won" | "nominated"; link: string };
-};
+import { timeline } from "../../content/timeline";
 
 export function Experience() {
   const { lang } = useLanguage();
@@ -22,24 +11,14 @@ export function Experience() {
 
   const pick = (de: string, en?: string) => (lang === 'en' && en ? en : de);
 
-  const items: TimelineItem[] = [
-    ...experiences.map((exp) => ({
-      id: exp.id,
-      role: pick(exp.role, exp.roleEn),
-      company: pick(exp.company, exp.companyEn),
-      period: pick(exp.period, exp.periodEn),
-      description: pick(exp.description, exp.descriptionEn),
-      details: pick(exp.details, exp.detailsEn),
-    })),
-    ...allAwards.map(({ award, project }) => ({
-      id: award.id,
-      role: `${award.title[lang]} – ${award.result[lang]}`,
-      company: project.content.title[lang],
-      period: award.date[lang],
-      description: award.description[lang],
-      award: { status: award.status, link: award.link },
-    })),
-  ];
+  const items = timeline.map((exp) => ({
+    ...exp,
+    role: pick(exp.role, exp.roleEn),
+    company: pick(exp.company, exp.companyEn),
+    period: pick(exp.period, exp.periodEn),
+    description: pick(exp.description, exp.descriptionEn),
+    details: pick(exp.details ?? '', exp.detailsEn),
+  }));
 
   return (
     <div className="w-full min-h-screen bg-[#ffffff] dark:bg-[#202124] pt-32 pb-20">

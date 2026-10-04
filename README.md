@@ -33,10 +33,11 @@ src/
 │   ├── components/     Layout, CircularGallery, MagicBento, ui/ (shadcn)
 │   ├── context/        LanguageContext (DE/EN)
 │   ├── translations.ts UI texts in German and English
-│   ├── data.ts         CV entries (experiences)
 │   └── routes.ts
-├── content/
-│   └── projects/       all project content, one folder per project (see below)
+├── content/            all content, independent of the design
+│   ├── projects/       one folder per project (see below)
+│   ├── experience.ts   CV entries
+│   └── timeline.ts     CV entries + awards, as shown on the Experience page
 ├── assets/             images that are not tied to a project (home photo, logo)
 └── styles/
 ```
