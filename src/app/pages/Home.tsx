@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router";
+import { Medal, Star } from "lucide-react";
 import MagicBento from "../components/MagicBento";
 import CircularGallery from "../components/CircularGallery";
 import { translations } from "../translations";
 import { useLanguage } from "../context/LanguageContext";
+import { awards } from "../data";
 import imgDefault from "../../assets/home/Raphi_Mii_4K.png";
 import imgHover from "../../assets/home/Raphi_Mii_4K_pose.png";
 import screen2Img from "../../assets/projects/spryte/Screen_2.png";
@@ -163,6 +165,75 @@ export function Home() {
               textColor="#202124"
               onItemClick={() => navigate('/projects')}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Awards Section */}
+      <section className="py-24 md:py-32">
+        <div className="max-w-6xl mx-auto px-6 md:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h3 className="text-3xl md:text-5xl font-normal tracking-tight text-[#202124] dark:text-[#e8eaed] mb-4">
+              {lang === 'de' ? 'Auszeichnungen.' : 'Awards.'}
+            </h3>
+            <p className="text-lg text-[#5f6368] dark:text-[#9aa0a6] max-w-2xl mx-auto">
+              {lang === 'de' ? 'Anerkennung für meine Arbeit an der OST.' : 'Recognition for my work at OST.'}
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {awards.map((award, i) => (
+              <motion.a
+                key={award.id}
+                href={award.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="group flex flex-col overflow-hidden rounded-2xl bg-[#f8f9fa] dark:bg-[#303134] border border-[#dadce0] dark:border-[#5f6368] hover:shadow-lg transition-shadow"
+              >
+                {award.image && (
+                  <img
+                    src={award.image}
+                    alt={lang === 'en' ? award.titleEn : award.title}
+                    loading="lazy"
+                    className="w-full aspect-[3/2] object-cover"
+                  />
+                )}
+                <div className="p-6 flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#1a73e8] dark:bg-[#8ab4f8] text-white dark:text-[#202124] font-medium">
+                      {award.status === "won" ? <Medal size={22} /> : <Star size={20} />}
+                    </span>
+                    <span className="text-sm font-medium text-[#1a73e8] dark:text-[#8ab4f8]">
+                      {lang === 'en' ? award.resultEn : award.result}
+                    </span>
+                  </div>
+                  <h4 className="text-xl font-medium text-[#202124] dark:text-[#e8eaed]">
+                    {lang === 'en' ? award.titleEn : award.title}
+                  </h4>
+                  {award.project && (
+                    <p className="text-sm font-medium text-[#202124] dark:text-[#e8eaed]">
+                      {lang === 'en' ? award.projectEn : award.project}
+                    </p>
+                  )}
+                  <p className="text-sm text-[#5f6368] dark:text-[#9aa0a6] leading-relaxed">
+                    {lang === 'en' ? award.descriptionEn : award.description}
+                  </p>
+                  <p className="text-xs text-[#5f6368] dark:text-[#9aa0a6]">
+                    {lang === 'en' ? award.dateEn : award.date}
+                  </p>
+                </div>
+              </motion.a>
+            ))}
           </div>
         </div>
       </section>
