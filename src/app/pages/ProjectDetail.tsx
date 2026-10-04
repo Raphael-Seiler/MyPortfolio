@@ -106,47 +106,78 @@ export function ProjectDetail() {
   const inProgress = !content.goal && !content.process && !content.result && !content.testing && !content.reflection;
   if (inProgress) {
     const cover = images.hero[0] ?? images.card;
+    const isPhoto = images.hero.includes(cover);
     return (
       <ClickSpark sparkColor={isDark ? '#ffffff' : '#000000'} sparkSize={19} sparkRadius={40} sparkCount={13} duration={400} disableOnMobile>
-        <div className="w-full min-h-screen">
-          <div className="max-w-5xl mx-auto px-6 md:px-12 py-20 pt-32">
+        <div className="w-full min-h-screen pt-28 pb-24">
+          <div className="max-w-6xl mx-auto px-6 md:px-12">
             <Link
               to="/projects"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#5e5e63] hover:text-[#1d1d1f] dark:text-[#b8b8b8] dark:hover:text-[#f5f5f7] transition-colors mb-12 focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-lg px-2 py-1"
+              className="inline-flex items-center gap-2 text-sm font-medium text-[#5e5e63] hover:text-[#1d1d1f] dark:text-[#b8b8b8] dark:hover:text-[#f5f5f7] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] rounded-lg px-2 py-1"
             >
               <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
               <span>{t.projectDetail.backToProjects}</span>
             </Link>
 
-            <motion.h1
+            {/* Teaser headline */}
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl md:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]"
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="text-center mt-10 md:mt-14 mb-12 md:mb-16"
             >
-              {title}
-            </motion.h1>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-12 rounded-2xl overflow-hidden bg-[#f5f5f7] dark:bg-[#1d1d1f] flex justify-center"
-            >
-              <img src={cover} alt={title} className="w-full h-auto max-h-[560px] object-contain" />
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#f5f5f7] dark:bg-[#1d1d1f] px-4 py-1.5 text-sm font-medium text-[#1d1d1f] dark:text-[#f5f5f7] mb-6">
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-[#ff9f0a] opacity-70 animate-ping motion-reduce:animate-none" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff9f0a]" />
+                </span>
+                {lang === 'de' ? 'In Arbeit' : 'In progress'}
+              </span>
+              <h1 className="text-[2rem] sm:text-5xl md:text-7xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] max-w-4xl mx-auto leading-[1.05] break-words">
+                {title}
+              </h1>
+              <p className="mt-4 inline-block text-2xl md:text-4xl font-semibold tracking-tight bg-gradient-to-r from-[#ff9f0a] via-[#ff375f] to-[#bf5af2] bg-clip-text text-transparent">
+                {lang === 'de' ? 'Bald verfügbar.' : 'Coming soon.'}
+              </p>
             </motion.div>
 
+            {/* Cover */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-12 mx-auto max-w-md rounded-3xl bg-white p-6 border border-[#d2d2d7]/50 dark:border-white/10"
+              initial={{ opacity: 0, y: 40, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className={`relative overflow-hidden rounded-[32px] aspect-[4/3] md:aspect-[16/9] ${isPhoto ? 'bg-black' : 'bg-[#f5f5f7] dark:bg-[#1d1d1f]'}`}
             >
               <img
-                src={underConstructionGif}
-                alt={lang === 'de' ? 'Diese Projektseite ist noch im Aufbau' : 'This project page is under construction'}
-                className="w-full h-auto"
+                src={cover}
+                alt={title}
+                className={`absolute inset-0 w-full h-full ${isPhoto ? 'object-cover' : 'object-contain p-10 md:p-16'}`}
               />
+            </motion.div>
+
+            {/* Floating construction card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="relative z-10 -mt-10 md:-mt-28 mx-auto max-w-sm rounded-[28px] bg-white/85 dark:bg-[#1d1d1f]/85 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] p-6 text-center"
+            >
+              <div className="mx-auto w-36 h-36 rounded-[32px] bg-white overflow-hidden shadow-sm ring-1 ring-black/5">
+                <img
+                  src={underConstructionGif}
+                  alt={lang === 'de' ? 'Baustelle: diese Projektseite ist noch im Aufbau' : 'Construction site: this project page is still being built'}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <p className="mt-5 text-lg font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
+                {lang === 'de' ? 'Diese Fallstudie entsteht gerade.' : 'This case study is being built.'}
+              </p>
+              <Link
+                to="/projects"
+                className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1d1d1f] dark:bg-[#f5f5f7] text-white dark:text-[#1d1d1f] text-sm font-medium hover:bg-[#333336] dark:hover:bg-[#e5e5ea] transition-colors focus:outline-none focus:ring-2 focus:ring-[#0066cc] focus:ring-offset-2"
+              >
+                {lang === 'de' ? 'Andere Projekte ansehen' : 'See other projects'}
+              </Link>
             </motion.div>
           </div>
         </div>
