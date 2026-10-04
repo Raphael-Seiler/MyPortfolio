@@ -160,17 +160,17 @@ export function AboutMe() {
         <CardShell index={1}>
           <Eyebrow className="text-[#bf4800] dark:text-[#ff9f0a]">{t.entwicklung}</Eyebrow>
           <h4 className="text-2xl md:text-3xl font-semibold tracking-tight mb-10">{t.entwicklungTitle}</h4>
-          <ul className="mt-auto space-y-4">
+          <ul className="flex-1 grid auto-rows-[minmax(0,1fr)] gap-4">
             {t.entwicklungList.map((item) => (
               <li
                 key={item}
-                className="flex items-center gap-4 rounded-2xl bg-white dark:bg-[#2c2c2e] px-5 py-5"
+                className="flex flex-col justify-between gap-6 rounded-2xl bg-white dark:bg-[#2c2c2e] p-6"
               >
                 <span className="relative flex h-3 w-3 shrink-0" aria-hidden="true">
                   <span className="absolute inline-flex h-full w-full rounded-full bg-[#ff9f0a] opacity-60 animate-ping motion-reduce:animate-none" />
                   <span className="relative inline-flex h-3 w-3 rounded-full bg-[#ff9f0a]" />
                 </span>
-                <span className="text-lg md:text-xl font-medium">{item}</span>
+                <span className="text-xl md:text-2xl font-semibold tracking-tight">{item}</span>
               </li>
             ))}
           </ul>
