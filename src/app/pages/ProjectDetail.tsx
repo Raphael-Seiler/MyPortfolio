@@ -103,9 +103,9 @@ function Cover({ project, title }: { project: Project; title: string }) {
               src={src}
               alt={`${title} ${i + 1}`}
               initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: i % 2 ? 18 : -18 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 + i * 0.1, ease }}
-              className="h-[72%] w-auto max-w-[24%] object-contain rounded-[14px] md:rounded-[24px] shadow-[0_30px_60px_-25px_rgba(0,0,0,0.45)]"
+              className="w-[21%] max-w-[230px] h-auto aspect-[383/688] object-cover rounded-[10px] sm:rounded-[16px] md:rounded-[24px] shadow-[0_24px_48px_-24px_rgba(0,0,0,0.35)]"
             />
           ))}
         </div>
