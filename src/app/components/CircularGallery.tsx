@@ -669,6 +669,9 @@ class App {
   }
 
   update() {
+    // A lost WebGL context (e.g. too many contexts in Safari) cannot draw; stop instead of crashing
+    if (this.gl.isContextLost()) return;
+
     // Auto-scroll when no user interaction
     if (this.autoScroll) {
       this.scroll.target += this.autoScrollSpeed;
@@ -718,6 +721,8 @@ class App {
     if (this.renderer && this.renderer.gl && this.renderer.gl.canvas.parentNode) {
       this.renderer.gl.canvas.parentNode.removeChild(this.renderer.gl.canvas as HTMLCanvasElement);
     }
+    // Free the WebGL context; browsers only allow a few at a time
+    this.renderer?.gl?.getExtension('WEBGL_lose_context')?.loseContext();
   }
 }
 
