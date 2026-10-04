@@ -6,7 +6,6 @@ import { translations } from "../translations";
 import { hobbies, Hobby } from "../../content/hobbies";
 
 const turnEase = [0.645, 0.045, 0.355, 1] as const;
-const pad = (n: number) => String(n).padStart(2, "0");
 
 function useIsDesktop() {
   const query = "(min-width: 768px)";
@@ -39,14 +38,11 @@ function PhotoPage({ hobby }: { hobby: Hobby }) {
   );
 }
 
-/** Right page of a spread: number, title and text. */
-function TextPage({ hobby, number, total }: { hobby: Hobby; number: number; total: number }) {
+/** Right page of a spread: title and text. */
+function TextPage({ hobby, number }: { hobby: Hobby; number: number }) {
   const { lang } = useLanguage();
   return (
     <div className={`${paperClass} rounded-r-[18px] p-8 lg:p-12 flex flex-col`}>
-      <span className="text-sm font-semibold tracking-tight text-[#86868b]">
-        {pad(number)} / {pad(total)}
-      </span>
       <div className="my-auto">
         <h5 className="text-4xl lg:text-6xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-4">
           {hobby.title[lang]}
@@ -160,7 +156,7 @@ export function HobbyBook() {
               <PhotoPage hobby={leftHobby} />
             </div>
             <div className="absolute inset-y-0 right-0 w-1/2 cursor-e-resize" onClick={() => go(1)}>
-              <TextPage hobby={hobbies[rightIndex]} number={rightIndex + 1} total={total} />
+              <TextPage hobby={hobbies[rightIndex]} number={rightIndex + 1} />
             </div>
 
             {/* Spine */}
@@ -177,7 +173,7 @@ export function HobbyBook() {
                 onAnimationComplete={finishTurn}
               >
                 <div className="absolute inset-0 [backface-visibility:hidden]">
-                  <TextPage hobby={hobbies[index]} number={index + 1} total={total} />
+                  <TextPage hobby={hobbies[index]} number={index + 1} />
                 </div>
                 <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
                   <PhotoPage hobby={hobbies[index + 1]} />
@@ -199,7 +195,7 @@ export function HobbyBook() {
                   <PhotoPage hobby={hobbies[index]} />
                 </div>
                 <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                  <TextPage hobby={hobbies[index - 1]} number={index} total={total} />
+                  <TextPage hobby={hobbies[index - 1]} number={index} />
                 </div>
               </motion.div>
             )}
@@ -224,8 +220,7 @@ export function HobbyBook() {
                   className="w-full aspect-[4/5] object-cover rounded-[10px]"
                 />
                 <div className="px-2 pt-6 pb-3">
-                  <span className="text-sm font-semibold text-[#86868b]">{pad(index + 1)} / {pad(total)}</span>
-                  <h5 className="mt-2 text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
+                  <h5 className="text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7]">
                     {hobbies[index].title[lang]}
                   </h5>
                   <p className="mt-2 text-lg text-[#5e5e63] dark:text-[#b8b8b8]">{hobbies[index].text[lang]}</p>
